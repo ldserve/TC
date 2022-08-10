@@ -1,0 +1,34 @@
+{%- assign color = color | downcase -%}
+{%- assign color_config = settings.color_config | newline_to_br | split: '<br />' -%}
+{%- assign color_style = 'background-color: ' | append: color -%}
+{%- if color == 'white' -%}
+	{%- assign color_style = color_style | append: ";box-shadow: 0 0 1px 1px #0003 inset" -%}
+{%- endif -%}
+{%- if color == 'multi color' -%}
+	{%- assign color_style = 'background: ' | append: "linear-gradient(90deg, red 0% ,red 16.6%,orange 16.6%,orange 33.2%,yellow 33.2%,yellow 49.8%,green 49.8%,green 66.4%,blue 66.4%,blue 83%,purple 83%,purple 100%)" -%}
+{%- endif -%}
+
+{%- for color_item in color_config -%}
+	{%- assign color_parts = color_item | split: ':' -%}
+	{%- assign color_key = color_parts.first | downcase | strip -%}
+	{%- if color == color_key -%}
+		{%- assign color_value = color_parts.last | strip -%}
+		{%- if color_value contains '#' -%}
+			{%- assign color_style = 'background-color: ' | append: color_value -%}
+
+		{%- elsif images[color_value] != blank -%}
+			{%- assign color_image = images[color_value] | img_url: '50x50' -%}
+			{%- assign color_style = 'background-image: url(' | append: color_image | append: ')' -%}
+		{%- endif -%}
+		{%- break -%}
+	{%- endif -%}
+{%- endfor -%}
+{%- if type!=blank -%}
+	{%- if color_value contains '#' -%}
+		{{ color_value }}
+	{%- else -%}
+		{{ color }}
+	{%- endif -%}
+{%- else -%}
+	{{ color_style }}
+{%- endif -%}

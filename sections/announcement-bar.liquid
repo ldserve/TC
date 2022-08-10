@@ -1,0 +1,159 @@
+<style>
+  .announcement-bar {
+    color: {{ section.settings.color_text }};
+    background-color: {{ section.settings.color_bg }};
+  }
+
+  {%- capture realsize -%}
+  {{section.blocks.size| plus: 1 -}}
+  {%- endcapture -%}
+
+  {%- capture propsize -%}
+  {{-100| divided_by: realsize -}}
+  {%- endcapture -%}
+  {%- capture allblock -%}
+  {{-section.blocks.size| times: 4 -}}
+  {%- endcapture -%}
+
+  .announcement-animation {
+    -webkit-animation: announcement-scroll-top {{ section.settings.time -}}s ease-out infinite;
+    animation: announcement-scroll-top {{ section.settings.time -}}s ease-out infinite;
+  }
+  @-webkit-keyframes announcement-scroll-top {
+    0% { transform: translateY(0%) }
+  {%- for i in (1..section.blocks.size) -%}
+  {%- capture prev -%}{{- i | minus:1 -}}{%- endcapture -%}
+  {{ i | times: 400 | minus: 100 |divided_by: allblock }}% {
+    transform: translateY(-{{ propsize| times:prev }}%);
+  }
+  {{ i | times: 400 |divided_by: allblock }}% {
+    transform: translateY(-{{ propsize| times:i }}%);
+  }
+  {%- endfor -%}
+  }
+
+  @keyframes announcement-scroll-top {
+    0% {transform: translateY(0%)}
+  {%- for i in (1..section.blocks.size) -%}
+  {%- capture prev -%}{{- i | minus:1 -}}{%- endcapture -%}
+  {{ i | times: 400 | minus: 100 | divided_by: allblock }}% {
+    transform: translateY(-{{ propsize| times:prev }}%);
+  }
+  {{ i | times: 400 | divided_by: allblock }}% {
+    transform: translateY(-{{ propsize| times:i }}%);
+  }
+  {%- endfor -%}
+  }
+  .overflow-hidden{
+    overflow: hidden;
+  }
+  .px-2{
+    padding: 0 2rem;
+  }
+  .text-nowrap{
+    white-space: nowrap;
+  }
+  .announcement-bar {
+    height: 38px;
+    line-height: 38px;
+    font-size: 14px;
+  }
+  @media (max-width: 750px) {
+    .announcement-bar {
+      height: 32px;
+      line-height: 32px;
+      font-size: 12px;
+    }
+  }
+  .m-0 {
+    margin: 0;
+  }
+</style>
+
+{%- if section.settings.show -%}
+  <div class="announcement-bar overflow-hidden">
+    <div class="page-width">
+      <div
+        class="announcement-bar__inner center px-2 overflow-hidden {% if section.blocks.size>1 %}announcement-animation{% endif %}">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}"
+               class="announcement-bar__content fw-bold m-0 text-nowrap text-overflow-1">{{ block.settings.text | escape }}{%- render "icon",icon:'arrow' -%}</a>
+          {%- else -%}
+            <p class="announcement-bar__content fw-bold m-0 text-nowrap text-overflow-1">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if section.blocks.size>1 -%}
+          {%- for block in section.blocks reversed limit:1 -%}
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}"
+                 class="announcement-bar__content fw-bold m-0 text-nowrap text-overflow-1">{{ block.settings.text | escape }}{%- render "icon",icon:'arrow' -%}</a>
+            {%- else -%}
+              <p class="announcement-bar__content fw-bold m-0 text-nowrap text-overflow-1">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "公告栏",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show",
+      "default": false,
+      "label": "是否显示公告栏"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "default": "#251a0f",
+      "label": "字体颜色"
+    },
+    {
+      "type": "color",
+      "id": "color_bg",
+      "default": "#FFFFFF",
+      "label": "背景颜色"
+    },
+    {
+      "type": "number",
+      "id": "time",
+      "default": 10,
+      "label": "滚动一轮时间，默认10秒，单位秒"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "公告栏",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Free Shipping on intimates with code: FREESHIP",
+          "label": "文本"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "链接"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "announcement"
+      }
+    ]
+  }
+}
+{% endschema %}

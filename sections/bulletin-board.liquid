@@ -1,0 +1,183 @@
+{%- if section.settings.bulletin_show -%}
+
+<style>
+#bulletin-section-{{section.id}}{
+    margin:0;
+    padding:0;
+}
+#bulletin-section-{{section.id}} a{
+text-decoration: none;
+}
+
+  @-webkit-keyframes announcement-scroll-bon {
+    0% { transform: translateY(0%) }
+    37%{ transform: translateY(0%) }
+    50% { transform: translateY(-100%) }
+    87% { transform: translateY(-100%) }
+    100% { transform: translateY(-200%) }
+}
+
+  @keyframes announcement-scroll-bon {
+    0% { transform: translateY(0%) }
+    37%{ transform: translateY(0%) }
+    50% { transform: translateY(-100%) }
+    87% { transform: translateY(-100%) }
+    100% { transform: translateY(-200%) }}
+
+
+.bulletin-contain{
+    background:{{section.settings.background}};
+    position: absolute;
+    left: 0;
+    z-index: 3;
+    width:100%;
+    overflow:hidden;
+}
+.line-fence{
+    width: 1px;
+    height: 70%;
+    background-color: #fff;
+}
+.bulletin__text{
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: {{section.settings.text_color}};
+}
+#bulletin-section-{{section.id}} .icon{
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-right: 0.6rem;
+}
+.bulletin-contain .bulletin-mobile_text{
+    display: none;
+}
+.animation-bar{
+   display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 40px;
+}
+@media screen and (max-width:750px) {
+    .bulletin-contain .bulletin-mobile_text{
+    display: flex;
+    }
+    .bulletin__text{
+        width: 100%;
+        height: 100%;
+    }
+    .line-fence{
+        display: none;
+    }
+    .bulletin-mobile_text{
+        display: flex;
+    }
+    .bulletin-animation {
+    -webkit-animation: announcement-scroll-bon {{ section.settings.time -}}s ease-out infinite;
+    animation: announcement-scroll-bon {{ section.settings.time -}}s ease-out infinite;
+  }
+  .animation-bar{ 
+    display: block;
+}
+}
+
+</style>
+
+{%- assign isrender = false -%}
+
+{%- if section.settings.bulletin_show_index== false -%}
+{%- assign isrender = true -%}
+{%- endif -%}
+
+{%- if section.settings.bulletin_show_index and request.page_type=='index'-%}
+{%- assign isrender = true -%}
+ {%- endif -%}   
+
+{%- if isrender -%}
+<section id="bulletin-section-{{section.id}}" >
+
+{%- assign icon_str = 'zoom,tick,unavailable,share,plus,minus,error,discount,arrow,aircraft' -%}
+{%- assign icon_arr = icon_str | split: ',' -%}
+
+{%- capture htmltemplate -%}
+    {%- if section.settings.link_1 != blank-%}
+    <a class="bulletin__text" href="{{ section.settings.link_1 }}">{%- render 'icon',icon:'aircraft' -%}{{section.settings.bulletin_text1}}</a>
+    {%- else -%}
+    <div class="bulletin__text">{%- render 'icon',icon:'aircraft' -%}{{section.settings.bulletin_text1}}</div>
+    {%- endif -%}
+{%- endcapture -%}
+
+<div class="bulletin-contain">
+    
+    <div class="animation-bar bulletin-animation">
+    {{htmltemplate}}
+    <span class="line-fence"></span>
+    {%- if section.settings.link_2 !=blank -%}
+    <a class="bulletin__text" href="{{section.settings.link_2}}">{%- render 'icon',icon:'discount' -%}{{section.settings.bulletin_text2}}</a>
+    {%- else -%}
+    <div class="bulletin__text">{%- render 'icon',icon:'discount' -%}{{section.settings.bulletin_text2}}</div>
+    {%- endif -%}
+    <div class="bulletin__text bulletin-mobile_text">{%- render 'icon',icon:'aircraft' -%}{{section.settings.bulletin_text1}}</div>
+
+</div></div>
+
+</section>
+
+{%- endif -%}
+
+
+{%- endif -%}
+
+{% schema %}
+{
+    "name":"顶部横幅",
+    "settings":[{
+        "type":"color",
+        "id":"background",
+        "label":"背景颜色",
+        "default":"#000000"
+    },{
+        "type":"color",
+        "id":"text_color",
+        "label":"字体颜色",
+        "default":"#FFFFFF"
+    },{
+        "type":"text",
+        "id":"bulletin_text1",
+        "label":"信息一",
+        "default":"FREE SHIPPING OVER $79"
+    },{
+        "type": "url",
+        "id": "link_1",
+        "label": "第一个信息链接"
+    },{
+        "type":"text",
+        "id":"bulletin_text2",
+        "label":"信息二",
+        "default":"GET 20% OFF"
+    },{
+        "type": "url",
+        "id": "link_2",
+        "label": "第二个信息链接"
+    },{
+      "type": "number",
+      "id": "time",
+      "default": 10,
+      "label": "移动端滚动一轮时间，默认10秒，单位秒"
+    },{
+        "type": "checkbox",
+        "id": "bulletin_show",
+        "label": "是否显示导航栏横幅",
+        "default":false
+    },{
+        "type": "checkbox",
+        "id": "bulletin_show_index",
+        "label": "仅在首页展示",
+        "default":false
+    }],
+    "presets": [{
+        "name":"顶部横幅"
+    }]
+}
+{% endschema %}
