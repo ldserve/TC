@@ -154,7 +154,7 @@
         ],
         "settings": {
           "color_scheme": "accent-1",
-          "newsletter_enable": true,
+          "newsletter_enable": false,
           "newsletter_heading": "SIGN UP FOR OUR NEWSLETTER",
           "newsletter_info": "<p>Subscribe to receive latest trends of men's clothing via email and enjoy exclusive discount<\/p>",
           "show_social": true,
@@ -184,7 +184,7 @@
         "type": "bulletin-board",
         "settings": {
           "background": "#000000",
-          "text_color": "#FFFFFF",
+          "text_color": "#ffffff",
           "bulletin_text1": "FREE SHIPPING OVER $79",
           "link_1": "",
           "bulletin_text2": "GET 20% OFF",
