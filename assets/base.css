@@ -2246,11 +2246,13 @@ input[type='checkbox'] {
     grid-template-columns: auto 1fr auto;
     column-gap: 2rem;
   }
-
+  .header>.header_logo{
+    grid-area:left-icon;
+  }
   .header--top-center {
     grid-template-areas:
       'left-icon heading icons'
-      'navigation navigation navigation';
+      'left-icon navigation right-icon';
   }
 
   .header:not(.header--middle-left) .header__inline-menu {
@@ -2317,7 +2319,7 @@ input[type='checkbox'] {
 
   .header--top-center .header__heading-link,
   .header--top-center .header__heading {
-    justify-self: center;
+    justify-self: start;
     text-align: center;
   }
 }
@@ -2362,7 +2364,9 @@ input[type='checkbox'] {
 
 .header__icon,
 .header__icon--cart .icon {
-  height: 4.4rem;
+  /* height: 4.4rem;
+  width: 4.4rem; */
+  height: 2.4rem;
   width: 4.4rem;
   padding: 0;
 }
@@ -2395,8 +2399,9 @@ menu-drawer + .header__search {
 }
 
 .header > .header__search {
-  grid-area: left-icon;
-  justify-self: start;
+  /* grid-area: left-icon; */
+  grid-area: right-icon;
+  justify-self: end;
 }
 
 .header:not(.header--has-menu) * > .header__search {
@@ -2574,7 +2579,7 @@ details[open] > .header__submenu {
   }
 
   .header--top-center .header__inline-menu {
-    justify-self: center;
+    justify-self: start;
   }
 
   .header--top-center .header__inline-menu > .list-menu--inline {

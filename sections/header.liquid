@@ -81,6 +81,7 @@
       padding-top: 0.5rem;
     }
   }
+
 </style>
 
 {%- style -%}
@@ -370,9 +371,9 @@
       </details-modal>
     {%- endif -%}
 
-    {%- if request.page_type == 'index' -%}
-      <h1 class="header__heading">
-    {%- endif -%}
+    {%- comment -%}网站LOGO{%- endcomment -%}
+    {%- if section.settings.logo_position == 'top-center' -%}
+      <div class="header_logo">
         <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
           {%- if section.settings.logo != blank -%}
             {%- assign logo_alt = section.settings.logo.alt | default: shop.name | escape -%}
@@ -384,14 +385,21 @@
               width: section.settings.logo_width,
               alt: logo_alt
             }}
-          {%- else -%}
+            {%-endif-%}
+      </div>
+    {%- endif -%}
+    {%- comment -%}网站名称{%- endcomment -%}
+    {%- if request.page_type == 'index' -%}
+      <h1 class="header__heading">
+    {%- endif -%}
+        <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
             <span class="h2">{{ shop.name }}</span>
-          {%- endif -%}
         </a>
     {%- if request.page_type == 'index' -%}
       </h1>
     {%- endif -%}
 
+    {%- comment -%}导航栏{%- endcomment -%}
     {%- if section.settings.menu != blank -%}
       {%- if section.settings.menu_type_desktop == 'dropdown' -%}
         <nav class="header__inline-menu">
@@ -490,7 +498,7 @@
         </nav>
       {%- endif -%}
     {%- endif -%}
-
+{%- comment -%}SVG icons{%- endcomment -%}
     <div class="header__icons">
       <details-modal class="header__search">
         <details>
@@ -596,6 +604,7 @@
         {%- endif -%}
       </a>
     </div>
+
   </header>
 </{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
 

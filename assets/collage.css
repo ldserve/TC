@@ -28,6 +28,14 @@
   .collage--mobile .collage__item--left:nth-child(3n - 2) {
     grid-column: span 2;
   }
+  .collage2--mobile .collage__item--left:nth-child(3n - 2) {
+    grid-column: span 2;
+    grid-row: 3;
+  }
+  .collage2--mobile .collage__item--right:nth-child(3n) {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+  }
 
   .collage--mobile .collage__item--left:nth-child(3n - 2):nth-last-child(2) {
     grid-column: span 1;
