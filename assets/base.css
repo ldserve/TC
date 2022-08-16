@@ -2368,7 +2368,7 @@ input[type='checkbox'] {
 .header__icon .icon {
   height: 2rem;
   width: 2rem;
-  fill: none;
+  fill: currentColor;
   vertical-align: middle;
 }
 
@@ -3221,6 +3221,7 @@ details-disclosure>details {
   width: 100%;
 }
 
+
 @media screen and (max-width: 640px) {
 
   .product-list--scrollable::before,
@@ -3437,6 +3438,46 @@ details-disclosure>details {
   }
 }
 
+/* -------------------  product variant swatch ----------------------------- */
+.variant-swatch__item svg {
+  display: none;
+}
+
+.variant-swatch__item {
+  position: relative;
+  display: block;
+  width: 48px;
+  padding: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+
+.product-form__option {
+  position: relative;
+  border: none;
+  padding: 0;
+  margin: 0 0 23px;
+}
+
+.variant-swatch {
+  display: inline-block;
+  margin: 5px;
+  vertical-align: middle;
+}
+
+.variant-swatch__radio {
+  position: absolute;
+  height: 0;
+  width: 0;
+  opacity: 0;
+}
+
+.variant-swatch__radio:checked+.variant-swatch__item {
+  border-color: #3d3d3d;
+  border-radius: 3px;
+}
+
 /**
  * --------------------------------------------------------------------
  * LAZY LOADING
@@ -3534,4 +3575,153 @@ img {
   height: auto;
   border-style: none;
   vertical-align: top;
+}
+
+.flickity-enabled {
+  position: relative;
+  overflow: visible !important;
+}
+
+.flickity-enabled:focus {
+  outline: none;
+}
+
+.flickity-viewport {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.flickity-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+@media screen and (max-width: 640px) {
+  .hidden-phone {
+    display: none !important;
+  }
+
+  .\31\/1--phone {
+    width: 100%;
+  }
+
+  .\31\/2--phone {
+    width: 50%;
+  }
+
+  .\31\/3--phone {
+    width: 33.333333%;
+  }
+
+  .\31\/4--phone {
+    width: 25%;
+  }
+
+  .\31\/5--phone {
+    width: 20%;
+  }
+
+  .\31\/6--phone {
+    width: 16.666667%;
+  }
+}
+
+/**
+ * --------------------------------------------------------------------
+ * PRODUCT ITEM (VERTICAL AND HORIZONTAL VARIATION)
+ * --------------------------------------------------------------------
+ */
+
+.product-item--vertical .product-item__action-list,
+.product-item--horizontal .product-item__action-list {
+  margin: 20px 0 5px 0;
+}
+
+.product-item--vertical .product-item__action-button,
+.product-item--horizontal .product-item__action-button {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.product-item--vertical .product-item__action-list--list-view-only,
+.product-item--vertical .product-item__action-button--list-view-only,
+.product-item--horizontal .product-item__action-list--list-view-only,
+.product-item--horizontal .product-item__action-button--list-view-only {
+  display: none;
+}
+
+.product-item--vertical .product-item__action-button--list-view-only+.product-item__action-button,
+.product-item--horizontal .product-item__action-button--list-view-only+.product-item__action-button {
+  margin-top: 0;
+}
+
+@media screen and (min-width: 1000px) {
+  .product-item--vertical .product-item__action-list {
+    margin: 15px -5px -5px -5px;
+  }
+
+  .product-item--vertical .product-item__action-button {
+    flex: 1 0 auto;
+    margin: 5px !important;
+  }
+}
+
+/* prev/next buttons */
+.flickity-prev-next-button {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  top: calc(50% - 25px);
+  border-radius: 100%;
+  visibility: visible;
+  background: var(--flickity-arrow-color);
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+  transform: scale(0.7);
+  z-index: 1;
+}
+
+.flickity-prev-next-button:hover {
+  background: var(--accent-color);
+}
+
+.flickity-prev-next-button svg {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  fill: var(--secondary-background);
+  vertical-align: middle;
+}
+
+.flickity-prev-next-button[disabled] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.flickity-prev-next-button.previous {
+  left: -25px;
+}
+
+.flickity-prev-next-button.previous svg {
+  left: 1px;
+}
+
+.flickity-prev-next-button.next {
+  right: -25px;
+}
+
+.flickity-prev-next-button.next svg {
+  left: -1px;
+}
+
+.flickity-enabled:hover .flickity-prev-next-button:not([disabled]) {
+  transform: scale(1);
+  opacity: 1;
 }
