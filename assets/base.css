@@ -2326,6 +2326,9 @@ input[type='checkbox'] {
   .header__heading-link {
     text-align: center;
   }
+  .header_logo{
+    display: none;
+  }
 }
 
 @media screen and (min-width: 990px) {

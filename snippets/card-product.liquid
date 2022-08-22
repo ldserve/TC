@@ -11,7 +11,7 @@
     - lazy_load: {Boolean} Image should be lazy loaded. Default: true (optional)
     - show_quick_add: {Boolean} Show the quick add button.
     - section_id: {String} The ID of the section that contains this card.
-
+    - variant_type:color/variant/none
     Usage:
     {% render 'card-product', show_vendor: section.settings.show_vendor %}
 {% endcomment %}
@@ -130,14 +130,13 @@
           </div>
 
         {%- comment -%}变体选择 start{%- endcomment -%}
-          {%- if settings.model_type !='none' -%}
+          {%- if variant_type !='none' and variant_type!=blank -%}
         <variant-radios class="no-js-hidden collection-variant" data-section="{{ section.id }}" data-url="{{ product.url }}" {{ block.shopify_attributes }}>
           {%- for option in card_product.options_with_values -%}
           {%- assign name = option.name | downcase -%}
+          
           {%- if name =='color'-%}
           {%- comment -%}圆形色块{%- endcomment -%}
-         
-
           <fieldset class="product-variant-list" >
             {%- for value in option.values -%}
 
@@ -159,7 +158,7 @@
         
             {%- capture swatch_id  -%}{{ section.id }}-{{card_product.id}}-{{ option.position }}-{{forloop.index }}{%- endcapture-%}
                  
-            {%- if settings.model_type!='color' and variant_for_value.image -%} 
+            {%- if variant_type!='color' and variant_for_value.image -%} 
             <div class="variant-swatch ld-variant" >
               <input class="variant-swatch__radio product-form__single-selector" type="radio" name="{{  option.name  }}" 
               id="{{ swatch_id}}" value="{{ value | escape }}"  data-option-position="{{ option.position }}" 
@@ -175,6 +174,7 @@
             </div>
             
             {%- else  -%}
+            {%- comment -%}变体图片{%- endcomment -%}
             <input type="radio" id="{{swatch_id}}"  name="{{ option.name }}"
                         value="{{ value | escape }}"  form="{{product_form_id}}"
                         {% if option.selected_value == value %}checked{% endif %}
@@ -188,7 +188,6 @@
 
           {%- endfor -%}
           </fieldset>
-          {%- comment -%}变体图片{%- endcomment -%}
 
 
             {% break %}
@@ -199,7 +198,7 @@
           </script>
         </variant-radios>
 
-        {%- comment -%}选择器表单 start{%- endcomment -%}
+        {%- comment -%}变体选择器表单 start{%- endcomment -%}
         <div class="hidden">
           {%- form 'product', card_product, id: product_form_id, class: 'form' -%}
           <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" disabled>
@@ -295,6 +294,7 @@
             {%- endif -%}
           </div>
         {%- endif -%}
+
         <div class="card__badge {{ settings.badge_position }} hidden">
           {%- if card_product.available == false -%}
             <span id="Badge-{{ section_id }}-{{ card_product.id }}" class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}">{{ 'products.product.sold_out' | t }}</span>

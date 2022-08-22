@@ -7,8 +7,14 @@
   display: grid;
 }
 
-.collage__item > * {
+.collage__item>* {
   width: 100%;
+}
+
+.collage__item--top,
+.collage__item--bottom {
+  max-height: 500px;
+  overflow: hidden;
 }
 
 .collage__item .card__content {
@@ -19,19 +25,30 @@
   .collage {
     grid-column-gap: var(--grid-mobile-horizontal-spacing);
     grid-row-gap: var(--grid-mobile-vertical-spacing);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .column--mobile {
+    grid-template-columns: auto;
   }
 
   .collage--mobile {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .collage--mobile .collage__item--left:nth-child(3n - 2) {
+  .collage--mobile .collage__item--left:nth-child(3n - 2),
+  .collage--mobile .collage__item--top:nth-child(3n - 2),
+  .collage--mobile .collage__item--bottom:nth-child(3n - 2) {
     grid-column: span 2;
   }
-  .collage2--mobile .collage__item--left:nth-child(3n - 2) {
+
+  .collage2--mobile .collage__item--left:nth-child(3n - 2),
+  .collage2--mobile .collage__item--top:nth-child(3n - 2),
+  .collage2--mobile .collage__item--bottom:nth-child(3n - 2) {
     grid-column: span 2;
     grid-row: 3;
   }
+
   .collage2--mobile .collage__item--right:nth-child(3n) {
     grid-column: 1 / span 2;
     grid-row: 1;
@@ -68,6 +85,34 @@
     grid-column-gap: var(--grid-desktop-horizontal-spacing);
     grid-row-gap: var(--grid-desktop-vertical-spacing);
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .collage-model__top,
+  .collage-model__bottom {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .collage__item--top:nth-child(3n - 2),
+  .collage__item--bottom:nth-child(3n - 2) {
+    grid-column: 1 / span 4;
+  }
+
+  .collage__item--top:nth-child(3n - 1),
+  .collage__item--bottom:nth-child(3n - 1) {
+    grid-column: 1 /span 2;
+  }
+
+  .collage__item--top:nth-child(3n),
+  .collage__item--bottom:nth-child(3n) {
+    grid-column: 3 /span 2;
+  }
+
+  .collage__item--top:nth-child(2) {
+    grid-row-start: 2;
+  }
+
+  .collage__item--bottom:nth-child(2) {
+    grid-row-start: 1;
   }
 
   .collage__item--left:nth-child(3n - 2) {

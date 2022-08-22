@@ -69,9 +69,6 @@
   }
 }
 
-.footer__localization:empty+.footer__column--info {
-  align-items: flex-start;
-}
 
 @media screen and (max-width: 749px) {
   .footer__localization:empty+.footer__column {
@@ -97,7 +94,6 @@
   .footer__column--info {
     padding-left: 0;
     padding-right: 0;
-    align-items: flex-end;
   }
 }
 
@@ -574,7 +570,7 @@ noscript .localization-selector.link {
   }
 
   .footer-block__newsletter>h2,
-   .footer-block--menu h2  {
+  .footer-block--menu h2 {
     margin: 0;
   }
 
