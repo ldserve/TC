@@ -49,92 +49,6 @@
         "show_text_below": false
       }
     },
-    "1659339603bd53fc63": {
-      "type": "collection-list",
-      "blocks": {
-        "1659339603aedad068-0": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "frontpage",
-            "button_label": "Button label",
-            "button_link": "",
-            "button_style_secondary": false
-          }
-        },
-        "1659339603aedad068-1": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "frontpage",
-            "button_label": "Button label",
-            "button_link": "",
-            "button_style_secondary": false
-          }
-        },
-        "1659339603aedad068-2": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "frontpage",
-            "button_label": "Button label",
-            "button_link": "",
-            "button_style_secondary": false
-          }
-        },
-        "b17146e6-7ddf-4b85-8abb-af858e6f43b8": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "frontpage",
-            "button_label": "Button label",
-            "button_link": "",
-            "button_style_secondary": false
-          }
-        }
-      },
-      "block_order": [
-        "1659339603aedad068-0",
-        "1659339603aedad068-1",
-        "1659339603aedad068-2",
-        "b17146e6-7ddf-4b85-8abb-af858e6f43b8"
-      ],
-      "settings": {
-        "title": "",
-        "heading_size": "h1",
-        "image_ratio": "square",
-        "columns_desktop": 4,
-        "color_scheme": "background-1",
-        "show_view_all": true,
-        "columns_mobile": "2",
-        "swipe_on_mobile": false,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "165968088065e1daef": {
-      "type": "image-list",
-      "blocks": {
-        "d2a6c910-9903-4a53-9f41-6366a898613c": {
-          "type": "image",
-          "settings": {
-            "img_link": ""
-          }
-        },
-        "cd18d8b1-06a2-492b-8416-53181b8d1b2c": {
-          "type": "image",
-          "settings": {
-            "img_link": ""
-          }
-        }
-      },
-      "block_order": [
-        "d2a6c910-9903-4a53-9f41-6366a898613c",
-        "cd18d8b1-06a2-492b-8416-53181b8d1b2c"
-      ],
-      "settings": {
-        "columns_desktop": 2,
-        "columns_mobile": "1",
-        "padding_top": 24,
-        "padding_bottom": 24
-      }
-    },
     "rich_text": {
       "type": "rich-text",
       "blocks": {
@@ -281,8 +195,6 @@
   },
   "order": [
     "image_banner",
-    "1659339603bd53fc63",
-    "165968088065e1daef",
     "rich_text",
     "featured_collection",
     "collage",
