@@ -193,6 +193,17 @@
 
 /* base */
 
+.icon {
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+  fill: currentColor;
+  vertical-align: middle;
+  background: none;
+  pointer-events: none;
+  overflow: visible;
+}
+
 .no-js:not(html) {
   display: none !important;
 }
@@ -3241,6 +3252,10 @@ details-disclosure>details {
   .product-list--collection .product-item--vertical {
     width: 50%;
   }
+
+  .collection-variant {
+    display: none;
+  }
 }
 
 @media screen and (min-width: 641px) and (max-width: 999px) {
@@ -3476,6 +3491,13 @@ details-disclosure>details {
 .variant-swatch__radio:checked+.variant-swatch__item {
   border-color: #3d3d3d;
   border-radius: 3px;
+}
+
+.product-variant-list {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  margin-top: 1rem;
 }
 
 /**
@@ -3724,4 +3746,26 @@ img {
 .flickity-enabled:hover .flickity-prev-next-button:not([disabled]) {
   transform: scale(1);
   opacity: 1;
+}
+
+
+/* ------- 评分 ------ */
+.rating-star--empty {
+  color: #dddddd;
+}
+
+.rating-star--full,
+.rating-star--half {
+  color: #ffbd00;
+}
+
+.collection-rating--layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collection-rating--layout>.rating-link.rating {
+  text-decoration: none;
+  margin-top: 0;
 }

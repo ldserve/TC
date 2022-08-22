@@ -72,7 +72,8 @@
               show_vendor: section.settings.show_vendor,
               show_rating: section.settings.show_rating,
               show_quick_add: section.settings.enable_quick_add,
-              section_id: section.id
+              section_id: section.id,
+              settings:section.settings
             %}
           </li>
         {%- else -%}
@@ -195,6 +196,21 @@
       "step": 1,
       "default": 4,
       "label": "t:sections.featured-collection.settings.columns_desktop.label"
+    },{
+      "type":"select",
+      "id":"model_type",
+      "label":"变体选择类型",
+      "options":[{
+        "value":"none",
+        "label":"无"
+      },{
+        "value":"color",
+        "label":"圆形色块"
+      },{
+        "value":"variant",
+        "label":"变体图片"
+      }],
+      "default":"none"
     },
     {
       "type": "checkbox",
