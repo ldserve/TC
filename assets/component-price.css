@@ -5,7 +5,7 @@
   color: rgb(var(--color-foreground));
 }
 
-.price > * {
+.price>* {
   display: inline-block;
   vertical-align: top;
 }
@@ -19,11 +19,13 @@
 }
 
 .price .price-item {
-  margin: 0 1rem 0 0;
+  /* margin: 0 1rem 0 0; */
 }
 
 .price__regular .price-item--regular {
   margin-right: 0;
+  color: var(--product-original-price);
+  font-weight: 700;
 }
 
 .price:not(.price--show-badge) .price-item--last:last-of-type {
@@ -71,6 +73,7 @@
   display: initial;
   flex-direction: row;
   flex-wrap: wrap;
+  font-weight: 700;
 }
 
 .price--center {

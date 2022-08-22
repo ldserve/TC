@@ -20,6 +20,17 @@
         "default": "#FFFFFF",
         "label": "t:settings_schema.colors.settings.colors_solid_button_labels.label",
         "info": "t:settings_schema.colors.settings.colors_solid_button_labels.info"
+      },{
+        "type": "color",
+        "id": "product_on_sale_color",
+        "default": "#FFFFFF",
+        "label": "销售价格"
+      },
+      {
+        "type": "color",
+        "id": "product_original_price",
+        "default": "#000000",
+        "label": "产品原价"
       },
       {
         "type": "color",

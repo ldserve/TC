@@ -2916,7 +2916,7 @@ details-disclosure>details {
 }
 
 .price-item--sale {
-  color: #cf0e0e;
+  color: #d80808;
 }
 
 /* 色块选择 start*/
@@ -2926,7 +2926,7 @@ details-disclosure>details {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0 1.3rem;
+  /* padding: 0 1.3rem; */
 }
 
 .product-form__input.color-swatch .color-swatch__item,
