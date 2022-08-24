@@ -24,7 +24,7 @@
 
 .price__regular .price-item--regular {
   margin-right: 0;
-  color: var(--product-original-price);
+  color: var(--color-foreground);
   font-weight: 700;
 }
 
@@ -83,7 +83,8 @@
 
 .price--on-sale .price-item--regular {
   text-decoration: line-through;
-  color: rgba(var(--color-foreground), 0.75);
+  /* color: rgba(var(--color-foreground), 0.75); */
+  color: var( --product-original-price);
   font-size: 1.3rem;
 }
 

@@ -23,14 +23,14 @@
       },{
         "type": "color",
         "id": "product_on_sale_color",
-        "default": "#FFFFFF",
-        "label": "销售价格"
+        "default": "#d80808",
+        "label": "促销价格"
       },
       {
         "type": "color",
         "id": "product_original_price",
-        "default": "#000000",
-        "label": "产品原价"
+        "default": "#cccccc",
+        "label": "销售原价"
       },
       {
         "type": "color",

@@ -36,10 +36,90 @@
     max-width: {{ section.settings.logo_width }}px;
   }
 
+  .search-layout_grid{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .search-layout_grid>.search-modal__form{
+    width: 60%;
+  }
+  .search-layout_grid>.header__icon--cart{
+    margin-left: 1.4rem;
+    margin-right: 0;
+  }
+  .search-layout_grid{
+    display: none;
+  }
+  .header__localization-form{
+  position: relative;
+  z-index: 99;
+  display: none;
+}
+
+.value-picker{
+  display: none;
+  position: absolute;
+  top: 30px;
+  border-width: var(--popup-border-width);
+  border-style: solid;
+  border-color: rgba(var(--color-foreground),var(--popup-border-opacity));
+  overflow: hidden;
+  border-radius: var(--popup-corner-radius);
+  box-shadow: var(--popup-shadow-horizontal-offset) var(--popup-shadow-vertical-offset) var(--popup-shadow-blur-radius) rgba(var(--color-shadow),var(--popup-shadow-opacity));
+}
+.value-picker[aria-hidden="false"]{
+display: block;
+}
+.select-button,
+.value-picker__choice-item {
+  color: rgba(var(--color-foreground));
+  border: none;
+  background: var(--gradient-background);
+}
+.select-button {
+  padding: 0.8rem;
+}
+.select-button>.icon-arrow-down{
+  margin-left: 3px;
+}
+.localization-form_currency{
+  margin-right: 1rem;
+}
+.value-picker__inner{
+  background: var(--gradient-background);
+  padding: 1rem;
+  text-align: center;
+}
+.value-picker__choice-list{
+  padding: 0 2rem;
+}
+.hrader__localization-form-item{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hrader__localization-form-item>.icon{
+  margin: 0 1rem;
+}
+
   @media screen and (min-width: 990px) {
     header-drawer {
       display: none;
     }
+    .search-layout_grid{
+    display: flex;
+  }
+  .header--top-center>.header__inline-menu>.list-menu--inline{
+    justify-content: flex-start;
+  }
+  .header--top-center .header__localization-form{
+  display: flex;
+  }
+  .header-heading__text{
+    font-weight: 700;
+    font-size: 3rem;
+  }
   }
 
   .menu-drawer-container {
@@ -296,79 +376,72 @@
       </header-drawer>
     {%- endif -%}
 
+    {%- comment -%}grid 居中布局搜索按钮{%- endcomment -%}
     {%- if section.settings.logo_position == 'top-center' or section.settings.menu == blank -%}
-      <details-modal class="header__search">
-        <details>
-          <summary class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle" aria-haspopup="dialog" aria-label="{{ 'general.search.search' | t }}">
-            <span>
-              <svg class="modal__toggle-open icon icon-search" aria-hidden="true" focusable="false" role="presentation">
-                <use href="#icon-search">
-              </svg>
-              <svg class="modal__toggle-close icon icon-close" aria-hidden="true" focusable="false" role="presentation">
-                <use href="#icon-close">
-              </svg>
-            </span>
-          </summary>
-          <div class="search-modal modal__content gradient" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
-            <div class="modal-overlay"></div>
-            <div class="search-modal__content{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} search-modal__content-top{% else %} search-modal__content-bottom{% endif %}" tabindex="-1">
-              {%- if settings.predictive_search_enabled -%}
-                <predictive-search class="search-modal__form" data-loading-text="{{ 'accessibility.loading' | t }}">
-              {%- endif -%}
-                <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form">
-                  <div class="field">
-                    <input class="search__input field__input"
-                      id="Search-In-Modal-1"
-                      type="search"
-                      name="q"
-                      value=""
-                      placeholder="{{ 'general.search.search' | t }}"
-                      {%- if settings.predictive_search_enabled -%}
-                        role="combobox"
-                        aria-expanded="false"
-                        aria-owns="predictive-search-results-list"
-                        aria-controls="predictive-search-results-list"
-                        aria-haspopup="listbox"
-                        aria-autocomplete="list"
-                        autocorrect="off"
-                        autocomplete="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                      {%- endif -%}
-                    >
-                    <label class="field__label" for="Search-In-Modal-1">{{ 'general.search.search' | t }}</label>
-                    <input type="hidden" name="options[prefix]" value="last">
-                    <button class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
-                      <svg class="icon icon-search" aria-hidden="true" focusable="false" role="presentation">
-                        <use href="#icon-search">
-                      </svg>
-                    </button>
-                  </div>
+    <div class="search-layout_grid">
+      <predictive-search class="search-modal__form" data-loading-text="{{ 'accessibility.loading' | t }}">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form">
+        <div class="field">
+          <input class="search__input field__input"
+            id="Search-In-Modal-1"
+            type="search"
+            name="q"
+            value=""
+            placeholder="ACCESSORIES"
+            {%- if settings.predictive_search_enabled -%}
+              role="combobox"
+              aria-expanded="false"
+              aria-owns="predictive-search-results-list"
+              aria-controls="predictive-search-results-list"
+              aria-haspopup="listbox"
+              aria-autocomplete="list"
+              autocorrect="off"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            {%- endif -%}
+          >
+          <label class="field__label" for="Search-In-Modal-1">ACCESSORIES</label>
+          <input type="hidden" name="options[prefix]" value="last">
+          <button class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
+            <svg class="icon icon-search" aria-hidden="true" focusable="false" role="presentation">
+              <use href="#icon-search">
+            </svg>
+          </button>
+        </div>
 
-                  {%- if settings.predictive_search_enabled -%}
-                    <div class="predictive-search predictive-search--header" tabindex="-1" data-predictive-search>
-                      <div class="predictive-search__loading-state">
-                        <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-                        </svg>
-                      </div>
-                    </div>
-
-                    <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
-                  {%- endif -%}
-                </form>
-              {%- if settings.predictive_search_enabled -%}
-                </predictive-search>
-              {%- endif -%}
-              <button type="button" class="modal__close-button link link--text focus-inset" aria-label="{{ 'accessibility.close' | t }}">
-                <svg class="icon icon-close" aria-hidden="true" focusable="false" role="presentation">
-                  <use href="#icon-close">
-                </svg>
-              </button>
+        {%- if settings.predictive_search_enabled -%}
+          <div class="predictive-search predictive-search--header" tabindex="-1" data-predictive-search>
+            <div class="predictive-search__loading-state">
+              <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+              </svg>
             </div>
           </div>
-        </details>
-      </details-modal>
+
+          <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+        {%- endif -%}
+      </form>
+    </predictive-search>
+    <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
+      {%- liquid
+        if cart == empty
+          render 'icon',icon:'cart-empty'
+        else
+          render 'icon',icon:'cart'
+        endif
+      -%}
+      <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+      {%- if cart != empty -%}
+        <div class="cart-count-bubble">
+          {%- if cart.item_count < 100 -%}
+            <span aria-hidden="true">{{ cart.item_count }}</span>
+          {%- endif -%}
+          <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+        </div>
+      {%- endif -%}
+    </a>
+    </div>
     {%- endif -%}
 
     {%- comment -%}网站LOGO{%- endcomment -%}
@@ -393,7 +466,7 @@
       <h1 class="header__heading">
     {%- endif -%}
         <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
-            <span class="h2">{{ shop.name }}</span>
+            <span class="h2 header-heading__text">{{ shop.name }}</span>
         </a>
     {%- if request.page_type == 'index' -%}
       </h1>
@@ -499,7 +572,7 @@
       {%- endif -%}
     {%- endif -%}
 {%- comment -%}SVG icons{%- endcomment -%}
-    <div class="header__icons">
+    <div class="header__icons" >
       <details-modal class="header__search">
         <details>
           <summary class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle" aria-haspopup="dialog" aria-label="{{ 'general.search.search' | t }}">
@@ -585,24 +658,91 @@
             -%}
           </span>
         </a>
-      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
-        {%- liquid
-          if cart == empty
-            render 'icon',icon:'cart-empty'
-          else
-            render 'icon',icon:'cart'
-          endif
-        -%}
-        <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
-        {%- if cart != empty -%}
-          <div class="cart-count-bubble">
-            {%- if cart.item_count < 100 -%}
-              <span aria-hidden="true">{{ cart.item_count }}</span>
-            {%- endif -%}
-            <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
-          </div>
-        {%- endif -%}
-      </a>
+        <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
+          {%- liquid
+            if cart == empty
+              render 'icon',icon:'cart-empty'
+            else
+              render 'icon',icon:'cart'
+            endif
+          -%}
+          <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+          {%- if cart != empty -%}
+            <div class="cart-count-bubble">
+              {%- if cart.item_count < 100 -%}
+                <span aria-hidden="true">{{ cart.item_count }}</span>
+              {%- endif -%}
+              <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+            </div>
+          {%- endif -%}
+        </a>
+
+        {%- comment -%}语言与货币选择器{%- endcomment -%}
+        {%- form 'localization', id: 'localization_form_header', class: 'header__localization-form' -%}
+            
+        <div class="hrader__localization-form-item localization-form_currency">
+        {%- if form.current_currency.iso_code=='USD' -%}{%- render 'icon',icon:'us' -%}{%- endif -%}  
+        <input type="hidden" name="currency_code" value="{{ form.current_currency.iso_code }}">
+        <span class="visually-hidden">currency</span>
+        <div class="value-picker-wrapper">
+        <button type="button" class="select-button " aria-haspopup="true" aria-expanded="false" aria-controls="header-currency-picker" data-action="open-value-picker">
+          {{ form.current_currency.iso_code }} 
+        {%- render 'icon', icon: 'arrow-down' -%}
+        </button>
+        <div id="header-currency-picker" class="value-picker value-picker--auto value-picker--small " data-picker-position="top" aria-hidden="true">
+
+        <div class="value-picker__inner">
+        <header class="value-picker__header hidden">
+          <span class="value-picker__title text--strong">currency</span>
+          <button type="button" class="value-picker__close" data-action="close-value-picker" aria-controls="footer-currency-picker" aria-label="language">{% render 'icon', icon: 'close' %}</button>
+        </header>
+
+        <ul class="value-picker__choice-list" role="list">
+          {%- for currency in form.available_currencies -%}
+            <li class="value-picker__choice-list-item">
+              <button type="submit" name="currency_code" class="value-picker__choice-item" value="{{ currency.iso_code }}" {% if currency.iso_code == form.current_currency.iso_code %}aria-current="true"{% endif %}>
+                {{ currency.iso_code }} {% if currency.symbol %}{{ currency.symbol }}{% endif %}
+              </button>
+            </li>
+          {%- endfor -%}
+        </ul>
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="header__localization-form-item localization-form_language">
+        <input type="hidden" name="locale_code" value="{{ form.current_locale.iso_code }}">
+        <span class="visually-hidden">language</span>
+
+        <div class="value-picker-wrapper">
+        <button type="button" class="select-button " aria-haspopup="true" aria-expanded="false" aria-controls="header-locale-picker" data-action="open-value-picker">
+        {{- form.current_locale.endonym_name | capitalize -}}
+        {%- render 'icon', icon: 'arrow-down' -%}
+        </button>
+
+        <div id="header-locale-picker" class="value-picker value-picker--small" data-picker-position="top" aria-hidden="true">
+
+        <div class="value-picker__inner">
+          <header class="value-picker__header hidden">
+            <span class="value-picker__title text--strong">language</span>
+            <button type="button" class="value-picker__close" data-action="close-value-picker" aria-controls="header-locale-picker" aria-label="language">{% render 'icon', icon: 'close' %}</button>
+          </header>
+
+          <ul class="value-picker__choice-list" role="list">
+            {%- for locale in form.available_locales -%}
+              <li class="value-picker__choice-list-item">
+                <button type="submit" name="locale_code" class="value-picker__choice-item" value="{{ locale.iso_code }}" {% if locale.iso_code == form.current_locale.iso_code %}aria-current="true"{% endif %}>
+                  {{- locale.endonym_name | capitalize -}}
+                </button>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        {%- endform -%}
     </div>
 
   </header>
@@ -700,8 +840,49 @@
       this.searchModal.close(false);
     }
   }
-
   customElements.define('sticky-header', StickyHeader);
+  
+~function(){
+  const locaLizaTion = document.getElementById('localization_form_header')
+  const currencyPicker =document.getElementById('header-currency-picker')
+  const locaPicker =document.getElementById('header-locale-picker')
+  const selectButtons =document.querySelectorAll('.select-button')
+
+  locaLizaTion&&locaLizaTion.addEventListener('click',e=>{
+    let target=e.target
+    target.className.indexOf('value-picker-wrapper')!=-1&&(target=target.querySelector('.select-button'))
+    if(target.className.indexOf("select-button")!==-1) {
+     const pickerId=target.getAttribute('aria-controls')
+     picker =document.getElementById(pickerId)
+    if(!picker) return
+    if(target.getAttribute('aria-expanded')=='true'){
+      target.setAttribute('aria-expanded',false)
+     picker.setAttribute('aria-hidden',true)
+    }else{
+      selectButtons[0].setAttribute('aria-expanded',false)
+      selectButtons[1].setAttribute('aria-expanded',false)
+      currencyPicker.setAttribute('aria-hidden',true)
+      locaPicker.setAttribute('aria-hidden',true)
+      target.setAttribute('aria-expanded',true)
+      picker.setAttribute('aria-hidden',false)
+    }
+  }
+   // e.preventDefault()
+    e.stopPropagation()
+  })
+
+document.body.addEventListener('click',e=>{
+  try{
+    selectButtons[0].setAttribute('aria-expanded',false)
+    selectButtons[1].setAttribute('aria-expanded',false)
+    currencyPicker.setAttribute('aria-hidden',true)
+    locaPicker.setAttribute('aria-hidden',true)
+  }
+  catch(e){}
+})
+
+}();
+
 {% endjavascript %}
 
 <script type="application/ld+json">

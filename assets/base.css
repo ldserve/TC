@@ -2267,6 +2267,8 @@ input[type='checkbox'] {
 
   .header>.header_logo {
     grid-area: left-icon;
+    text-align: right;
+    margin-right:1rem
   }
 
   .header--top-center {
@@ -2326,8 +2328,19 @@ input[type='checkbox'] {
   .header__heading-link {
     text-align: center;
   }
+ 
+  .header {
+    grid-template-areas: 'left-menu top-center icons' 'left-menu heading icons';
+  }
+  header-drawer{
+    grid-area: left-menu;
+  }
   .header_logo{
-    display: none;
+    grid-area: top-center;
+    text-align: center;
+  }
+  .header--top-center .header__icon--account{
+    display: none !important;
   }
 }
 
@@ -2335,7 +2348,9 @@ input[type='checkbox'] {
   .header__heading-link {
     margin-left: -0.75rem;
   }
-
+  .header--top-center .header__icon--cart{
+    display: none !important;
+  }
   .header__heading,
   .header__heading-link {
     justify-self: start;
@@ -2685,7 +2700,12 @@ details[open]>.header__menu-item .icon-caret {
   padding: 0.5rem 0;
   margin: 0.5rem 0;
 }
-
+li{
+  list-style: none;
+}
+button{
+  cursor: pointer;
+}
 .header__submenu .header__menu-item:after {
   right: 2rem;
 }
@@ -2916,7 +2936,7 @@ details-disclosure>details {
 }
 
 .price-item--sale {
-  color: #d80808;
+  color: var(--product-on-sale-color);
 }
 
 /* 色块选择 start*/

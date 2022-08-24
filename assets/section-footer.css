@@ -167,6 +167,9 @@
 .footer-block__newsletter {
   text-align: center;
 }
+.list.list-payment{
+font-size: 2.4rem;
+}
 
 .newsletter-form__field-wrapper {
   max-width: 36rem;
