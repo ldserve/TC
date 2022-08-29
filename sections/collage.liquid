@@ -15,6 +15,9 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+  .collage__item{
+    overflow:hidden;
+  }
 {%- endstyle -%}
 
 <link rel="stylesheet" href="{{ 'component-deferred-media.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -50,12 +53,14 @@
                   {%- endcomment -%}
                   {%- capture supported_sizes -%}{%- render 'image-size', sizes: '200,300,400,500,600,700,800,1000,1400', image: block.settings.image -%}{%- endcapture -%}
                   {%- assign image_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-                    <img
-                      alt="{{ block.settings.image.alt | escape }}"
-                      loading="lazy"
-                      class="lazyload"
-                      data-src="{{ image_url }}" data-sizes="auto" data-widths="[{{ supported_sizes }}]"
-                    >
+                   <a href="{{block.settings.image_link}}" class="">
+                     <img
+                         alt="{{ block.settings.image.alt | escape }}"
+                         loading="lazy"
+                         class="lazyload"
+                         data-src="{{ image_url }}" data-sizes="auto" data-widths="[{{ supported_sizes }}]"
+                       >
+                   </a>
                   {%- else -%}
                     {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
                   {%- endif -%}
@@ -303,6 +308,10 @@
           "default": false,
           "label": "t:sections.collage.blocks.image.settings.image_padding.label",
           "info": "t:sections.collage.blocks.image.settings.image_padding.info"
+        },{
+          "type":"url",
+          "id":"image_link",
+          "label":"链接"
         }
       ]
     },

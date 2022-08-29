@@ -35,7 +35,34 @@
     }
   }
 {%- endstyle -%}
+<style>
+  @media screen and (max-width:749px) {
+  .mobile-nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem 2rem ;
+    z-index: 9;
+    background-color: #FFF;
+    box-shadow: 0px 4px 6px #2b2424;
 
+  }
+
+  .mobile-nav-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #000;
+    padding: 0 1rem;
+    text-decoration: none;
+  }
+
+}
+</style>
 <footer class="footer color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
   {%- if section.blocks.size > 0 or section.settings.newsletter_enable or section.settings.show_social -%}
     <div class="footer__content-top page-width footer__content-grid">
@@ -351,7 +378,14 @@
     </div>
   </div>
 </footer>
-
+ 
+<div class="mobile-nav">
+  <a class="mobile-nav__shop mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"home" -%}<span>Shop</span></a>
+  <a class="mobile-nav__category mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"hamburger" -%}<span>Category</span></a>
+  <a class="mobile-nav__hot mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"hot" -%}<span>Hot</span></a>
+  <a class="mobile-nav__cart mobile-nav-item" href="{{routes.cart_url}}">{%- render 'icon',icon:"cart-package" -%}<span>Cart</span></a>
+  <a class="mobile-nav__me mobile-nav-item" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">{%- render 'icon',icon:"account" -%}<span>Me</span></a>
+</div>
 {% javascript %}
   class LocalizationForm extends HTMLElement {
     constructor() {
