@@ -315,6 +315,40 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "1661768728be3a2964": {
+      "type": "newsletter",
+      "blocks": {
+        "1661768728d33e9db0-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "SING UP FOR  OUR EXCLUSIVE OFFERS",
+            "heading_size": "h1"
+          }
+        },
+        "1661768728d33e9db0-1": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Never miss a new season<\/p>"
+          }
+        },
+        "1661768728d33e9db0-2": {
+          "type": "email_form",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "1661768728d33e9db0-0",
+        "1661768728d33e9db0-1",
+        "1661768728d33e9db0-2"
+      ],
+      "settings": {
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     }
   },
   "order": [
@@ -326,6 +360,7 @@
     "16593428576233f191",
     "1661768334b122da87",
     "16617683899db10659",
-    "1661768409b6d96754"
+    "1661768409b6d96754",
+    "1661768728be3a2964"
   ]
 }
