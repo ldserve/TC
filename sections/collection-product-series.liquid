@@ -4,11 +4,20 @@
   "layout": {{ section.settings.layout | json }}
 }
 {%- endcapture -%}
-
+<style>
+  @media screen and (min-width:648px) {
+    #shopify-section-{{section.id}}{
+      padding-top:{{section.settings.padding_top}}px;
+      padding-bottom:{{section.settings.padding_bottom}}px;
+    }
+  }
+  #shopify{}
+</style>
 <section class="section" data-section-id="{{ section.id }}" data-section-type="featured-collection" data-section-settings='{{ section_settings }}'>
   {%- assign collection = section.settings.collection -%}
 
   <div class="container">
+    {%- if section.settings.title !=blank -%}
     <header class="section__header">
       <div class="section__header-stack">
         <h2 class="section__title heading h3">{{ section.settings.title | default: collection.title | escape }}</h2>
@@ -18,9 +27,27 @@
         <a href="{{ section.settings.link_url | default: collection.url | default: '#' }}" class="section__action-link link">{{ section.settings.link_title | escape }} {% render 'icon', icon: 'tail-right' %}</a>
       {%- endif -%}
     </header>
+    {%- endif -%}
+
   </div>
 
-  <div class="container {% if section.settings.layout != 'vertical' or section.settings.stack_products %}container--flush{% endif %}">
+  <div class="{% if section.settings.layout != 'vertical' or section.settings.stack_products %}container--flush{% endif %} {% if section.settings.image_url!=blank %}product-flex{%else%}container{%endif%}">
+   {%- if section.settings.image_url!=blank -%}
+   <div class="media product-banner ">
+    {%- capture image_template -%}
+     {%- capture supported_sizes -%}{%- render 'image-size', sizes: '200,300,400,500,600', image: section.settings.image_url -%}{%- endcapture -%}
+     {%- assign image_url = section.settings.image_url | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+       <img class="product-item__primary-image lazyload image--fade-in zoom"  
+       data-src="{{ image_url }}" data-sizes="auto" data-widths="[{{ supported_sizes }}]" alt="{{ primary_media.alt | escape }}">{%- endcapture -%}
+    {%- if section.settings.image_link !=blank -%}
+    <a href="{{section.settings.image_link}}" class="image-banner-link">
+      {{image_template}}
+    </a>
+    {%- else -%}
+    {{image_template}}
+    {%- endif -%}
+   </div>
+   {%- endif -%}
     {%- capture product_list -%}
       <div class="product-list product-list--{{ section.settings.layout }} {% if section.settings.stack_products %}product-list--stackable{% elsif section.settings.layout == 'vertical' %}product-list--scrollable{% endif %}">
         {%- assign use_placeholder = true -%}
@@ -34,7 +61,7 @@
 
         {%- for product in products limit: section.settings.products_count -%}
           {%- if section.settings.layout == 'vertical' -%}
-            {%- assign products_per_row = section.settings.products_count | at_most: 6 -%}
+            {%- assign products_per_row = section.settings.products_count | at_most: 4 -%}
 
             {%- if section.settings.stack_products -%}
               {%- capture grid_classes -%}1/2 1/4--lap 1/{{ products_per_row | minus: 1 }}--desk 1/{{ products_per_row }}--wide{%- endcapture -%}
@@ -161,6 +188,15 @@
       "default": "vertical"
     },
     {
+      "type":"image_picker",
+      "id":"image_url",
+      "label":"banner图"
+    },{
+      "type":"url",
+      "id":"image_link",
+      "label":"链接地址"
+    },
+    {
       "type": "checkbox",
       "id": "stack_products",
       "label": "Stack products",
@@ -190,6 +226,24 @@
       "id": "show_secondary_image",
       "label": "悬停时显示第二张图片",
       "default": true
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "PC顶部填充",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "PC底部填充",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
     }
   ],
   "presets": [

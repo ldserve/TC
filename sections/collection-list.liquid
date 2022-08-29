@@ -16,6 +16,49 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+  .collection-list_item{
+    position:relative;
+    border:1px solid #bbb;
+    width:33.33%;
+  }
+  .collection-list_item:not([data-index="1"]){
+    border-left:none
+  }
+  .collections-item_link{
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width:100%;
+    display:block;
+    cursor: pointer;
+  }
+  .collection-list_flex{
+    display:flex;
+    overflow:hidden;
+  }
+  .collection-list_flex .card__heading{
+    text-align:center;
+    font-weight:700;
+  }
+  .title-wrapper--no-top-margin{
+    text-align:center;
+    justify-content:center;
+  }
+  .collection_heading{
+    font-size:2.6rem;
+  }
+  @media screen and (max-width: 749px) {
+    .card__heading{
+      font-size:1rem
+    }
+    .collection_heading{
+      font-size:1.6rem
+    }
+    .title-wrapper--no-top-margin{
+      margin-bottom:1.4rem;
+    }
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -39,7 +82,7 @@
     {%- endunless -%}
   
     <slider-component class="slider-mobile-gutter">
-      <ul class="collection-list contains-card{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down{% if section.settings.swipe_on_mobile %} slider slider--tablet grid--peek{% endif %} collection-list--{{ section.blocks.size }}-items"
+      <ul class="collection-list collection-list_flex contains-card{% if settings.card_style == 'standard' %} contains-card--standard{% endif %}  grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down{% if section.settings.swipe_on_mobile %} slider slider--tablet grid--peek{% endif %} collection-list--{{ section.blocks.size }}-items"
         id="Slider-{{ section.id }}"
         role="list"
       >
@@ -50,7 +93,7 @@
           endif
         -%}
         {%- for block in section.blocks -%}
-          <li id="Slide-{{ section.id }}-{{ forloop.index }}" class=" grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if block.settings.collection.featured_image == nil %} collection-list__item--no-media{% endif %}" {{ block.shopify_attributes }}>
+          <li id="Slide-{{ section.id }}-{{ forloop.index }}" data-index="{{forloop.index}}" class=" grid__item collection-list_item{% if show_mobile_slider %} slider__slide{% endif %}{% if block.settings.collection.featured_image == nil %} collection-list__item--no-media{% endif %}" {{ block.shopify_attributes }}>
             {% render 'card-collection', card_collection: block.settings.collection , media_aspect_ratio: section.settings.image_ratio, columns: columns ,block:block%}
           </li>
         {%- endfor -%}
@@ -189,6 +232,9 @@
         },
         {
           "value": "2",
+          "label": "t:sections.collection-list.settings.columns_mobile.options__2.label"
+        },{
+          "value": "3",
           "label": "t:sections.collection-list.settings.columns_mobile.options__2.label"
         }
       ],

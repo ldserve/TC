@@ -744,7 +744,13 @@ display: block;
 
         {%- endform -%}
     </div>
-
+    <div class="mobile-nav">
+      <a class="mobile-nav__shop mobile-nav-item"></a>
+      <a class="mobile-nav__category mobile-nav-item"></a>
+      <a class="mobile-nav__hot mobile-nav-item"></a>
+      <a class="mobile-nav__cart mobile-nav-item"></a>
+      <a class="mobile-nav__me mobile-nav-item"></a>
+    </div>
   </header>
 </{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
 
@@ -811,7 +817,6 @@ display: block;
       } else if (scrollTop <= this.headerBounds.top) {
         requestAnimationFrame(this.reset.bind(this));
       }
-
       this.currentScrollTop = scrollTop;
     }
 
@@ -832,7 +837,7 @@ display: block;
 
     closeMenuDisclosure() {
       this.disclosures = this.disclosures || this.header.querySelectorAll('header-menu');
-      this.disclosures.forEach(disclosure => disclosure.close());
+      this.searchModal&& this.disclosures.forEach(disclosure => disclosure.close());
     }
 
     closeSearchModal() {

@@ -23,6 +23,26 @@
   endif
 -%}
 
+{% if settings.card_style == 'card' or card_collection.featured_image %} 
+<div class=" ">
+  <a {% if card_collection != blank %} href="{{ card_collection.url }}"{% endif %} class="full-unstyled-link collections-item_link"></a>
+  <div class="card__information">
+    <h3 class="card__heading">SHOP NOW</h3>
+    <h3 class="card__heading collection_heading">
+      {%- if card_collection.title != blank -%}
+      {{- card_collection.title | escape -}}
+    {%- else -%}
+      {{ 'onboarding.collection_title' | t }}
+    {%- endif -%}
+    </h3>
+    {%- if card_collection.featured_image == nil and card_collection.description != blank -%}
+      <p class="card__caption">
+        {{- card_collection.description | strip_html | truncatewords: 12 -}}<span class="icon-wrap">&nbsp;{% render 'icon',icon:'arrow' %}</span>
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+{% endif %} 
 <div class="card-wrapper animate-arrow">
   <div class="card
     card--{{ settings.card_style }}
@@ -59,6 +79,7 @@
           </div>
         </div>
       {%- endif -%}
+      {%- comment -%}
       <div class="card__content hidden">
         <div class="card__information">
           <h3 class="card__heading">
@@ -78,8 +99,12 @@
           {%- endif -%}
         </div>   
       </div>
+      {%- endcomment -%}
+
     </div>
   </div>
+
+  {%- comment -%}
   {% if settings.card_style == 'card' or card_collection.featured_image %} 
     <div class="card__content collection-list__item">
       <div class="card__information">
@@ -100,11 +125,14 @@
       </div>
     </div>
   {% endif %} 
+  {%- endcomment -%}
 
+  {%- comment -%}
   {%- if block.settings.button_label!=brank -%}
   <div class=" collection-item__button" >
       <a{% if block.settings.button_link == blank %} href="{{card_collection.url }}" role="link" aria-disabled="false"{% else %} href="{{ block.settings.button_link }}"{% endif %} class="button{% if block.settings.button_style_secondary %} button--secondary{% else %} button--primary{% endif %}">{{ block.settings.button_label | escape }}</a>
   </div>
   {%- endif -%}
+  {%- endcomment -%}
 
 </div>

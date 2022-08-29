@@ -296,7 +296,7 @@ body,
 .color-inverse,
 .color-accent-1,
 .color-accent-2 {
-  color: rgba(var(--color-foreground), 0.75);
+  color: rgba(var(--color-foreground));
   background-color: rgb(var(--color-background));
 }
 
@@ -623,7 +623,7 @@ h6:empty {
   display: inline-block;
   border: none;
   box-shadow: none;
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 0.3rem;
   color: rgb(var(--color-link));
   background-color: transparent;
@@ -814,12 +814,12 @@ summary::-webkit-details-marker {
   box-shadow: none;
 }
 
-*:focus-visible {
+/* *:focus-visible {
   outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   outline-offset: 0.3rem;
   box-shadow: 0 0 0 0.3rem rgb(var(--color-background)),
     0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3);
-}
+} */
 
 /* Fallback - for browsers that don't support :focus-visible, a fallback is set for :focus */
 .focused,
@@ -1085,10 +1085,11 @@ summary::-webkit-details-marker {
 }
 
 @media screen and (max-width: 989px) {
-  .grid--1-col-tablet-down .grid__item {
+
+/*   .grid--1-col-tablet-down .grid__item {
     width: 100%;
     max-width: 100%;
-  }
+  } */
 
   .slider--tablet.grid--peek {
     margin: 0;
@@ -2268,7 +2269,7 @@ input[type='checkbox'] {
   .header>.header_logo {
     grid-area: left-icon;
     text-align: right;
-    margin-right:1rem
+    margin-right: 1rem
   }
 
   .header--top-center {
@@ -2328,18 +2329,21 @@ input[type='checkbox'] {
   .header__heading-link {
     text-align: center;
   }
- 
+
   .header {
-    grid-template-areas: 'left-menu top-center icons' 'left-menu heading icons';
+    grid-template-areas: 'left-menu top-center icons''left-menu heading icons';
   }
-  header-drawer{
+
+  header-drawer {
     grid-area: left-menu;
   }
-  .header_logo{
+
+  .header_logo {
     grid-area: top-center;
     text-align: center;
   }
-  .header--top-center .header__icon--account{
+
+  .header--top-center .header__icon--account {
     display: none !important;
   }
 }
@@ -2348,9 +2352,11 @@ input[type='checkbox'] {
   .header__heading-link {
     margin-left: -0.75rem;
   }
-  .header--top-center .header__icon--cart{
-    display: none !important;
+
+  .header--top-center .header__icons>.header__icon--cart {
+    display: none ;
   }
+
   .header__heading,
   .header__heading-link {
     justify-self: start;
@@ -2700,12 +2706,15 @@ details[open]>.header__menu-item .icon-caret {
   padding: 0.5rem 0;
   margin: 0.5rem 0;
 }
-li{
+
+li {
   list-style: none;
 }
-button{
+
+button {
   cursor: pointer;
 }
+
 .header__submenu .header__menu-item:after {
   right: 2rem;
 }
@@ -2935,7 +2944,8 @@ details-disclosure>details {
   font-weight: var(--font-body-weight-bold);
 }
 
-.price-item--sale {
+.price-item--sale,
+.price--highlight {
   color: var(--product-on-sale-color);
 }
 
@@ -3231,8 +3241,22 @@ details-disclosure>details {
   border-radius: 3px;
 }
 
+.product-item {
+  padding-right: 1rem;
+}
+
+.product-banner{
+  background-color: #0000;
+}
 .product-list--scrollable {
   flex-wrap: nowrap;
+}
+
+.product-item__title {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-list--collection::before {
@@ -3254,7 +3278,9 @@ details-disclosure>details {
 .product-list__column {
   width: 100%;
 }
-
+.product-list--scrollable{
+  padding: 0 1rem;
+}
 
 @media screen and (max-width: 640px) {
 
@@ -3265,9 +3291,14 @@ details-disclosure>details {
   }
 
   .product-list--scrollable .product-item {
-    width: 62%;
+    width: 50%;
   }
-
+  .product-flex>.product-banner>.image-banner-link{
+    position: initial;
+  }
+  .product-list--scrollable{
+    flex-wrap: wrap;
+  }
   .product-list--collage {
     border-width: 1px 0;
   }
@@ -3290,7 +3321,7 @@ details-disclosure>details {
   }
 
   .product-list--scrollable .product-item {
-    width: 36%;
+    width: 33.333%;
   }
 }
 
@@ -3300,7 +3331,13 @@ details-disclosure>details {
     border-radius: 3px;
     border: none;
   }
-
+  .product-list--scrollable::after {
+    content: "flickity";
+    display: none;
+  }
+  .product-flex>.scroller{
+    margin: 3rem 0;
+  }
   /* This needs to be done instead of applying a border to the product-list to fix a z-index issue with the product labels */
   .product-list--collage::before {
     position: absolute;
@@ -3327,6 +3364,25 @@ details-disclosure>details {
 
   .product-list__column--highlight .product-item__title {
     font-size: 1rem;
+  }
+
+  .product-flex {
+    display: flex;
+    flex-wrap: nowrap;
+    position: relative;
+  }
+
+  .product-flex .product-banner {
+    width: 30%;
+  }
+
+  .product-flex>.scroller {
+    /* position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin-left: 30%; */
+    width: 70%;
   }
 
   @supports (display: grid) {
@@ -3388,11 +3444,6 @@ details-disclosure>details {
     z-index: 1;
     pointer-events: none;
     border-radius: 3px;
-  }
-
-  .product-list--scrollable::after {
-    content: "flickity";
-    display: none;
   }
 
   .product-list--scrollable .product-item {
@@ -3704,6 +3755,28 @@ img {
   margin-top: 0;
 }
 
+.modal[aria-hidden="true"] {
+  display: none;
+}
+
+.price--compare {
+  text-decoration: line-through;
+  color: var(--product-original-price);
+  font-size: 1.3rem;
+}
+
+.product-item__price-list {
+  color: var(--color-base-text);
+}
+
+.product-item__action-list {
+  text-align: center;
+}
+
+.money {
+  text-decoration: inherit;
+}
+
 @media screen and (min-width: 1000px) {
   .product-item--vertical .product-item__action-list {
     margin: 15px -5px -5px -5px;
@@ -3724,7 +3797,8 @@ img {
   width: 50px;
   height: 50px;
   top: calc(50% - 25px);
-  border-radius: 100%;
+  /* border-radius: 100%; */
+  border: none;
   visibility: visible;
   background: var(--flickity-arrow-color);
   opacity: 0;
@@ -3739,19 +3813,21 @@ img {
 
 .flickity-prev-next-button svg {
   position: relative;
-  width: 15px;
-  height: 15px;
-  fill: var(--secondary-background);
+  width: 3rem;
+  height: 3rem;
+  fill: currentColor;
   vertical-align: middle;
 }
 
 .flickity-prev-next-button[disabled] {
-  opacity: 0;
-  visibility: hidden;
+  opacity: 1;
+  /* visibility: hidden; */
+  color: #7f7e7e;
+
 }
 
 .flickity-prev-next-button.previous {
-  left: -25px;
+  left: 0px;
 }
 
 .flickity-prev-next-button.previous svg {
@@ -3759,7 +3835,7 @@ img {
 }
 
 .flickity-prev-next-button.next {
-  right: -25px;
+  right: 0px;
 }
 
 .flickity-prev-next-button.next svg {
@@ -3772,7 +3848,7 @@ img {
 }
 
 
-/* ------- 评分 ------ */
+/* ------- 产品评分 ------ */
 .rating-star--empty {
   color: #dddddd;
 }
@@ -3791,4 +3867,9 @@ img {
 .collection-rating--layout>.rating-link.rating {
   text-decoration: none;
   margin-top: 0;
+}
+
+img{
+  width: 100%;
+  height: 100%;
 }
