@@ -1,12 +1,10 @@
 ~function () {
     var jQuery = window.jQuery || '';
 
-
     function getSize(elem) {
 
         function getStyleSize(value) {
             var num = parseFloat(value); // not a percent like '100%', and a number
-
             var isValid = value.indexOf('%') == -1 && !isNaN(num);
             return isValid && num;
         }
@@ -35,15 +33,11 @@
                 var measurement = measurements[i];
                 size[measurement] = 0;
             }
-
             return size;
         }
 
         // -------------------------- getStyle -------------------------- //
-        /**
-         * getStyle, get style of element, check for Firefox bug
-         * https://bugzilla.mozilla.org/show_bug.cgi?id=548397
-         */
+        /*  getStyle, get style of element, check for Firefox bug  */
         function getStyle(elem) {
             var style = getComputedStyle(elem);
             if (!style) {
@@ -62,10 +56,7 @@
          */
         function setup() {
             // setup once
-            if (isSetup) {
-                return;
-            }
-
+            if (isSetup) return;
             isSetup = true;
             // -------------------------- box sizing -------------------------- //
             /**
@@ -81,7 +72,6 @@
             var body = document.body || document.documentElement;
             body.appendChild(div);
             var style = getStyle(div); // round value for browser zoom. desandro/masonry#928
-
             isBoxSizeOuter = Math.round(getStyleSize(style.width)) == 200;
             getSize.isBoxSizeOuter = isBoxSizeOuter;
             body.removeChild(div);
@@ -93,9 +83,8 @@
 
             if (typeof elem == 'string') {
                 elem = document.querySelector(elem);
-            } // do not proceed on non-objects
-
-
+            }
+            // do not proceed on non-objects
             if (!elem || _typeof(elem) != 'object' || !elem.nodeType) {
                 return;
             }
@@ -115,10 +104,8 @@
                 var measurement = measurements[i];
                 var value = style[measurement];
                 var num = parseFloat(value); // any 'auto', 'medium' value will be 0
-
                 size[measurement] = !isNaN(num) ? num : 0;
             }
-            // console.log('size- 1968 -', size);
             var paddingWidth = size.paddingLeft + size.paddingRight;
             var paddingHeight = size.paddingTop + size.paddingBottom;
             var marginWidth = size.marginLeft + size.marginRight;
@@ -150,24 +137,19 @@
 
         return getSize(elem);
     }
-
     function matchesSelector(elem) {
-
         var matchesMethod = function () {
-            var ElemProto = window.Element.prototype; // check for the standard method name first
-
+            var ElemProto = window.Element.prototype;
+            // check for the standard method name first
             if (ElemProto.matches) {
                 return 'matches';
             } // check un-prefixed
-
 
             if (ElemProto.matchesSelector) {
                 return 'matchesSelector';
             } // check vendor prefixes
 
-
             var prefixes = ['webkit', 'moz', 'ms', 'o'];
-
             for (var i = 0; i < prefixes.length; i++) {
                 var prefix = prefixes[i];
                 var method = prefix + 'MatchesSelector';
@@ -178,30 +160,21 @@
             }
         }();
 
-        return function matchesSelector(elem, selector) {
-            return elem[matchesMethod](selector);
-        };
+        return elem[matchesMethod](selector);
     };
-
     function matchesTag(tagName, element) {
         return tagName.toLowerCase() === element.tagName.toLowerCase();
     }
-
-
     function matchesId(id, element) {
         return id === element.id;
     }
-
     /* 事件委托器 */
     class Delegate {
         constructor(root) {
             this.listenerMap = [{}, {}];
-            if (root) {
-                this.root(root);
-            }
-
-            // this.handle = this.handle.bind(this) || function () { };
-            this.removedListeners = [];
+            root && this.root(root);
+            this.handle = this.handle.bind(this) || function () { };
+            this._removedListeners = [];
         }
 
         root(root) {
@@ -227,14 +200,12 @@
                 if (this.rootElement) {
                     delete this.rootElement;
                 }
-
                 return this;
             }
 
             /**
              * The root node at which
              * listeners are attached.
-             *
              * @type Node
              */
             this.rootElement = root; // Set up master event listeners
@@ -286,10 +257,7 @@
             listenerMap = this.listenerMap[useCapture ? 1 : 0]; // Add master handler for type if not created yet
 
             if (!listenerMap[eventType]) {
-                if (root) {
-                    root.addEventListener(eventType, this.handle, useCapture);
-                }
-
+                root && root.addEventListener(eventType, this.handle, useCapture);
                 listenerMap[eventType] = [];
             }
 
@@ -332,7 +300,6 @@
             } // If useCapture not set, remove
             // all event listeners
 
-
             if (useCapture === undefined) {
                 this.off(eventType, selector, handler, true);
                 this.off(eventType, selector, handler, false);
@@ -347,7 +314,6 @@
                         this.off(singleEventType, selector, handler);
                     }
                 }
-
                 return this;
             }
             listenerList = listenerMap[eventType];
@@ -362,7 +328,6 @@
 
                 if ((!selector || selector === listener.selector) && (!handler || handler === listener.handler)) {
                     this._removedListeners.push(listener);
-
                     listenerList.splice(i, 1);
                 }
             }
@@ -376,7 +341,7 @@
             return this;
         };
 
-        handlefunction(event) {
+        handle(event) {
             var i;
             var l;
             var type = event.type;
@@ -394,16 +359,8 @@
 
             target = event.target; // Hardcode value of Node.TEXT_NODE
             // as not defined in IE8
-
-            if (target.nodeType === 3) {
-                target = target.parentNode;
-            } // Handle SVG <use> elements in IE
-
-
-            if (target.correspondingUseElement) {
-                target = target.correspondingUseElement;
-            }
-
+            target.nodeType === 3 && (target = target.parentNode);
+            target.correspondingUseElement && (target = target.correspondingUseElement);// Handle SVG <use> elements in IE
             root = this.rootElement;
             phase = event.eventPhase || (event.target !== event.currentTarget ? 3 : 2); // eslint-disable-next-line default-case
 
@@ -422,78 +379,62 @@
                     if (this.listenerMap[1] && this.listenerMap[1][type]) {
                         listenerList = listenerList.concat(this.listenerMap[1][type]);
                     }
-
                     break;
-
                 case 3:
                     //Event.BUBBLING_PHASE:
                     listenerList = this.listenerMap[0][type];
                     break;
             }
 
-            var toFire = []; // Need to continuously check
+            var toFire = [];
+            // Need to continuously check
             // that the specific list is
             // still populated in case one
             // of the callbacks actually
             // causes the list to be destroyed.
-
             l = listenerList.length;
 
             while (target && l) {
                 for (i = 0; i < l; i++) {
-                    listener = listenerList[i]; // Bail from this loop if
+                    listener = listenerList[i];
+                    // Bail from this loop if
                     // the length changed and
                     // no more listeners are
                     // defined between i and l.
-
-                    if (!listener) {
-                        break;
-                    }
-
+                    if (!listener) break;
                     if (target.tagName && ["button", "input", "select", "textarea"].indexOf(target.tagName.toLowerCase()) > -1 && target.hasAttribute("disabled")) {
                         // Remove things that have previously fired
                         toFire = [];
-                    } // Check for match and fire
+                    }
+                    // Check for match and fire
                     // the event if there's one
-                    //
-                    // TODO:MCG:20120117: Need a way
                     // to check if event#stopImmediatePropagation
                     // was called. If so, break both loops.
                     else if (listener.matcher.call(target, listener.matcherParam, target)) {
                         toFire.push([event, target, listener]);
                     }
-                } // TODO:MCG:20120117: Need a way to
+                }
                 // check if event#stopPropagation
                 // was called. If so, break looping
                 // through the DOM. Stop if the
                 // delegation root has been reached
-
-
-                if (target === root) {
-                    break;
-                }
+                if (target === root) break;
 
                 l = listenerList.length; // Fall back to parentNode since SVG children have no parentElement in IE
-
                 target = target.parentElement || target.parentNode; // Do not traverse up to document root when using parentNode, though
-
-                if (target instanceof HTMLDocument) {
-                    break;
-                }
+                if (target instanceof HTMLDocument) break;
             }
 
             var ret;
-
             for (i = 0; i < toFire.length; i++) {
                 // Has it been removed during while the event function was fired
                 if (this._removedListeners.indexOf(toFire[i][2]) > -1) {
                     continue;
                 }
-
-                returned = this.fire.apply(this, toFire[i]); // Stop propagation to subsequent
+                returned = this.fire.apply(this, toFire[i]);
+                // Stop propagation to subsequent
                 // callbacks if the callback returned
                 // false
-
                 if (returned === false) {
                     toFire[i][0][eventIgnore] = true;
                     toFire[i][0].preventDefault();
@@ -501,7 +442,6 @@
                     break;
                 }
             }
-
             return ret;
         };
 
@@ -572,7 +512,6 @@
             this.element.setAttribute('aria-hidden', 'true');
         };
 
-
         wrapShift(shift) {
             this.shift = shift;
             this.renderPosition(this.x + this.parent.slideableWidth * shift);
@@ -586,7 +525,6 @@
 
     // 工具
     class Utils {
-
         constructor() { }
 
         extend(a, b) {
@@ -615,14 +553,12 @@
                 // convert nodeList to array
                 return arraySlice.call(obj);
             } // array of single index
-
             return [obj];
         };
 
         // ----- removeFrom ----- //
         removeFrom(ary, obj) {
             var index = ary.indexOf(obj);
-
             if (index != -1) {
                 ary.splice(index, 1);
             }
@@ -651,7 +587,6 @@
         // enable .ontype to trigger from .addEventListener( elem, 'type' )
         handleEvent(event) {
             var method = 'on' + event.type;
-
             if (this[method]) {
                 this[method](event);
             }
@@ -668,7 +603,6 @@
                     return;
                 }
                 // add elem if no selector
-
                 if (!selector) {
                     ffElems.push(elem);
                     return;
@@ -681,7 +615,6 @@
                 // find children
                 var childElems = elem.querySelectorAll(selector);
                 // concat childElems to filterFound array
-
                 for (var i = 0; i < childElems.length; i++) {
                     ffElems.push(childElems[i]);
                 }
@@ -695,14 +628,11 @@
 
             var method = _class.prototype[methodName];
             var timeoutName = methodName + 'Timeout';
-
             _class.prototype[methodName] = function () {
                 var timeout = this[timeoutName];
                 clearTimeout(timeout);
                 var args = arguments;
-
                 var _this = this;
-
                 this[timeoutName] = setTimeout(function () {
                     method.apply(_this, args);
                     delete _this[timeoutName];
@@ -722,14 +652,12 @@
         };
 
         // ----- htmlInit ----- //
-        // http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
         toDashed(str) {
             return str.replace(/(.)([A-Z])/g, function (match, $1, $2) {
                 return $1 + '-' + $2;
             }).toLowerCase();
         };
 
-        // var console = window.console;
         /**
          * allow user to initialize classes via [data-namespace] or .js-namespace class
          * htmlInit( Widget, 'widgetName' )
@@ -747,31 +675,20 @@
                 elems.forEach(function (elem) {
                     var attr = elem.getAttribute(dataAttr) || elem.getAttribute(dataOptionsAttr);
                     var options;
-
                     try {
                         options = attr && JSON.parse(attr);
                     } catch (error) {
                         // log error, do not initialize
-                        if (console) {
-                            console.error('Error parsing ' + dataAttr + ' on ' + elem.className + ': ' + error);
-                        }
-
+                        console && console.error('Error parsing ' + dataAttr + ' on ' + elem.className + ': ' + error);
                         return;
                     } // initialize
-
-
                     var instance = new WidgetClass(elem, options); // make available via $().data('namespace')
-
-                    if (jQuery) {
-                        jQuery.data(elem, namespace, instance);
-                    }
                 });
             });
         };
 
     }
     const utils = new Utils()
-
     function moveElements(elems, toElem) {
         elems = utils.makeArray(elems);
 
@@ -820,21 +737,15 @@
             if (index != -1) {
                 listeners.splice(index, 1);
             }
-
             return this;
         };
 
         emitEvent(eventName, args) {
             var listeners = this.events && this.events[eventName];
-
-            if (!listeners || !listeners.length) {
-                return;
-            }
-
+            if (!listeners || !listeners.length) return;
             // copy over to avoid interference if .off() in listener
             listeners = listeners.slice(0);
             args = args || []; // once stuff
-
             var onceListeners = this.onceEvents && this.onceEvents[eventName];
             for (var i = 0; i < listeners.length; i++) {
                 var listener = listeners[i];
@@ -1302,22 +1213,15 @@
          * @param {Boolean} isInstant - will immediately set position at selected cell
          */
         select(index, isWrap, isInstant) {
-            if (!this.isActive) {
-                return;
-            }
+            if (!this.isActive) return;
 
             index = parseInt(index, 10);
-
             this.wrapSelect(index);
 
-            if (this.options.wrapAround || isWrap) {
-                index = utils.modulo(index, this.slides.length);
-            }
+            if (this.options.wrapAround || isWrap) index = utils.modulo(index, this.slides.length);
 
             // bail if invalid index
-            if (!this.slides[index]) {
-                return;
-            }
+            if (!this.slides[index]) return;
             var prevIndex = this.selectedIndex;
             this.selectedIndex = index;
             this.updateSelectedSlide();
@@ -1335,18 +1239,14 @@
             // events
             this.dispatchEvent('select', null, [index]);
             // change event if new index
-            if (index != prevIndex) {
-                this.dispatchEvent('change', null, [index]);
-            }
+            index != prevIndex && this.dispatchEvent('change', null, [index]);
             this.dispatchEvent('cellSelect');
         };
 
         updateSelectedSlide() {
             var slide = this.slides[this.selectedIndex]; // selectedIndex could be outside of slides, if triggered before resize()
 
-            if (!slide) {
-                return;
-            } 
+            if (!slide) return;
             // unselect previous selected slide
             this.unselectSelectedSlide(); // update new selected slide
             this.selectedSlide = slide;
@@ -1491,51 +1391,9 @@
 
         // goes through all children
         // lazyLoad START
-        createLazyload() {
-            this.on('select', this.lazyLoad);
-        };
-
-        /*         lazyLoad() {
-                    var lazyLoad = this.options.lazyLoad;
-                    var _this = this
-                    if (!lazyLoad) {
-                        return;
-                    }
-                    // get adjacent cells, use lazyLoad option for adjacent count
-        
-                    var adjCount = typeof lazyLoad == 'number' ? lazyLoad : 0;
-                    var cellElems = this.getAdjacentCellElements(adjCount); // get lazy images in those cells
-        
-                    var lazyImages = [];
-                    cellElems.forEach(function (cellElem) {
-                        var lazyCellImages = _this.getCellLazyImages(cellElem);
-                        lazyImages = lazyImages.concat(lazyCellImages);
-                    });
-        
-                    console.log('debug - 1089 - lazyLoad', lazyImages);
-                    // load lazy images
-                    lazyImages.forEach(function (img) {
-                        new LazyLoader(img, this);
-                    }, this);
-                }; */
-
-        /*     getCellLazyImages(cellElem) {
-                // check if cell element is lazy image
-                if (cellElem.nodeName == 'IMG') {
-                    var lazyloadAttr = cellElem.getAttribute('data-flickity-lazyload');
-                    var srcAttr = cellElem.getAttribute('data-flickity-lazyload-src');
-                    var srcsetAttr = cellElem.getAttribute('data-flickity-lazyload-srcset');
-    
-                    if (lazyloadAttr || srcAttr || srcsetAttr) {
-                        return [cellElem];
-                    }
-                }
-                // select lazy images in cell
-                var lazySelector = 'img[data-flickity-lazyload], ' + 'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset]';
-                var imgs = cellElem.querySelectorAll(lazySelector);
-                return utils.makeArray(imgs);
-            }
-     */
+        // createLazyload() {
+        //     this.on('select', this.lazyLoad);
+        // };
 
         makeCells(elems) {
             var cellElems = this.filterFindCellElements(elems); // create new Flickity for collection
@@ -1569,7 +1427,7 @@
                 return function (i) {
                     return i % number !== 0;
                 };
-            } 
+            }
             // default, group by width of slide
             // parse '75%
             var percentMatch = typeof groupCells == 'string' && groupCells.match(/^(\d+)%$/);
@@ -1580,7 +1438,7 @@
         };
 
         /**
-         * emits events via eventEmitter and jQuery events
+         * emits events via eventEmitter 
          * @param {String} type - name of event
          * @param {Event} event - original event
          * @param {Array} args - extra arguments
@@ -1594,13 +1452,8 @@
         wrapSelect(index) {
             var len = this.slides.length;
             var isWrapping = this.options.wrapAround && len > 1;
-
-            if (!isWrapping) {
-                return index;
-            }
-
+            if (!isWrapping) return index;
             var wrapIndex = utils.modulo(index, len); // go to shortest
-
             var delta = Math.abs(wrapIndex - this.selectedIndex);
             var backWrapDelta = Math.abs(wrapIndex + len - this.selectedIndex);
             var forewardWrapDelta = Math.abs(wrapIndex - len - this.selectedIndex);
@@ -1610,7 +1463,6 @@
             } else if (!this.isDragSelect && forewardWrapDelta < delta) {
                 index -= len;
             }
-
             // wrap position so slider is within normal area
             if (index < 0) {
                 this.x -= this.slideableWidth;
@@ -1630,7 +1482,7 @@
         selectCell(value, isWrap, isInstant) {
             // get cell
             var cell = this.queryCell(value);
-            if (!cell) {return; }
+            if (!cell) { return; }
             var index = this.getCellSlideIndex(cell);
             this.select(index, isWrap, isInstant);
         };
@@ -1640,7 +1492,7 @@
             for (var i = 0; i < this.slides.length; i++) {
                 var slide = this.slides[i];
                 var index = slide.cells.indexOf(cell);
-                if (index != -1) {return i;}
+                if (index != -1) { return i; }
             }
         };
 
@@ -1693,53 +1545,18 @@
          * @param {Element} elem
          * @returns {Flickit.Cell} cell
          */
- /*        getParentCell(elem) {
-            // first check if elem is cell
-            var cell = this.getCell(elem);
-
-            if (cell) {
-                return cell;
-            } // try to get parent cell elem
-
-            console.log('debug - 1608 - getParentCell END ');
-            elem = utils.getParent(elem, '.flickity-slider > *');
-            return this.getCell(elem);
-        }; */
-
-
-        /**
-         * get cells adjacent to a slide
-         * @param {Integer} adjCount - number of adjacent slides
-         * @param {Integer} index - index of slide to start
-         * @returns {Array} cells - array of Flickity.Cells
-         */
-    /*     getAdjacentCellElements(adjCount, index) {
-            if (!adjCount) {
-                return this.selectedSlide.getCellElements();
-            }
-
-            index = index === undefined ? this.selectedIndex : index;
-            var len = this.slides.length;
-
-            if (1 + adjCount * 2 >= len) {
-                return this.getCellElements();
-            }
-
-            var cellElems = [];
-
-            for (var i = index - adjCount; i <= index + adjCount; i++) {
-                var slideIndex = this.options.wrapAround ? utils.modulo(i, len) : i;
-                var slide = this.slides[slideIndex];
-
-                if (slide) {
-                    cellElems = cellElems.concat(slide.getCellElements());
-                }
-            }
-            console.log('debug - 1642 - getAdjacentCellElements  END ');
-
-            return cellElems;
-        }; */
-
+        /*        getParentCell(elem) {
+                   // first check if elem is cell
+                   var cell = this.getCell(elem);
+       
+                   if (cell) {
+                       return cell;
+                   } // try to get parent cell elem
+       
+                   console.log('debug - 1608 - getParentCell END ');
+                   elem = utils.getParent(elem, '.flickity-slider > *');
+                   return this.getCell(elem);
+               }; */
 
         /**
          * select slide from number or cell element
@@ -1757,7 +1574,7 @@
                     return;
                 } // use string as selector, get element
                 selector = this.element.querySelector(selector);
-            } 
+            }
             // get cell from element
             return this.getCell(selector);
         };
@@ -1788,7 +1605,7 @@
             if (this.options.wrapAround) {
                 this.x = utils.modulo(this.x, this.slideableWidth);
             }
-            if(window.innerWidth<640){
+            if (window.innerWidth < 640) {
                 this.deactivate()
                 return
             }
@@ -1801,26 +1618,6 @@
             var selectedElement = this.selectedElements && this.selectedElements[0];
             this.selectCell(selectedElement, false, true);
         };
-
-
-        // ----- keydown ----- //
-        // go previous/next if left/right keys pressed
-  /*       onkeydown(event) {
-            // only work if element is in focus
-            var isNotFocused = document.activeElement && document.activeElement != this.element;
-
-            if (!this.options.accessibility || isNotFocused) {
-                return;
-            }
-
-            var handler = Flickity.keyboardHandlers[event.keyCode];
-
-            if (handler) {
-                handler.call(this);
-            }
-            console.log('debug - 1756 - onkeydown  END ');
-        }; */
-
 
 
         // ----- focus ----- //
@@ -1870,60 +1667,15 @@
             this.allOff();
             this.emitEvent('destroy');
 
-            if (jQuery && this.$element) {
-                jQuery.removeData(this.element, 'flickity');
-            }
+            // if (jQuery && this.$element) {
+            //     jQuery.removeData(this.element, 'flickity');
+            // }
 
             delete this.element.flickityGUID;
             delete this.instances[this.guid];
         };
 
-
-        // -------------------------- prototype -------------------------- //
-        // -------------------------- extras -------------------------- //
-
-   /*      cellSizeChange = function (elem) {
-            var cell = this.getCell(elem);
-            if (!cell) {
-                return;
-            }
-
-            cell.getSize();
-            var index = this.cells.indexOf(cell);
-            this.cellChange(index);
-        }; */
-
-        /**
-         * logic any time a cell is changed: added, removed, or size changed
-         * @param {Integer} changedCellIndex - index of the changed cell, optional
-         */
-   /*      cellChange(changedCellIndex, isPositioningSlider) {
-            var prevSelectedElem = this.selectedElement;
-
-            this.positionCells(changedCellIndex);
-
-            this.getWrapShiftCells();
-
-            this.setGallerySize(); // update selectedIndex
-            // try to maintain position & select previous selected element
-
-            var cell = this.getCell(prevSelectedElem);
-            if (cell) {
-                this.selectedIndex = this.getCellSlideIndex(cell);
-            }
-
-            this.selectedIndex = Math.min(this.slides.length - 1, this.selectedIndex);
-            this.emitEvent('cellChange', [changedCellIndex]); // position slider
-
-            this.select(this.selectedIndex); // do not position slider after lazy load
-
-            if (isPositioningSlider) {
-                this.positionSliderAtSelected();
-            }
-        }; */
-
     }
-    // utils.extend(Flickity.prototype, Animate.prototype)
     Flickity.prototype.createStaticPropety()
 
     class Slide {
@@ -1982,18 +1734,15 @@
     }
 
 
-    Flickity.Cell = Cell;
-    Flickity.Slide = Slide;
+    // Flickity.Cell = Cell;
+    // Flickity.Slide = Slide;
 
     var Unipointer = (function () {
 
         function noop() { }
 
         function Unipointer() { } // inherit EvEmitter
-
-
         var proto = Unipointer.prototype = Object.create(EvEmitter.prototype);
-
         proto.bindStartEvent = function (elem) {
             this._bindStartEvent(elem, true);
         };
@@ -2006,14 +1755,11 @@
          * @param {Boolean} isAdd - remove if falsey
          */
 
-
         proto._bindStartEvent = function (elem, isAdd) {
             // munge isAdd, default to true
             isAdd = isAdd === undefined ? true : isAdd;
             var bindMethod = isAdd ? 'addEventListener' : 'removeEventListener'; // default to mouse events
-
             var startEvent = 'mousedown';
-
             if (window.PointerEvent) {
                 // Pointer Events
                 startEvent = 'pointerdown';
@@ -2264,10 +2010,7 @@
     var Unidragger = (function () {
 
         function Unidragger() { } // inherit Unipointer & EvEmitter
-
-
         var proto = Unidragger.prototype = Object.create(Unipointer.prototype); // ----- bind start ----- //
-
         proto.bindHandles = function () {
             this._bindHandles(true);
         };
@@ -2280,7 +2023,6 @@
          * @param {Boolean} isAdd
          */
 
-
         proto._bindHandles = function (isAdd) {
             // munge isAdd, default to true
             isAdd = isAdd === undefined ? true : isAdd; // bind each handle
@@ -2292,7 +2034,6 @@
                 var handle = this.handles[i];
 
                 this._bindStartEvent(handle, isAdd);
-
                 handle[bindMethod]('click', this); // touch-action: none to override browser touch gestures. metafizzy/flickity#540
 
                 if (window.PointerEvent) {
@@ -2318,7 +2059,6 @@
             } // track start event position
             // Safari 9 overrides pageX and pageY. These values needs to be copied. flickity#842
 
-
             this.pointerDownPointer = {
                 pageX: pointer.pageX,
                 pageY: pointer.pageY
@@ -2330,7 +2070,6 @@
 
             this.emitEvent('pointerDown', [event, pointer]);
         }; // nodes that have text fields
-
 
         var cursorNodes = {
             TEXTAREA: true,
@@ -2917,21 +2656,19 @@
         PrevNextButton.prototype.activate = function () {
             this.bindStartEvent(this.element);
             this.element.addEventListener('click', this); // add to DOM
-
             this.parent.element.appendChild(this.element);
         };
 
         PrevNextButton.prototype.deactivate = function () {
             // remove from DOM
             this.parent.element.removeChild(this.element); // click events
-
             this.unbindStartEvent(this.element);
             this.element.removeEventListener('click', this);
         };
 
         PrevNextButton.prototype.createSVG = function () {
             var svg = document.createElementNS(svgURI, 'svg');
-            svg.setAttribute('class', 'flickity-button-icon');
+            svg.setAttribute('class', 'flickity-button-icon icon');
             svg.setAttribute('viewBox', '0 0 100 100');
             var path = document.createElementNS(svgURI, 'path');
             var pathMovements = getArrowMovements(this.parent.options.arrowShape);
@@ -2959,29 +2696,20 @@
         PrevNextButton.prototype.handleEvent = utils.handleEvent;
 
         PrevNextButton.prototype.onclick = function () {
-            if (!this.isEnabled) {
-                return;
-            }
-
+            if (!this.isEnabled) return;
             this.parent.uiChange();
             var method = this.isPrevious ? 'previous' : 'next';
             this.parent[method]();
         };
 
         PrevNextButton.prototype.enable = function () {
-            if (this.isEnabled) {
-                return;
-            }
-
+            if (this.isEnabled) return;
             this.element.disabled = false;
             this.isEnabled = true;
         };
 
         PrevNextButton.prototype.disable = function () {
-            if (!this.isEnabled) {
-                return;
-            }
-
+            if (!this.isEnabled) return;
             this.element.disabled = true;
             this.isEnabled = false;
         };
@@ -3022,10 +2750,7 @@
 
         var proto = Flickity.prototype;
         proto._createPrevNextButtons = function () {
-            if (!this.options.prevNextButtons) {
-                return;
-            }
-
+            if (!this.options.prevNextButtons) return;
             this.prevButton = new PrevNextButton(-1, this);
             this.nextButton = new PrevNextButton(1, this);
             this.on('activate', this.activatePrevNextButtons);
@@ -3047,164 +2772,74 @@
         return Flickity;
     })();
 
-  
-
-
-    /** class to handle loading images **/
-    class LazyLoader {
-        constructor(img, flickity) {
-            this.img = img;
-            this.flickity = flickity;
-            this.load();
-            this.handleEvent = utils.handleEvent;
-        }
-
-        load() {
-            this.img.addEventListener('load', this);
-            this.img.addEventListener('error', this); // get src & srcset
-
-            var src = this.img.getAttribute('data-flickity-lazyload') || this.img.getAttribute('data-flickity-lazyload-src');
-            var srcset = this.img.getAttribute('data-flickity-lazyload-srcset'); // set src & serset
-
-            this.img.src = src;
-
-            if (srcset) {
-                this.img.setAttribute('srcset', srcset);
-            } // remove attr
-
-            this.img.removeAttribute('data-flickity-lazyload');
-            this.img.removeAttribute('data-flickity-lazyload-src');
-            this.img.removeAttribute('data-flickity-lazyload-srcset');
-        };
-
-        onload(event) {
-            this.complete(event, 'flickity-lazyloaded');
-        };
-
-        onerror(event) {
-            this.complete(event, 'flickity-lazyerror');
-        };
-
-        complete(event, className) {
-            // unbind events
-            this.img.removeEventListener('load', this);
-            this.img.removeEventListener('error', this);
-            var cell = this.flickity.getParentCell(this.img);
-            var cellElem = cell && cell.element;
-            this.flickity.cellSizeChange(cellElem);
-            this.img.classList.add(className);
-            this.flickity.dispatchEvent('lazyLoad', event, cellElem);
-        };
-    }
-
-    Flickity.LazyLoader = LazyLoader;
-
-
     // 懒加载处理
     window.lazySizes = function () {
-        /*jshint eqnull:true */
 
         var lazysizes, lazySizesCfg;
-        (function () {
-            var prop;
-            var lazySizesDefaults = {
-                lazyClass: 'lazyload',
-                loadedClass: 'lazyloaded',
-                loadingClass: 'lazyloading',
-                preloadClass: 'lazypreload',
-                errorClass: 'lazyerror',
-                //strictClass: 'lazystrict',
-                autosizesClass: 'lazyautosizes',
-                srcAttr: 'data-src',
-                srcsetAttr: 'data-srcset',
-                sizesAttr: 'data-sizes',
-                //preloadAfterLoad: false,
-                minSize: 40,
-                customMedia: {},
-                init: true,
-                expFactor: 1.5,
-                hFac: 0.8,
-                loadMode: 2,
-                loadHidden: true,
-                ricTimeout: 0,
-                throttleDelay: 125
-            };
-            lazySizesCfg = window.lazySizesConfig || window.lazysizesConfig || {};
-
-            for (prop in lazySizesDefaults) {
-                if (!(prop in lazySizesCfg)) {
-                    lazySizesCfg[prop] = lazySizesDefaults[prop];
-                }
-            }
-        })();
-
-        if (!document || !document.getElementsByClassName) {
-            return {
-                init: function init() { },
-                cfg: lazySizesCfg,
-                noSupport: true
-            };
-        }
+        var lazySizesDefaults = {
+            lazyClass: 'lazyload',
+            loadedClass: 'lazyloaded',
+            loadingClass: 'lazyloading',
+            preloadClass: 'lazypreload',
+            errorClass: 'lazyerror',
+            //strictClass: 'lazystrict',
+            autosizesClass: 'lazyautosizes',
+            srcAttr: 'data-src',
+            srcsetAttr: 'data-srcset',
+            sizesAttr: 'data-sizes',
+            //preloadAfterLoad: false,
+            minSize: 40,
+            customMedia: {},
+            init: true,
+            expFactor: 1.5,
+            hFac: 0.8,
+            loadMode: 2,
+            loadHidden: true,
+            ricTimeout: 0,
+            throttleDelay: 125
+        };
+        lazySizesCfg = {}
+        utils.extend(lazySizesCfg, lazySizesDefaults)
 
         var docElem = document.documentElement;
         var supportPicture = window.HTMLPictureElement;
-        var _addEventListener = 'addEventListener';
-        var _getAttribute = 'getAttribute';
-        /**
-         * Update to bind to window because 'this' becomes null during SSR
-         * builds.
-         */
-
-        var addEventListener = window[_addEventListener].bind(window);
-
-        var setTimeout = window.setTimeout;
+        var addEventListener = window.addEventListener.bind(window);
         var requestAnimationFrame = window.requestAnimationFrame || setTimeout;
         var requestIdleCallback = window.requestIdleCallback;
+
         var regPicture = /^picture$/i;
         var loadEvents = ['load', 'error', 'lazyincluded', '_lazyloaded'];
         var regClassCache = {};
         var forEach = Array.prototype.forEach;
 
-        var hasClass = function hasClass(ele, cls) {
-            if (!regClassCache[cls]) {
-                regClassCache[cls] = new RegExp('(\\s|^)' + cls + '(\\s|$)');
-            }
-
-            return regClassCache[cls].test(ele[_getAttribute]('class') || '') && regClassCache[cls];
+        var hasClass = function (ele, cls) {
+            !regClassCache[cls] && (regClassCache[cls] = new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+            return regClassCache[cls].test(ele.getAttribute('class') || '') && regClassCache[cls];
         };
 
-        var addClass = function addClass(ele, cls) {
+        var addClass = function (ele, cls) {
             if (!hasClass(ele, cls)) {
-                ele.setAttribute('class', (ele[_getAttribute]('class') || '').trim() + ' ' + cls);
+                ele.setAttribute('class', (ele.getAttribute('class') || '').trim() + ' ' + cls);
             }
         };
 
-        var removeClass = function removeClass(ele, cls) {
+        var removeClass = function (ele, cls) {
             var reg;
-            if (reg = hasClass(ele, cls)) {
-                ele.setAttribute('class', (ele[_getAttribute]('class') || '').replace(reg, ' '));
-            }
+            if (reg = hasClass(ele, cls)) ele.setAttribute('class', (ele.getAttribute('class') || '').replace(reg, ' '));
         };
 
-        var addRemoveLoadEvents = function addRemoveLoadEvents(dom, fn, add) {
-            var action = add ? _addEventListener : 'removeEventListener';
-
-            if (add) {
-                addRemoveLoadEvents(dom, fn);
-            }
+        var addRemoveLoadEvents = function (dom, fn, add) {
+            var action = add ? 'addEventListener' : 'removeEventListener';
+            add && addRemoveLoadEvents(dom, fn);
             loadEvents.forEach(function (evt) {
                 dom[action](evt, fn);
             });
         };
 
         // 自定义事件
-        var triggerEvent = function triggerEvent(elem, name, detail, noBubbles, noCancelable) {
+        var triggerEvent = function (elem, name, detail, noBubbles, noCancelable) {
             var event = document.createEvent('Event');
-
-            if (!detail) {
-                detail = {};
-            }
-
+            if (!detail) detail = {};
             detail.instance = lazysizes;
             event.initEvent(name, !noBubbles, !noCancelable);
             event.detail = detail;
@@ -3212,14 +2847,12 @@
             return event;
         };
 
-        var updatePolyfill = function updatePolyfill(el, full) {
+        var updatePolyfill = function (el, full) {
             var polyfill;
-
             if (!supportPicture && (polyfill = window.picturefill || lazySizesCfg.pf)) {
-                if (full && full.src && !el[_getAttribute]('srcset')) {
+                if (full && full.src && !el.getAttribute('srcset')) {
                     el.setAttribute('srcset', full.src);
                 }
-
                 polyfill({
                     reevaluate: true,
                     elements: [el]
@@ -3229,18 +2862,16 @@
             }
         };
 
-        var getCSS = function getCSS(elem, style) {
+        var getCSS = function (elem, style) {
             return (getComputedStyle(elem, null) || {})[style];
         };
 
-        var getWidth = function getWidth(elem, parent, width) {
+        var getWidth = function (elem, parent, width) {
             width = width || elem.offsetWidth;
-
             while (width < lazySizesCfg.minSize && parent && !elem._lazysizesWidth) {
                 width = parent.offsetWidth;
                 parent = parent.parentNode;
             }
-
             return width;
         };
 
@@ -3259,7 +2890,6 @@
                 while (runFns.length) {
                     runFns.shift()();
                 }
-
                 running = false;
             };
 
@@ -3268,7 +2898,6 @@
                     fn.apply(this, arguments);
                 } else {
                     fns.push(fn);
-
                     if (!waiting) {
                         waiting = true;
                         (document.hidden ? setTimeout : requestAnimationFrame)(run);
@@ -3280,7 +2909,7 @@
             return rafBatch;
         }();
 
-        var rAFIt = function rAFIt(fn, simple) {
+        var rAFIt = function (fn, simple) {
             return simple ? function () {
                 rAF(fn);
             } : function () {
@@ -3292,7 +2921,7 @@
             };
         };
 
-        var throttle = function throttle(fn) {
+        var throttle = function (fn) {
             var running;
             var lastTime = 0;
             var gDelay = lazySizesCfg.throttleDelay;
@@ -3312,37 +2941,25 @@
                 if (rICTimeout !== lazySizesCfg.ricTimeout) {
                     rICTimeout = lazySizesCfg.ricTimeout;
                 }
-            } : rAFIt(function () {
-                setTimeout(run);
-            }, true);
+            } : rAFIt(function () { setTimeout(run); }, true);
+
             return function (isPriority) {
                 var delay;
-
-                if (isPriority = isPriority === true) {
-                    rICTimeout = 33;
-                }
-
-                if (running) {
-                    return;
-                }
-
+                if (isPriority = isPriority === true) rICTimeout = 33;
+                if (running) return;
                 running = true;
                 delay = gDelay - (Date.now() - lastTime);
 
-                if (delay < 0) {
-                    delay = 0;
-                }
-
+                if (delay < 0) delay = 0;
                 if (isPriority || delay < 9) {
                     idleCallback();
                 } else {
                     setTimeout(idleCallback, delay);
                 }
             };
-        }; //based on http://modernjavascript.blogspot.de/2013/08/building-better-debounce.html
+        };
 
-
-        var debounce = function debounce(func) {
+        var debounce = function (func) {
             var timeout, timestamp;
             var wait = 99;
 
@@ -3363,378 +2980,9 @@
 
             return function () {
                 timestamp = Date.now();
-
-                if (!timeout) {
-                    timeout = setTimeout(later, wait);
-                }
+                if (!timeout) timeout = setTimeout(later, wait);
             };
         };
-
-        var loader = function () {
-            var preloadElems, isCompleted, resetPreloadingTimer, loadMode, started;
-            var eLvW, elvH, eLtop, eLleft, eLright, eLbottom, isBodyHidden;
-            var regImg = /^img$/i;
-            var regIframe = /^iframe$/i;
-            var supportScroll = 'onscroll' in window && !/(gle|ing)bot/.test(navigator.userAgent);
-            var shrinkExpand = 0;
-            var currentExpand = 0;
-            var isLoading = 0;
-            var lowRuns = -1;
-
-            var resetPreloading = function resetPreloading(e) {
-                isLoading--;
-
-                if (!e || isLoading < 0 || !e.target) {
-                    isLoading = 0;
-                }
-            };
-
-            var isVisible = function isVisible(elem) {
-                if (isBodyHidden == null) {
-                    isBodyHidden = getCSS(document.body, 'visibility') == 'hidden';
-                }
-
-                return isBodyHidden || !(getCSS(elem.parentNode, 'visibility') == 'hidden' && getCSS(elem, 'visibility') == 'hidden');
-            };
-
-            var isNestedVisible = function isNestedVisible(elem, elemExpand) {
-                var outerRect;
-                var parent = elem;
-                var visible = isVisible(elem);
-                eLtop -= elemExpand;
-                eLbottom += elemExpand;
-                eLleft -= elemExpand;
-                eLright += elemExpand;
-
-                while (visible && (parent = parent.offsetParent) && parent != document.body && parent != docElem) {
-                    visible = (getCSS(parent, 'opacity') || 1) > 0;
-
-                    if (visible && getCSS(parent, 'overflow') != 'visible') {
-                        outerRect = parent.getBoundingClientRect();
-                        visible = eLright > outerRect.left && eLleft < outerRect.right && eLbottom > outerRect.top - 1 && eLtop < outerRect.bottom + 1;
-                    }
-                }
-
-                return visible;
-            };
-
-            var checkElements = function checkElements() {
-                var eLlen, i, rect, autoLoadElem, loadedSomething, elemExpand, elemNegativeExpand, elemExpandVal, beforeExpandVal, defaultExpand, preloadExpand, hFac;
-                var lazyloadElems = lazysizes.elements;
-
-                if ((loadMode = lazySizesCfg.loadMode) && isLoading < 8 && (eLlen = lazyloadElems.length)) {
-                    i = 0;
-                    lowRuns++;
-
-                    for (; i < eLlen; i++) {
-                        if (!lazyloadElems[i] || lazyloadElems[i]._lazyRace) {
-                            continue;
-                        }
-
-                        if (!supportScroll || lazysizes.prematureUnveil && lazysizes.prematureUnveil(lazyloadElems[i])) {
-                            unveilElement(lazyloadElems[i]);
-                            continue;
-                        }
-
-                        if (!(elemExpandVal = lazyloadElems[i][_getAttribute]('data-expand')) || !(elemExpand = elemExpandVal * 1)) {
-                            elemExpand = currentExpand;
-                        }
-
-                        if (!defaultExpand) {
-                            defaultExpand = !lazySizesCfg.expand || lazySizesCfg.expand < 1 ? docElem.clientHeight > 500 && docElem.clientWidth > 500 ? 500 : 370 : lazySizesCfg.expand;
-                            lazysizes._defEx = defaultExpand;
-                            preloadExpand = defaultExpand * lazySizesCfg.expFactor;
-                            hFac = lazySizesCfg.hFac;
-                            isBodyHidden = null;
-
-                            if (currentExpand < preloadExpand && isLoading < 1 && lowRuns > 2 && loadMode > 2 && !document.hidden) {
-                                currentExpand = preloadExpand;
-                                lowRuns = 0;
-                            } else if (loadMode > 1 && lowRuns > 1 && isLoading < 6) {
-                                currentExpand = defaultExpand;
-                            } else {
-                                currentExpand = shrinkExpand;
-                            }
-                        }
-
-                        if (beforeExpandVal !== elemExpand) {
-                            eLvW = innerWidth + elemExpand * hFac;
-                            elvH = innerHeight + elemExpand;
-                            elemNegativeExpand = elemExpand * -1;
-                            beforeExpandVal = elemExpand;
-                        }
-
-                        rect = lazyloadElems[i].getBoundingClientRect();
-
-                        if ((eLbottom = rect.bottom) >= elemNegativeExpand && (eLtop = rect.top) <= elvH && (eLright = rect.right) >= elemNegativeExpand * hFac && (eLleft = rect.left) <= eLvW && (eLbottom || eLright || eLleft || eLtop) && (lazySizesCfg.loadHidden || isVisible(lazyloadElems[i])) && (isCompleted && isLoading < 3 && !elemExpandVal && (loadMode < 3 || lowRuns < 4) || isNestedVisible(lazyloadElems[i], elemExpand))) {
-                            unveilElement(lazyloadElems[i]);
-                            loadedSomething = true;
-
-                            if (isLoading > 9) {
-                                break;
-                            }
-                        } else if (!loadedSomething && isCompleted && !autoLoadElem && isLoading < 4 && lowRuns < 4 && loadMode > 2 && (preloadElems[0] || lazySizesCfg.preloadAfterLoad) && (preloadElems[0] || !elemExpandVal && (eLbottom || eLright || eLleft || eLtop || lazyloadElems[i][_getAttribute](lazySizesCfg.sizesAttr) != 'auto'))) {
-                            autoLoadElem = preloadElems[0] || lazyloadElems[i];
-                        }
-                    }
-
-                    if (autoLoadElem && !loadedSomething) {
-                        unveilElement(autoLoadElem);
-                    }
-                }
-            };
-
-            var throttledCheckElements = throttle(checkElements);
-
-            var switchLoadingClass = function switchLoadingClass(e) {
-                var elem = e.target;
-
-                if (elem._lazyCache) {
-                    delete elem._lazyCache;
-                    return;
-                }
-
-                resetPreloading(e);
-                addClass(elem, lazySizesCfg.loadedClass);
-                removeClass(elem, lazySizesCfg.loadingClass);
-                addRemoveLoadEvents(elem, rafSwitchLoadingClass);
-                triggerEvent(elem, 'lazyloaded');
-            };
-
-            var rafedSwitchLoadingClass = rAFIt(switchLoadingClass);
-
-            var rafSwitchLoadingClass = function rafSwitchLoadingClass(e) {
-                rafedSwitchLoadingClass({
-                    target: e.target
-                });
-            };
-
-            var changeIframeSrc = function changeIframeSrc(elem, src) {
-                try {
-                    elem.contentWindow.location.replace(src);
-                } catch (e) {
-                    elem.src = src;
-                }
-            };
-
-            var handleSources = function handleSources(source) {
-                var customMedia;
-
-                var sourceSrcset = source[_getAttribute](lazySizesCfg.srcsetAttr);
-
-                if (customMedia = lazySizesCfg.customMedia[source[_getAttribute]('data-media') || source[_getAttribute]('media')]) {
-                    source.setAttribute('media', customMedia);
-                }
-
-                if (sourceSrcset) {
-                    source.setAttribute('srcset', sourceSrcset);
-                }
-            };
-
-            var lazyUnveil = rAFIt(function (elem, detail, isAuto, sizes, isImg) {
-                var src, srcset, parent, isPicture, event, firesLoad;
-
-                if (!(event = triggerEvent(elem, 'lazybeforeunveil', detail)).defaultPrevented) {
-                    if (sizes) {
-                        if (isAuto) {
-                            addClass(elem, lazySizesCfg.autosizesClass);
-                        } else {
-                            elem.setAttribute('sizes', sizes);
-                        }
-                    }
-
-                    srcset = elem[_getAttribute](lazySizesCfg.srcsetAttr);
-                    src = elem[_getAttribute](lazySizesCfg.srcAttr);
-
-                    if (isImg) {
-                        parent = elem.parentNode;
-                        isPicture = parent && regPicture.test(parent.nodeName || '');
-                    }
-
-                    firesLoad = detail.firesLoad || 'src' in elem && (srcset || src || isPicture);
-                    event = {
-                        target: elem
-                    };
-                    addClass(elem, lazySizesCfg.loadingClass);
-
-                    if (firesLoad) {
-                        clearTimeout(resetPreloadingTimer);
-                        resetPreloadingTimer = setTimeout(resetPreloading, 2500);
-                        addRemoveLoadEvents(elem, rafSwitchLoadingClass, true);
-                    }
-
-                    if (isPicture) {
-                        forEach.call(parent.getElementsByTagName('source'), handleSources);
-                    }
-
-                    if (srcset) {
-                        elem.setAttribute('srcset', srcset);
-                    } else if (src && !isPicture) {
-                        if (regIframe.test(elem.nodeName)) {
-                            changeIframeSrc(elem, src);
-                        } else {
-                            elem.src = src;
-                        }
-                    }
-
-                    if (isImg && (srcset || isPicture)) {
-                        updatePolyfill(elem, {
-                            src: src
-                        });
-                    }
-                }
-
-                if (elem._lazyRace) {
-                    delete elem._lazyRace;
-                }
-
-                removeClass(elem, lazySizesCfg.lazyClass);
-                rAF(function () {
-                    // Part of this can be removed as soon as this fix is older: https://bugs.chromium.org/p/chromium/issues/detail?id=7731 (2015)
-                    var isLoaded = elem.complete && elem.naturalWidth > 1;
-
-                    if (!firesLoad || isLoaded) {
-                        if (isLoaded) {
-                            addClass(elem, 'ls-is-cached');
-                        }
-
-                        switchLoadingClass(event);
-                        elem._lazyCache = true;
-                        setTimeout(function () {
-                            if ('_lazyCache' in elem) {
-                                delete elem._lazyCache;
-                            }
-                        }, 9);
-                    }
-
-                    if (elem.loading == 'lazy') {
-                        isLoading--;
-                    }
-                }, true);
-            });
-
-            var unveilElement = function unveilElement(elem) {
-                if (elem._lazyRace) {
-                    return;
-                }
-
-                var detail;
-                var isImg = regImg.test(elem.nodeName); //allow using sizes="auto", but don't use. it's invalid. Use data-sizes="auto" or a valid value for sizes instead (i.e.: sizes="80vw")
-
-                var sizes = isImg && (elem[_getAttribute](lazySizesCfg.sizesAttr) || elem[_getAttribute]('sizes'));
-
-                var isAuto = sizes == 'auto';
-
-                if ((isAuto || !isCompleted) && isImg && (elem[_getAttribute]('src') || elem.srcset) && !elem.complete && !hasClass(elem, lazySizesCfg.errorClass) && hasClass(elem, lazySizesCfg.lazyClass)) {
-                    return;
-                }
-
-                detail = triggerEvent(elem, 'lazyunveilread').detail;
-
-                if (isAuto) {
-                    autoSizer.updateElem(elem, true, elem.offsetWidth);
-                }
-
-                elem._lazyRace = true;
-                isLoading++;
-                lazyUnveil(elem, detail, isAuto, sizes, isImg);
-            };
-
-            var afterScroll = debounce(function () {
-                lazySizesCfg.loadMode = 3;
-                throttledCheckElements();
-            });
-
-            var altLoadmodeScrollListner = function altLoadmodeScrollListner() {
-                if (lazySizesCfg.loadMode == 3) {
-                    lazySizesCfg.loadMode = 2;
-                }
-
-                afterScroll();
-            };
-
-            var onload = function onload() {
-                if (isCompleted) {
-                    return;
-                }
-
-                if (Date.now() - started < 999) {
-                    setTimeout(onload, 999);
-                    return;
-                }
-
-                isCompleted = true;
-                lazySizesCfg.loadMode = 3;
-                throttledCheckElements();
-                addEventListener('scroll', altLoadmodeScrollListner, true);
-            };
-
-            return {
-                _: function _() {
-                    started = Date.now();
-                    lazysizes.elements = document.getElementsByClassName(lazySizesCfg.lazyClass);
-                    preloadElems = document.getElementsByClassName(lazySizesCfg.lazyClass + ' ' + lazySizesCfg.preloadClass);
-                    addEventListener('scroll', throttledCheckElements, true);
-                    addEventListener('resize', throttledCheckElements, true);
-                    addEventListener('pageshow', function (e) {
-                        if (e.persisted) {
-                            var loadingElements = document.querySelectorAll('.' + lazySizesCfg.loadingClass);
-
-                            if (loadingElements.length && loadingElements.forEach) {
-                                requestAnimationFrame(function () {
-                                    loadingElements.forEach(function (img) {
-                                        if (img.complete) {
-                                            unveilElement(img);
-                                        }
-                                    });
-                                });
-                            }
-                        }
-                    });
-
-                    if (window.MutationObserver) {
-                        new MutationObserver(throttledCheckElements).observe(docElem, {
-                            childList: true,
-                            subtree: true,
-                            attributes: true
-                        });
-                    } else {
-                        docElem[_addEventListener]('DOMNodeInserted', throttledCheckElements, true);
-
-                        docElem[_addEventListener]('DOMAttrModified', throttledCheckElements, true);
-
-                        setInterval(throttledCheckElements, 999);
-                    }
-
-                    addEventListener('hashchange', throttledCheckElements, true); //, 'fullscreenchange'
-
-                    ['focus', 'mouseover', 'click', 'load', 'transitionend', 'animationend'].forEach(function (name) {
-                        document[_addEventListener](name, throttledCheckElements, true);
-                    });
-
-                    if (/d$|^c/.test(document.readyState)) {
-                        onload();
-                    } else {
-                        addEventListener('load', onload);
-
-                        document[_addEventListener]('DOMContentLoaded', throttledCheckElements);
-
-                        setTimeout(onload, 20000);
-                    }
-
-                    if (lazysizes.elements.length) {
-                        checkElements();
-
-                        rAF._lsFlush();
-                    } else {
-                        throttledCheckElements();
-                    }
-                },
-                checkElems: throttledCheckElements,
-                unveil: unveilElement,
-                _aLSL: altLoadmodeScrollListner
-            };
-        }();
 
         var autoSizer = function () {
             var autosizesElems;
@@ -3802,12 +3050,345 @@
             };
         }();
 
+        var loader = function () {
+            var preloadElems, isCompleted, resetPreloadingTimer, loadMode, started;
+            var eLvW, elvH, eLtop, eLleft, eLright, eLbottom, isBodyHidden;
+            var regImg = /^img$/i;
+            var regIframe = /^iframe$/i;
+            var supportScroll = 'onscroll' in window && !/(gle|ing)bot/.test(navigator.userAgent);
+            var shrinkExpand = 0;
+            var currentExpand = 0;
+            var isLoading = 0;
+            var lowRuns = -1;
+
+            var resetPreloading = function (e) {
+                isLoading--;
+                if (!e || isLoading < 0 || !e.target) {
+                    isLoading = 0;
+                }
+            };
+
+            var isVisible = function (elem) {
+                if (isBodyHidden == null) isBodyHidden = getCSS(document.body, 'visibility') == 'hidden';
+                return isBodyHidden || !(getCSS(elem.parentNode, 'visibility') == 'hidden' && getCSS(elem, 'visibility') == 'hidden');
+            };
+
+            var isNestedVisible = function (elem, elemExpand) {
+                var outerRect;
+                var parent = elem;
+                var visible = isVisible(elem);
+                eLtop -= elemExpand;
+                eLbottom += elemExpand;
+                eLleft -= elemExpand;
+                eLright += elemExpand;
+
+                while (visible && (parent = parent.offsetParent) && parent != document.body && parent != docElem) {
+                    visible = (getCSS(parent, 'opacity') || 1) > 0;
+
+                    if (visible && getCSS(parent, 'overflow') != 'visible') {
+                        outerRect = parent.getBoundingClientRect();
+                        visible = eLright > outerRect.left && eLleft < outerRect.right && eLbottom > outerRect.top - 1 && eLtop < outerRect.bottom + 1;
+                    }
+                }
+
+                return visible;
+            };
+
+            var checkElements = function () {
+                var eLlen, i, rect, autoLoadElem, loadedSomething, elemExpand, elemNegativeExpand, elemExpandVal, beforeExpandVal, defaultExpand, preloadExpand, hFac;
+                var lazyloadElems = lazysizes.elements;
+
+                if ((loadMode = lazySizesCfg.loadMode) && isLoading < 8 && (eLlen = lazyloadElems.length)) {
+                    i = 0;
+                    lowRuns++;
+
+                    for (; i < eLlen; i++) {
+                        if (!lazyloadElems[i] || lazyloadElems[i]._lazyRace) continue;
+
+                        if (!supportScroll || lazysizes.prematureUnveil && lazysizes.prematureUnveil(lazyloadElems[i])) {
+                            unveilElement(lazyloadElems[i]);
+                            continue;
+                        }
+
+                        if (!(elemExpandVal = lazyloadElems[i].getAttribute('data-expand')) || !(elemExpand = elemExpandVal * 1)) {
+                            elemExpand = currentExpand;
+                        }
+
+                        if (!defaultExpand) {
+                            defaultExpand = !lazySizesCfg.expand || lazySizesCfg.expand < 1 ? docElem.clientHeight > 500 && docElem.clientWidth > 500 ? 500 : 370 : lazySizesCfg.expand;
+                            lazysizes._defEx = defaultExpand;
+                            preloadExpand = defaultExpand * lazySizesCfg.expFactor;
+                            hFac = lazySizesCfg.hFac;
+                            isBodyHidden = null;
+
+                            if (currentExpand < preloadExpand && isLoading < 1 && lowRuns > 2 && loadMode > 2 && !document.hidden) {
+                                currentExpand = preloadExpand;
+                                lowRuns = 0;
+                            } else if (loadMode > 1 && lowRuns > 1 && isLoading < 6) {
+                                currentExpand = defaultExpand;
+                            } else {
+                                currentExpand = shrinkExpand;
+                            }
+                        }
+
+                        if (beforeExpandVal !== elemExpand) {
+                            eLvW = innerWidth + elemExpand * hFac;
+                            elvH = innerHeight + elemExpand;
+                            elemNegativeExpand = elemExpand * -1;
+                            beforeExpandVal = elemExpand;
+                        }
+
+                        rect = lazyloadElems[i].getBoundingClientRect();
+
+                        if ((eLbottom = rect.bottom) >= elemNegativeExpand && (eLtop = rect.top) <= elvH && (eLright = rect.right) >= elemNegativeExpand * hFac && (eLleft = rect.left) <= eLvW && (eLbottom || eLright || eLleft || eLtop) && (lazySizesCfg.loadHidden || isVisible(lazyloadElems[i])) && (isCompleted && isLoading < 3 && !elemExpandVal && (loadMode < 3 || lowRuns < 4) || isNestedVisible(lazyloadElems[i], elemExpand))) {
+                            unveilElement(lazyloadElems[i]);
+                            loadedSomething = true;
+
+                            if (isLoading > 9) {
+                                break;
+                            }
+                        } else if (!loadedSomething && isCompleted && !autoLoadElem && isLoading < 4 && lowRuns < 4 && loadMode > 2 && (preloadElems[0] || lazySizesCfg.preloadAfterLoad) && (preloadElems[0] || !elemExpandVal && (eLbottom || eLright || eLleft || eLtop || lazyloadElems[i].getAttribute(lazySizesCfg.sizesAttr) != 'auto'))) {
+                            autoLoadElem = preloadElems[0] || lazyloadElems[i];
+                        }
+                    }
+
+                    if (autoLoadElem && !loadedSomething) {
+                        unveilElement(autoLoadElem);
+                    }
+                }
+            };
+
+            var throttledCheckElements = throttle(checkElements);
+
+            var switchLoadingClass = function (e) {
+                var elem = e.target;
+
+                if (elem._lazyCache) {
+                    delete elem._lazyCache;
+                    return;
+                }
+
+                resetPreloading(e);
+                addClass(elem, lazySizesCfg.loadedClass);
+                removeClass(elem, lazySizesCfg.loadingClass);
+                addRemoveLoadEvents(elem, rafSwitchLoadingClass);
+                triggerEvent(elem, 'lazyloaded');
+            };
+
+            var rafedSwitchLoadingClass = rAFIt(switchLoadingClass);
+            var rafSwitchLoadingClass = function (e) {
+                rafedSwitchLoadingClass({
+                    target: e.target
+                });
+            };
+
+            var changeIframeSrc = function (elem, src) {
+                try {
+                    elem.contentWindow.location.replace(src);
+                } catch (e) {
+                    elem.src = src;
+                }
+            };
+
+            var handleSources = function (source) {
+                var customMedia;
+                var sourceSrcset = source.getAttribute(lazySizesCfg.srcsetAttr);
+                if (customMedia = lazySizesCfg.customMedia[source.getAttribute('data-media') || source.getAttribute('media')]) {
+                    source.setAttribute('media', customMedia);
+                }
+
+                if (sourceSrcset) {
+                    source.setAttribute('srcset', sourceSrcset);
+                }
+            };
+
+            var lazyUnveil = rAFIt(function (elem, detail, isAuto, sizes, isImg) {
+                var src, srcset, parent, isPicture, event, firesLoad;
+
+                if (!(event = triggerEvent(elem, 'lazybeforeunveil', detail)).defaultPrevented) {
+                    if (sizes) {
+                        if (isAuto) {
+                            addClass(elem, lazySizesCfg.autosizesClass);
+                        } else {
+                            elem.setAttribute('sizes', sizes);
+                        }
+                    }
+
+                    srcset = elem.getAttribute(lazySizesCfg.srcsetAttr);
+                    src = elem.getAttribute(lazySizesCfg.srcAttr);
+
+                    if (isImg) {
+                        parent = elem.parentNode;
+                        isPicture = parent && regPicture.test(parent.nodeName || '');
+                    }
+
+                    firesLoad = detail.firesLoad || 'src' in elem && (srcset || src || isPicture);
+                    event = {
+                        target: elem
+                    };
+                    addClass(elem, lazySizesCfg.loadingClass);
+                    if (firesLoad) {
+                        clearTimeout(resetPreloadingTimer);
+                        resetPreloadingTimer = setTimeout(resetPreloading, 2500);
+                        addRemoveLoadEvents(elem, rafSwitchLoadingClass, true);
+                    }
+
+                    if (isPicture) {
+                        forEach.call(parent.getElementsByTagName('source'), handleSources);
+                    }
+
+                    if (srcset) {
+                        elem.setAttribute('srcset', srcset);
+                    } else if (src && !isPicture) {
+                        if (regIframe.test(elem.nodeName)) {
+                            changeIframeSrc(elem, src);
+                        } else {
+                            elem.src = src;
+                        }
+                    }
+
+                    if (isImg && (srcset || isPicture)) {
+                        updatePolyfill(elem, {
+                            src: src
+                        });
+                    }
+                }
+
+                if (elem._lazyRace) delete elem._lazyRace;
+
+                removeClass(elem, lazySizesCfg.lazyClass);
+                rAF(function () {
+                    var isLoaded = elem.complete && elem.naturalWidth > 1;
+
+                    if (!firesLoad || isLoaded) {
+                        if (isLoaded) addClass(elem, 'ls-is-cached');
+
+                        switchLoadingClass(event);
+                        elem._lazyCache = true;
+                        setTimeout(function () {
+                            if ('_lazyCache' in elem) {
+                                delete elem._lazyCache;
+                            }
+                        }, 9);
+                    }
+
+                    if (elem.loading == 'lazy') {
+                        isLoading--;
+                    }
+                }, true);
+            });
+
+            var unveilElement = function (elem) {
+                if (elem._lazyRace) return;
+                var detail;
+                var isImg = regImg.test(elem.nodeName); //allow using sizes="auto", but don't use. it's invalid. Use data-sizes="auto" or a valid value for sizes instead (i.e.: sizes="80vw")
+                var sizes = isImg && (elem.getAttribute(lazySizesCfg.sizesAttr) || elem.getAttribute('sizes'));
+                var isAuto = sizes == 'auto';
+                if ((isAuto || !isCompleted) && isImg && (elem.getAttribute('src') || elem.srcset) && !elem.complete && !hasClass(elem, lazySizesCfg.errorClass) && hasClass(elem, lazySizesCfg.lazyClass)) {
+                    return;
+                }
+
+                detail = triggerEvent(elem, 'lazyunveilread').detail;
+                isAuto && autoSizer.updateElem(elem, true, elem.offsetWidth);
+                elem._lazyRace = true;
+                isLoading++;
+                lazyUnveil(elem, detail, isAuto, sizes, isImg);
+            };
+
+            var afterScroll = debounce(function () {
+                lazySizesCfg.loadMode = 3;
+                throttledCheckElements();
+            });
+
+            var altLoadmodeScrollListner = function () {
+                if (lazySizesCfg.loadMode == 3) {
+                    lazySizesCfg.loadMode = 2;
+                }
+
+                afterScroll();
+            };
+
+            var onload = function onload() {
+                if (isCompleted) {
+                    return;
+                }
+
+                if (Date.now() - started < 999) {
+                    setTimeout(onload, 999);
+                    return;
+                }
+
+                isCompleted = true;
+                lazySizesCfg.loadMode = 3;
+                throttledCheckElements();
+                addEventListener('scroll', altLoadmodeScrollListner, true);
+            };
+
+            return {
+                _: function _() {
+                    started = Date.now();
+                    lazysizes.elements = document.getElementsByClassName(lazySizesCfg.lazyClass);
+                    preloadElems = document.getElementsByClassName(lazySizesCfg.lazyClass + ' ' + lazySizesCfg.preloadClass);
+                    addEventListener('scroll', throttledCheckElements, true);
+                    addEventListener('resize', throttledCheckElements, true);
+                    addEventListener('pageshow', function (e) {
+                        if (e.persisted) {
+                            var loadingElements = document.querySelectorAll('.' + lazySizesCfg.loadingClass);
+
+                            if (loadingElements.length && loadingElements.forEach) {
+                                requestAnimationFrame(function () {
+                                    loadingElements.forEach(function (img) {
+                                        if (img.complete) {
+                                            unveilElement(img);
+                                        }
+                                    });
+                                });
+                            }
+                        }
+                    });
+
+                    if (window.MutationObserver) {
+                        new MutationObserver(throttledCheckElements).observe(docElem, {
+                            childList: true,
+                            subtree: true,
+                            attributes: true
+                        });
+                    } else {
+                        docElem.addEventListener('DOMNodeInserted', throttledCheckElements, true);
+                        docElem.addEventListener('DOMAttrModified', throttledCheckElements, true);
+                        setInterval(throttledCheckElements, 999);
+                    }
+
+                    addEventListener('hashchange', throttledCheckElements, true); //, 'fullscreenchange'
+                    ['focus', 'mouseover', 'click', 'load', 'transitionend', 'animationend'].forEach(function (name) {
+                        document.addEventListener(name, throttledCheckElements, true);
+                    });
+
+                    if (/d$|^c/.test(document.readyState)) {
+                        onload();
+                    } else {
+                        addEventListener('load', onload);
+                        document.addEventListener('DOMContentLoaded', throttledCheckElements);
+                        setTimeout(onload, 20000);
+                    }
+
+                    if (lazysizes.elements.length) {
+                        checkElements();
+                        rAF._lsFlush();
+                    } else {
+                        throttledCheckElements();
+                    }
+                },
+                checkElems: throttledCheckElements,
+                unveil: unveilElement,
+                _aLSL: altLoadmodeScrollListner
+            };
+        }();
+
         var init = function init() {
             if (!init.i && document.getElementsByClassName) {
                 init.i = true;
-
                 autoSizer._();
-
                 loader._();
             }
         };
@@ -3817,6 +3398,7 @@
                 init();
             }
         });
+
         lazysizes = {
             cfg: lazySizesCfg,
             autoSizer: autoSizer,
@@ -3834,9 +3416,10 @@
     }();
 
     // 图片尺寸处理
-    (function (window, factory) {
-        var globalInstall = function globalInstall() {
+    var loadLazy = (function (window, factory) {
+        var globalInstall = function () {
             factory(window.lazySizes);
+            console.log('event', arguments)
             window.removeEventListener('lazyunveilread', globalInstall, true);
         };
 
@@ -3864,9 +3447,7 @@
 
         (function () {
             var prop;
-
             var noop = function noop() { };
-
             var riasDefaults = {
                 prefix: '',
                 postfix: '',
@@ -3879,19 +3460,13 @@
                 aspectratio: false
             };
             config = lazySizes && lazySizes.cfg;
-
             if (!config.supportsType) {
-                config.supportsType = function (type
-                    /*, elem*/
-                ) {
+                config.supportsType = function (type) {
                     return !type;
                 };
             }
 
-            if (!config.rias) {
-                config.rias = {};
-            }
-
+            !config.rias && (config.rias = {});
             riasCfg = config.rias;
 
             if (!('widths' in riasCfg)) {
@@ -3903,11 +3478,9 @@
 
                     while (!width || width < 3000) {
                         i += 5;
-
                         if (i > 30) {
                             i += 1;
                         }
-
                         width = 36 * i;
                         widths.push(width);
                     }
@@ -3931,13 +3504,10 @@
 
             setOption = function setOption(attr, run) {
                 var attrVal = elem.getAttribute('data-' + attr);
-
                 if (!attrVal) {
                     // no data- attr, get value from the CSS
                     var styles = elemStyles.getPropertyValue('--ls-' + attr); // at least Safari 9 returns null rather than
                     // an empty string for getPropertyValue causing
-                    // .trim() to fail
-
                     if (styles) {
                         attrVal = styles.trim();
                     }
@@ -4063,13 +3633,9 @@
         }
 
         addEventListener('lazybeforesizes', function (e) {
-            if (e.detail.instance != lazySizes) {
-                return;
-            }
-
+            if (e.detail.instance != lazySizes) return;
             var elem, src, elemOpts, parent, sources, i, len, sourceSrc, sizes, detail, hasPlaceholder, modified, emptyList;
             elem = e.target;
-
             if (!e.detail.dataAttr || e.defaultPrevented || riasCfg.disabled || !((sizes = elem.getAttribute(config.sizesAttr) || elem.getAttribute('sizes')) && regAllowedSizes.test(sizes))) {
                 return;
             }
@@ -4115,8 +3681,9 @@
                     });
                 }
             }
-        }, true); // partial polyfill
+        }, true);
 
+        // partial polyfill
         var polyfill = function () {
             var ascendingSort = function ascendingSort(a, b) {
                 return a.w - b.w;
@@ -4197,7 +3764,7 @@
                 return src;
             };
 
-            var _polyfill = function polyfill(e) {
+            var _polyfill = function (e) {
                 if (e.detail.instance != lazySizes) {
                     return;
                 }
@@ -4239,12 +3806,9 @@
 
     class FeaturedCollectionSection {
         constructor(element) {
-
             this.element = element;
             this.delegateElement = new Delegate(this.element);
-
             this.options = JSON.parse(this.element.getAttribute('data-section-settings'));
-
             if (!this.options['stackable']) {
                 this.flickityInstance = new Flickity(this.element.querySelector('.product-list'), {
                     watchCSS: true,
@@ -4289,7 +3853,6 @@
 
         attachListeners() {
             var _this2 = this;
-
             this.fixSafariListener = this.fixSafari.bind(this);
             window.addEventListener('resize', this.fixSafariListener);
             this.delegateElement.on('click', '[data-action="add-to-cart"]', this.addToCart.bind(this));
@@ -4393,7 +3956,6 @@
             });
             event.preventDefault();
         }
-
     }
 
     class SectionContainer {
@@ -4414,7 +3976,6 @@
         }
         register(type, constructor) {
             var _this = this;
-
             this.constructors[type] = constructor;
             document.querySelectorAll("[data-section-type=".concat(type, "]")).forEach(function (container) {
                 _this.createInstance(container, constructor);
@@ -4429,20 +3990,17 @@
         }
         removeInstance(array, key, value) {
             var i = array.length;
-
             while (i--) {
                 if (array[i][key] === value) {
                     array.splice(i, 1);
                     break;
                 }
             }
-
             return array;
         }
 
         onSectionLoad(event) {
             var container = event.target.querySelector('[data-section-id]');
-
             if (container) {
                 this.createInstance(container);
             }
@@ -4450,20 +4008,16 @@
 
         onSectionUnload(event) {
             var instance = this.findInstance(this.instances, 'id', event.detail.sectionId);
-
             if (!instance) {
                 return;
             }
-
             if (typeof instance.onUnload === 'function') {
                 instance.onUnload(event);
             }
-
             this.instances = this.removeInstance(this.instances, 'id', event.detail.sectionId);
         }
         onSelect(event) {
             var instance = this.findInstance(this.instances, 'id', event.detail.sectionId);
-
             if (instance && typeof instance.onSelect === 'function') {
                 instance.onSelect(event);
             }
@@ -4471,21 +4025,18 @@
 
         onDeselect(event) {
             var instance = this.findInstance(this.instances, 'id', event.detail.sectionId);
-
             if (instance && typeof instance.onDeselect === 'function') {
                 instance.onDeselect(event);
             }
         }
         onReorder(event) {
             var instance = this.findInstance(this.instances, 'id', event.detail.sectionId);
-
             if (instance && typeof instance.onReorder === 'function') {
                 instance.onReorder(event);
             }
         }
         onBlockSelect(event) {
             var instance = this.findInstance(this.instances, 'id', event.detail.sectionId);
-
             if (instance && typeof instance.onBlockSelect === 'function') {
                 instance.onBlockSelect(event);
             }
@@ -4501,7 +4052,6 @@
             var id = container.getAttribute('data-section-id'),
                 type = container.getAttribute('data-section-type');
             constructor = constructor || this.constructors[type];
-
             if (typeof constructor === 'undefined') {
                 return;
             }
@@ -4517,10 +4067,6 @@
             }
         }
     }
-
-
-
-
 
     const sections = new SectionContainer()
     sections.register('featured-collection', FeaturedCollectionSection)
