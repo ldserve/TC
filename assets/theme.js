@@ -1,173 +1,354 @@
 ~function () {
-    var jQuery = window.jQuery || '';
 
-    function getSize(elem) {
+    var utils = function () {
+        var utils = {};
 
-        function getStyleSize(value) {
-            var num = parseFloat(value); // not a percent like '100%', and a number
-            var isValid = value.indexOf('%') == -1 && !isNaN(num);
-            return isValid && num;
-        }
-
-        function noop() { }
-
-        var logError = typeof console == 'undefined' ? noop : function (message) {
-            console.error(message);
+        utils.extend = function (a, b) {
+            for (var prop in b) {
+                a[prop] = b[prop];
+            }
+            return a;
         };
+        utils.modulo = function (num, div) {
+            return (num % div + div) % div;
+        };
+        utils.makeArray = function (obj) {
+            var arraySlice = Array.prototype.slice; // turn element or nodeList into an array
+            if (Array.isArray(obj)) {
+                // use object if already an array
+                return obj;
+            } // return empty array if undefined or null. #6
 
-        // -------------------------- measurements -------------------------- //
-        var measurements = ['paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'borderLeftWidth', 'borderRightWidth', 'borderTopWidth', 'borderBottomWidth'];
-        var measurementsLength = measurements.length;
-
-        function getZeroSize() {
-            var size = {
-                width: 0,
-                height: 0,
-                innerWidth: 0,
-                innerHeight: 0,
-                outerWidth: 0,
-                outerHeight: 0
-            };
-
-            for (var i = 0; i < measurementsLength; i++) {
-                var measurement = measurements[i];
-                size[measurement] = 0;
+            if (obj === null || obj === undefined) {
+                return [];
             }
-            return size;
+            var isArrayLike = _typeof(obj) == 'object' && typeof obj.length == 'number';
+
+            if (isArrayLike) {
+                // convert nodeList to array
+                return arraySlice.call(obj);
+            } // array of single index
+            return [obj];
+        };
+        utils.matchesTag = function (tagName, element) {
+            return tagName.toLowerCase() === element.tagName.toLowerCase();
         }
 
-        // -------------------------- getStyle -------------------------- //
-        /*  getStyle, get style of element, check for Firefox bug  */
-        function getStyle(elem) {
-            var style = getComputedStyle(elem);
-            if (!style) {
-                logError('Style returned ' + style + '. Are you running this code in a hidden iframe on Firefox? ' + 'See https://bit.ly/getsizebug1');
-            }
-            return style;
+        utils.matchesId = function (id, element) {
+            return id === element.id;
         }
-
-        // -------------------------- setup -------------------------- //
-        var isSetup = false;
-        var isBoxSizeOuter;
-        /**
-         * setup
-         * check isBoxSizerOuter
-         * do on first getSize() rather than on page load for Firefox bug
-         */
-        function setup() {
-            // setup once
-            if (isSetup) return;
-            isSetup = true;
-            // -------------------------- box sizing -------------------------- //
-            /**
-             * Chrome & Safari measure the outer-width on style.width on border-box elems
-             * IE11 & Firefox<29 measures the inner-width
-             */
-            var div = document.createElement('div');
-            div.style.width = '200px';
-            div.style.padding = '1px 2px 3px 4px';
-            div.style.borderStyle = 'solid';
-            div.style.borderWidth = '1px 2px 3px 4px';
-            div.style.boxSizing = 'border-box';
-            var body = document.body || document.documentElement;
-            body.appendChild(div);
-            var style = getStyle(div); // round value for browser zoom. desandro/masonry#928
-            isBoxSizeOuter = Math.round(getStyleSize(style.width)) == 200;
-            getSize.isBoxSizeOuter = isBoxSizeOuter;
-            body.removeChild(div);
-        }
-
-        // -------------------------- getSize -------------------------- //
-        function getSize(elem) {
-            setup(); // use querySeletor if elem is string
-
-            if (typeof elem == 'string') {
-                elem = document.querySelector(elem);
+        // ----- removeFrom ----- //
+        utils.removeFrom = function (ary, obj) {
+            var index = ary.indexOf(obj);
+            if (index != -1) {
+                ary.splice(index, 1);
             }
-            // do not proceed on non-objects
-            if (!elem || _typeof(elem) != 'object' || !elem.nodeType) {
-                return;
-            }
+        };
+        // ----- getParent ----- //
+        utils.getParent = function (elem, selector) {
+            while (elem.parentNode && elem != document.body) {
+                elem = elem.parentNode;
 
-            var style = getStyle(elem); // if hidden, everything is 0
-
-            if (style.display == 'none') {
-                return getZeroSize();
-            }
-
-            var size = {};
-            size.width = elem.offsetWidth;
-            size.height = elem.offsetHeight;
-            var isBorderBox = size.isBorderBox = style.boxSizing == 'border-box'; // get all measurements
-
-            for (var i = 0; i < measurementsLength; i++) {
-                var measurement = measurements[i];
-                var value = style[measurement];
-                var num = parseFloat(value); // any 'auto', 'medium' value will be 0
-                size[measurement] = !isNaN(num) ? num : 0;
-            }
-            var paddingWidth = size.paddingLeft + size.paddingRight;
-            var paddingHeight = size.paddingTop + size.paddingBottom;
-            var marginWidth = size.marginLeft + size.marginRight;
-            var marginHeight = size.marginTop + size.marginBottom;
-            var borderWidth = size.borderLeftWidth + size.borderRightWidth;
-            var borderHeight = size.borderTopWidth + size.borderBottomWidth;
-            var isBorderBoxSizeOuter = isBorderBox && isBoxSizeOuter; // overwrite width and height if we can get it from style
-
-            var styleWidth = getStyleSize(style.width);
-
-            if (styleWidth !== false) {
-                size.width = styleWidth + ( // add padding and border unless it's already including it
-                    isBorderBoxSizeOuter ? 0 : paddingWidth + borderWidth);
-            }
-
-            var styleHeight = getStyleSize(style.height);
-
-            if (styleHeight !== false) {
-                size.height = styleHeight + ( // add padding and border unless it's already including it
-                    isBorderBoxSizeOuter ? 0 : paddingHeight + borderHeight);
-            }
-
-            size.innerWidth = size.width - (paddingWidth + borderWidth);
-            size.innerHeight = size.height - (paddingHeight + borderHeight);
-            size.outerWidth = size.width + marginWidth;
-            size.outerHeight = size.height + marginHeight;
-            return size;
-        }
-
-        return getSize(elem);
-    }
-    function matchesSelector(elem) {
-        var matchesMethod = function () {
-            var ElemProto = window.Element.prototype;
-            // check for the standard method name first
-            if (ElemProto.matches) {
-                return 'matches';
-            } // check un-prefixed
-
-            if (ElemProto.matchesSelector) {
-                return 'matchesSelector';
-            } // check vendor prefixes
-
-            var prefixes = ['webkit', 'moz', 'ms', 'o'];
-            for (var i = 0; i < prefixes.length; i++) {
-                var prefix = prefixes[i];
-                var method = prefix + 'MatchesSelector';
-
-                if (ElemProto[method]) {
-                    return method;
+                if (utils.matchesSelector(elem, selector)) {
+                    return elem;
                 }
             }
-        }();
+        };
+        utils.matchesSelector = function (elem) {
+            var matchesMethod = function () {
+                var ElemProto = window.Element.prototype;
+                // check for the standard method name first
+                if (ElemProto.matches) {
+                    return 'matches';
+                } // check un-prefixed
 
-        return elem[matchesMethod](selector);
-    };
-    function matchesTag(tagName, element) {
-        return tagName.toLowerCase() === element.tagName.toLowerCase();
-    }
-    function matchesId(id, element) {
-        return id === element.id;
-    }
+                if (ElemProto.matchesSelector) {
+                    return 'matchesSelector';
+                } // check vendor prefixes
+
+                var prefixes = ['webkit', 'moz', 'ms', 'o'];
+                for (var i = 0; i < prefixes.length; i++) {
+                    var prefix = prefixes[i];
+                    var method = prefix + 'MatchesSelector';
+
+                    if (ElemProto[method]) {
+                        return method;
+                    }
+                }
+            }();
+
+            return elem[matchesMethod](selector);
+        };
+        // ----- getQueryElement ----- //
+        utils.getQueryElement = function (elem) {
+            if (typeof elem == 'string') {
+                return document.querySelector(elem);
+            }
+            return elem;
+        };
+
+        // ----- handleEvent --enable .ontype to trigger from .addEventListener( elem, 'type' )----- //
+        utils.handleEvent = function (event) {
+            var method = 'on' + event.type;
+            if (this[method]) {
+                this[method](event);
+            }
+        };
+
+        // ----- filterFindElements ----- //
+        utils.filterFindElements = function (elems, selector) {
+            // make array of elems
+            elems = utils.makeArray(elems);
+            var ffElems = [];
+            elems.forEach(function (elem) {
+                // check that elem is an actual element
+                if (!(elem instanceof HTMLElement)) {
+                    return;
+                }
+                // add elem if no selector
+                if (!selector) {
+                    ffElems.push(elem);
+                    return;
+                }
+                // filter & find items if we have a selector
+                if (utils.matchesSelector(elem, selector)) {
+                    ffElems.push(elem);
+                }
+                // find children
+                var childElems = elem.querySelectorAll(selector);
+                // concat childElems to filterFound array
+                for (var i = 0; i < childElems.length; i++) {
+                    ffElems.push(childElems[i]);
+                }
+            });
+            return ffElems;
+        };
+
+        // ----- debounceMethod ----- //
+        utils.debounceMethod = function (_class, methodName, threshold) {
+            threshold = threshold || 100; // original method
+
+            var method = _class.prototype[methodName];
+            var timeoutName = methodName + 'Timeout';
+            _class.prototype[methodName] = function () {
+                var timeout = this[timeoutName];
+                clearTimeout(timeout);
+                var args = arguments;
+                var _this = this;
+                this[timeoutName] = setTimeout(function () {
+                    method.apply(_this, args);
+                    delete _this[timeoutName];
+                }, threshold);
+            };
+        };
+
+        // ----- docReady ----- //
+        utils.docReady = function (callback) {
+            var readyState = document.readyState;
+            if (readyState == 'complete' || readyState == 'interactive') {
+                // do async to allow for other scripts to run. metafizzy/flickity#441
+                setTimeout(callback);
+            } else {
+                document.addEventListener('DOMContentLoaded', callback);
+            }
+        };
+        //Responsive
+        utils.getCurrentBreakpoint = function () {
+            if (window.matchMedia('screen and (max-width: 640px)').matches) {
+                return 'phone';
+            }
+
+            if (window.matchMedia('screen and (min-width: 641px) and (max-width: 1023px)').matches) {
+                return 'tablet';
+            }
+
+            if (window.matchMedia('screen and (min-width: 1024px) and (max-width: 1279px)').matches) {
+                return 'lap';
+            }
+
+            if (window.matchMedia('screen and (min-width: 1280px)').matches) {
+                return 'desk';
+            }
+        }
+        utils.matchesBreakpoint= function (breakpoint) {
+            switch (breakpoint) {
+                case 'phone':
+                    return window.matchMedia('screen and (max-width: 640px)').matches;
+
+                case 'tablet':
+                    return window.matchMedia('screen and (min-width: 641px) and (max-width: 1023px)').matches;
+
+                case 'tablet-and-up':
+                    return window.matchMedia('screen and (min-width: 641px)').matches;
+
+                case 'pocket':
+                    return window.matchMedia('screen and (max-width: 1023px)').matches;
+
+                case 'lap':
+                    return window.matchMedia('screen and (min-width: 1024px) and (max-width: 1279px)').matches;
+
+                case 'lap-and-up':
+                    return window.matchMedia('screen and (min-width: 1024px)').matches;
+
+                case 'desk':
+                    return window.matchMedia('screen and (min-width: 1280px)').matches;
+
+                case 'widescreen':
+                    return window.matchMedia('screen and (min-width: 1440px)').matches;
+
+                case 'supports-hover':
+                    return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            }
+        }
+        // ----- htmlInit ----- //
+        utils.toDashed = function (str) {
+            return str.replace(/(.)([A-Z])/g, function (match, $1, $2) {
+                return $1 + '-' + $2;
+            }).toLowerCase();
+        };
+        utils.getSize = function (elem) {
+
+            function getStyleSize(value) {
+                var num = parseFloat(value); // not a percent like '100%', and a number
+                var isValid = value.indexOf('%') == -1 && !isNaN(num);
+                return isValid && num;
+            }
+
+            function noop() { }
+            var logError = typeof console == 'undefined' ? noop : function (message) {
+                console.error(message);
+            };
+
+            // -------------------------- measurements -------------------------- //
+            var measurements = ['paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'borderLeftWidth', 'borderRightWidth', 'borderTopWidth', 'borderBottomWidth'];
+            var measurementsLength = measurements.length;
+
+            function getZeroSize() {
+                var size = {
+                    width: 0,
+                    height: 0,
+                    innerWidth: 0,
+                    innerHeight: 0,
+                    outerWidth: 0,
+                    outerHeight: 0
+                };
+
+                for (var i = 0; i < measurementsLength; i++) {
+                    var measurement = measurements[i];
+                    size[measurement] = 0;
+                }
+                return size;
+            }
+
+            /*  getStyle, get style of element, check for Firefox bug  */
+            function getStyle(elem) {
+                var style = getComputedStyle(elem);
+                if (!style) {
+                    logError('Style returned ' + style + '. Are you running this code in a hidden iframe on Firefox? ' + 'See https://bit.ly/getsizebug1');
+                }
+                return style;
+            }
+
+            var isSetup = false;
+            var isBoxSizeOuter;
+            /**
+             * setup
+             * check isBoxSizerOuter
+             * do on first getSize() rather than on page load for Firefox bug
+             */
+            function setup() {
+                // setup once
+                if (isSetup) return;
+                isSetup = true;
+                // -------------------------- box sizing -------------------------- //
+                /**
+                 * Chrome & Safari measure the outer-width on style.width on border-box elems
+                 * IE11 & Firefox<29 measures the inner-width
+                 */
+                var div = document.createElement('div');
+                div.style.width = '200px';
+                div.style.padding = '1px 2px 3px 4px';
+                div.style.borderStyle = 'solid';
+                div.style.borderWidth = '1px 2px 3px 4px';
+                div.style.boxSizing = 'border-box';
+                var body = document.body || document.documentElement;
+                body.appendChild(div);
+                var style = getStyle(div); // round value for browser zoom. desandro/masonry#928
+                isBoxSizeOuter = Math.round(getStyleSize(style.width)) == 200;
+                getSize.isBoxSizeOuter = isBoxSizeOuter;
+                body.removeChild(div);
+            }
+
+            // -------------------------- getSize -------------------------- //
+            function getSize(elem) {
+                setup(); // use querySeletor if elem is string
+
+                if (typeof elem == 'string') {
+                    elem = document.querySelector(elem);
+                }
+                // do not proceed on non-objects
+                if (!elem || _typeof(elem) != 'object' || !elem.nodeType) {
+                    return;
+                }
+
+                var style = getStyle(elem); // if hidden, everything is 0
+
+                if (style.display == 'none') {
+                    return getZeroSize();
+                }
+
+                var size = {};
+                size.width = elem.offsetWidth;
+                size.height = elem.offsetHeight;
+                var isBorderBox = size.isBorderBox = style.boxSizing == 'border-box'; // get all measurements
+
+                for (var i = 0; i < measurementsLength; i++) {
+                    var measurement = measurements[i];
+                    var value = style[measurement];
+                    var num = parseFloat(value); // any 'auto', 'medium' value will be 0
+                    size[measurement] = !isNaN(num) ? num : 0;
+                }
+                var paddingWidth = size.paddingLeft + size.paddingRight;
+                var paddingHeight = size.paddingTop + size.paddingBottom;
+                var marginWidth = size.marginLeft + size.marginRight;
+                var marginHeight = size.marginTop + size.marginBottom;
+                var borderWidth = size.borderLeftWidth + size.borderRightWidth;
+                var borderHeight = size.borderTopWidth + size.borderBottomWidth;
+                var isBorderBoxSizeOuter = isBorderBox && isBoxSizeOuter; // overwrite width and height if we can get it from style
+
+                var styleWidth = getStyleSize(style.width);
+
+                if (styleWidth !== false) {
+                    size.width = styleWidth + ( // add padding and border unless it's already including it
+                        isBorderBoxSizeOuter ? 0 : paddingWidth + borderWidth);
+                }
+
+                var styleHeight = getStyleSize(style.height);
+
+                if (styleHeight !== false) {
+                    size.height = styleHeight + ( // add padding and border unless it's already including it
+                        isBorderBoxSizeOuter ? 0 : paddingHeight + borderHeight);
+                }
+
+                size.innerWidth = size.width - (paddingWidth + borderWidth);
+                size.innerHeight = size.height - (paddingHeight + borderHeight);
+                size.outerWidth = size.width + marginWidth;
+                size.outerHeight = size.height + marginHeight;
+                return size;
+            }
+
+            return getSize(elem);
+        }
+        utils.moveElements = function (elems, toElem) {
+            elems = utils.makeArray(elems);
+
+            while (elems.length) {
+                toElem.appendChild(elems.shift());
+            }
+        }
+        return utils
+    }();
+
     /* 事件委托器 */
     class Delegate {
         constructor(root) {
@@ -195,19 +376,11 @@
             }
             // If no root or root is not
             // a dom node, then remove internal
-            // root reference and exit here
             if (!root || !root.addEventListener) {
-                if (this.rootElement) {
-                    delete this.rootElement;
-                }
+                this.rootElement && delete this.rootElement;
                 return this;
             }
 
-            /**
-             * The root node at which
-             * listeners are attached.
-             * @type Node
-             */
             this.rootElement = root; // Set up master event listeners
             for (eventType in listenerMap[1]) {
                 if (listenerMap[1].hasOwnProperty(eventType)) {
@@ -222,7 +395,7 @@
             }
             return this;
         };
-        // 
+
         captureForType(eventType) {
             return ['blur', 'error', 'focus', 'load', 'resize', 'scroll'].indexOf(eventType) !== -1;
         };
@@ -268,10 +441,10 @@
                 matcher = matchesRoot.bind(this); // Compile a matcher for the given selector
             } else if (/^[a-z]+$/i.test(selector)) {
                 matcherParam = selector;
-                matcher = matchesTag;
+                matcher = utils.matchesTag;
             } else if (/^#[a-z0-9\-_]+$/i.test(selector)) {
                 matcherParam = selector.slice(1);
-                matcher = matchesId;
+                matcher = utils.matchesId;
             } else {
                 matcherParam = selector;
                 matcher = Element.prototype.matches;
@@ -342,15 +515,9 @@
         };
 
         handle(event) {
-            var i;
-            var l;
+            var i, l, root, phase, listener, returned, target;
             var type = event.type;
-            var root;
-            var phase;
-            var listener;
-            var returned;
             var listenerList = [];
-            var target;
             var eventIgnore = 'ftLabsDelegateIgnore';
 
             if (event[eventIgnore] === true) {
@@ -455,248 +622,6 @@
         };
     }
 
-    // 计算子元素位置
-    class Cell {
-        constructor(elem, parent) {
-            this.element = elem;
-            this.parent = parent;
-            this.create();
-            this.setDefaultTarget = this.updateTarget
-        }
-
-        create() {
-            this.element.style.position = 'absolute';
-            this.element.setAttribute('aria-hidden', 'true');
-            this.x = 0;
-            this.shift = 0;
-        };
-
-        updateTarget() {
-            var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
-            this.target = this.x + this.size[marginProperty] + this.size.width * this.parent.cellAlign;
-        };
-
-        destroy() {
-            // reset style
-            this.unselect();
-            this.element.style.position = '';
-            var side = this.parent.originSide;
-            this.element.style[side] = '';
-        };
-
-        getSize() {
-            this.size = getSize(this.element);
-        };
-
-        setPosition(x) {
-            this.x = x;
-            this.updateTarget();
-            this.renderPosition(x);
-        };
-
-        // 元素偏移量
-        renderPosition(x) {
-            // render position of cell with in slider
-            var side = this.parent.originSide;
-            this.parent.getPositionValue = animate.getPositionValue
-            this.element.style[side] = this.parent.getPositionValue(x);
-        };
-
-        select() {
-            this.element.classList.add('is-selected');
-            this.element.removeAttribute('aria-hidden');
-        };
-
-        unselect() {
-            this.element.classList.remove('is-selected');
-            this.element.setAttribute('aria-hidden', 'true');
-        };
-
-        wrapShift(shift) {
-            this.shift = shift;
-            this.renderPosition(this.x + this.parent.slideableWidth * shift);
-        };
-
-        remove() {
-            this.element.parentNode.removeChild(this.element);
-        };
-
-    }
-
-    // 工具
-    class Utils {
-        constructor() { }
-
-        extend(a, b) {
-            for (var prop in b) {
-                a[prop] = b[prop];
-            }
-            return a;
-        };
-        modulo(num, div) {
-            return (num % div + div) % div;
-        };
-
-        makeArray(obj) {
-            var arraySlice = Array.prototype.slice; // turn element or nodeList into an array
-            if (Array.isArray(obj)) {
-                // use object if already an array
-                return obj;
-            } // return empty array if undefined or null. #6
-
-            if (obj === null || obj === undefined) {
-                return [];
-            }
-            var isArrayLike = _typeof(obj) == 'object' && typeof obj.length == 'number';
-
-            if (isArrayLike) {
-                // convert nodeList to array
-                return arraySlice.call(obj);
-            } // array of single index
-            return [obj];
-        };
-
-        // ----- removeFrom ----- //
-        removeFrom(ary, obj) {
-            var index = ary.indexOf(obj);
-            if (index != -1) {
-                ary.splice(index, 1);
-            }
-        };
-        // ----- getParent ----- //
-        getParent(elem, selector) {
-            while (elem.parentNode && elem != document.body) {
-                elem = elem.parentNode;
-
-                if (matchesSelector(elem, selector)) {
-                    return elem;
-                }
-            }
-        };
-
-        // ----- getQueryElement ----- //
-        // use element as selector string
-        getQueryElement(elem) {
-            if (typeof elem == 'string') {
-                return document.querySelector(elem);
-            }
-            return elem;
-        };
-
-        // ----- handleEvent ----- //
-        // enable .ontype to trigger from .addEventListener( elem, 'type' )
-        handleEvent(event) {
-            var method = 'on' + event.type;
-            if (this[method]) {
-                this[method](event);
-            }
-        };
-
-        // ----- filterFindElements ----- //
-        filterFindElements(elems, selector) {
-            // make array of elems
-            elems = this.makeArray(elems);
-            var ffElems = [];
-            elems.forEach(function (elem) {
-                // check that elem is an actual element
-                if (!(elem instanceof HTMLElement)) {
-                    return;
-                }
-                // add elem if no selector
-                if (!selector) {
-                    ffElems.push(elem);
-                    return;
-                }
-                // filter & find items if we have a selector
-                // filter
-                if (matchesSelector(elem, selector)) {
-                    ffElems.push(elem);
-                }
-                // find children
-                var childElems = elem.querySelectorAll(selector);
-                // concat childElems to filterFound array
-                for (var i = 0; i < childElems.length; i++) {
-                    ffElems.push(childElems[i]);
-                }
-            });
-            return ffElems;
-        };
-
-        // ----- debounceMethod ----- //
-        debounceMethod(_class, methodName, threshold) {
-            threshold = threshold || 100; // original method
-
-            var method = _class.prototype[methodName];
-            var timeoutName = methodName + 'Timeout';
-            _class.prototype[methodName] = function () {
-                var timeout = this[timeoutName];
-                clearTimeout(timeout);
-                var args = arguments;
-                var _this = this;
-                this[timeoutName] = setTimeout(function () {
-                    method.apply(_this, args);
-                    delete _this[timeoutName];
-                }, threshold);
-            };
-        };
-
-        // ----- docReady ----- //
-        docReady(callback) {
-            var readyState = document.readyState;
-            if (readyState == 'complete' || readyState == 'interactive') {
-                // do async to allow for other scripts to run. metafizzy/flickity#441
-                setTimeout(callback);
-            } else {
-                document.addEventListener('DOMContentLoaded', callback);
-            }
-        };
-
-        // ----- htmlInit ----- //
-        toDashed(str) {
-            return str.replace(/(.)([A-Z])/g, function (match, $1, $2) {
-                return $1 + '-' + $2;
-            }).toLowerCase();
-        };
-
-        /**
-         * allow user to initialize classes via [data-namespace] or .js-namespace class
-         * htmlInit( Widget, 'widgetName' )
-         * options are parsed from data-namespace-options
-         */
-        htmlInit(WidgetClass, namespace) {
-            this.docReady(function () {
-                var dashedNamespace = utils.toDashed(namespace);
-                var dataAttr = 'data-' + dashedNamespace;
-                var dataAttrElems = document.querySelectorAll('[' + dataAttr + ']');
-                var jsDashElems = document.querySelectorAll('.js-' + dashedNamespace);
-                var elems = utils.makeArray(dataAttrElems).concat(utils.makeArray(jsDashElems));
-                var dataOptionsAttr = dataAttr + '-options';
-
-                elems.forEach(function (elem) {
-                    var attr = elem.getAttribute(dataAttr) || elem.getAttribute(dataOptionsAttr);
-                    var options;
-                    try {
-                        options = attr && JSON.parse(attr);
-                    } catch (error) {
-                        // log error, do not initialize
-                        console && console.error('Error parsing ' + dataAttr + ' on ' + elem.className + ': ' + error);
-                        return;
-                    } // initialize
-                    var instance = new WidgetClass(elem, options); // make available via $().data('namespace')
-                });
-            });
-        };
-
-    }
-    const utils = new Utils()
-    function moveElements(elems, toElem) {
-        elems = utils.makeArray(elems);
-
-        while (elems.length) {
-            toElem.appendChild(elems.shift());
-        }
-    }
-
     // 事件触发器
     class EvEmitter {
         constructor() { }
@@ -793,7 +718,6 @@
 
             if (this.isAnimating) {
                 var _this = this;
-
                 requestAnimationFrame(function animateFrame() {
                     _this.animate();
                 });
@@ -815,12 +739,10 @@
 
         pro.setTranslateX = function (x, is3d) {
             x += this.cursorPosition; // reverse if right-to-left and using transform
-
             x = this.options.rightToLeft ? -x : x;
             var translateX = this.getPositionValue(x);
             // use 3D tranforms for hardware acceleration on iOS
             // but use 2D when settled, for better font-rendering
-
             this.slider.style.transform = is3d ? 'translate3d(' + translateX + ',0,0)' : 'translateX(' + translateX + ')';
         };
 
@@ -843,7 +765,6 @@
 
             this.x = -this.selectedSlide.target;
             this.velocity = 0; // stop wobble
-
             this.positionSlider();
         };
 
@@ -863,11 +784,9 @@
                 this.restingFrames++;
             } // stop animating if resting for 3 or more frames
 
-
             if (this.restingFrames > 2) {
                 this.isAnimating = false;
                 delete this.isFreeScrolling; // render position with translateX when settled
-
                 this.positionSlider();
                 this.dispatchEvent('settle', null, [this.selectedIndex]);
             }
@@ -876,13 +795,9 @@
         pro.shiftWrapCells = function (x) {
             // shift before cells
             var beforeGap = this.cursorPosition + x;
-
-            this._shiftCells(this.beforeShiftCells, beforeGap, -1); // shift after cells
-
-
+            this.shiftCells(this.beforeShiftCells, beforeGap, -1); // shift after cells
             var afterGap = this.size.innerWidth - (x + this.slideableWidth + this.cursorPosition);
-
-            this._shiftCells(this.afterShiftCells, afterGap, 1);
+            this.shiftCells(this.afterShiftCells, afterGap, 1);
         };
 
         pro.shiftCells = function (cells, gap, shift) {
@@ -928,7 +843,6 @@
                 return;
             } // change the position to drag position by applying force
 
-
             var dragVelocity = this.dragX - this.x;
             var dragForce = dragVelocity - this.velocity;
             this.applyForce(dragForce);
@@ -949,6 +863,73 @@
         return pro
     })();
 
+    // 计算子元素位置
+    class Cell {
+        constructor(elem, parent) {
+            this.element = elem;
+            this.parent = parent;
+            this.create();
+            this.setDefaultTarget = this.updateTarget
+        }
+
+        create() {
+            this.element.style.position = 'absolute';
+            this.element.setAttribute('aria-hidden', 'true');
+            this.x = 0;
+            this.shift = 0;
+        };
+
+        updateTarget() {
+            var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
+            this.target = this.x + this.size[marginProperty] + this.size.width * this.parent.cellAlign;
+        };
+
+        destroy() {
+            // reset style
+            this.unselect();
+            this.element.style.position = '';
+            var side = this.parent.originSide;
+            this.element.style[side] = '';
+        };
+
+        getSize() {
+            this.size = utils.getSize(this.element);
+        };
+
+        setPosition(x) {
+            this.x = x;
+            this.updateTarget();
+            this.renderPosition(x);
+        };
+
+        // 元素偏移量
+        renderPosition(x) {
+            // render position of cell with in slider
+            var side = this.parent.originSide;
+            this.parent.getPositionValue = animate.getPositionValue
+            this.element.style[side] = this.parent.getPositionValue(x);
+        };
+
+        select() {
+            this.element.classList.add('is-selected');
+            this.element.removeAttribute('aria-hidden');
+        };
+
+        unselect() {
+            this.element.classList.remove('is-selected');
+            this.element.setAttribute('aria-hidden', 'true');
+        };
+
+        wrapShift(shift) {
+            this.shift = shift;
+            this.renderPosition(this.x + this.parent.slideableWidth * shift);
+        };
+
+        remove() {
+            this.element.parentNode.removeChild(this.element);
+        };
+
+    }
 
     // 创建滑块元素
     class Flickity extends EvEmitter {
@@ -1008,7 +989,6 @@
                 return id && instances[id];
             };
 
-            utils.htmlInit(Flickity, 'flickity');
             utils.extend(Flickity.prototype, animate)
 
         }
@@ -1017,9 +997,7 @@
 
             var queryElement = utils.getQueryElement(element);
             if (!queryElement) {
-                if (console) {
-                    console.error('Bad element for Flickity: ' + (queryElement || element));
-                }
+                console && console.error('Bad element for Flickity: ' + (queryElement || element));
                 return;
             }
 
@@ -1072,7 +1050,6 @@
             Flickity.createMethods.forEach(function (method) {
                 this[method]();
             }, this);
-
             if (this.options.watchCSS) {
                 this.watchCSS();
             } else {
@@ -1099,7 +1076,7 @@
             this.getSize();
             // move initial cell elements so they can be loaded as cells
             var cellElems = this.filterFindCellElements(this.element.children);
-            moveElements(cellElems, this.slider);
+            utils.moveElements(cellElems, this.slider);
             this.viewport.appendChild(this.slider);
             this.element.appendChild(this.viewport); // get cells from children
             this.reloadCells();
@@ -1118,7 +1095,7 @@
         };
 
         getSize() {
-            this.size = getSize(this.element);
+            this.size = utils.getSize(this.element);
             this.setCellAlign();
             this.cursorPosition = this.size.innerWidth * this.cellAlign;
         };
@@ -1597,18 +1574,20 @@
 
         // ----- resize ----- //
         resize() {
-            if (!this.isActive) {
+            if (!this.isActive && window.innerWidth > 640) {
+                this.activate()
                 return;
+            }
+            if (window.innerWidth < 640) {
+                this.deactivate()
+                return
             }
 
             this.getSize(); // wrap values
             if (this.options.wrapAround) {
                 this.x = utils.modulo(this.x, this.slideableWidth);
             }
-            if (window.innerWidth < 640) {
-                this.deactivate()
-                return
-            }
+
             this.positionCells();
             this.getWrapShiftCells();
             this.setGallerySize();
@@ -1649,7 +1628,7 @@
             });
             this.element.removeChild(this.viewport); // move child elements back into element
 
-            moveElements(this.slider.children, this.element);
+            utils.moveElements(this.slider.children, this.element);
 
             if (this.options.accessibility) {
                 this.element.removeAttribute('tabIndex');
@@ -1666,10 +1645,6 @@
             window.removeEventListener('resize', this);
             this.allOff();
             this.emitEvent('destroy');
-
-            // if (jQuery && this.$element) {
-            //     jQuery.removeData(this.element, 'flickity');
-            // }
 
             delete this.element.flickityGUID;
             delete this.instances[this.guid];
@@ -1733,16 +1708,12 @@
 
     }
 
-
-    // Flickity.Cell = Cell;
-    // Flickity.Slide = Slide;
-
     var Unipointer = (function () {
 
         function noop() { }
-
         function Unipointer() { } // inherit EvEmitter
         var proto = Unipointer.prototype = Object.create(EvEmitter.prototype);
+
         proto.bindStartEvent = function (elem) {
             this._bindStartEvent(elem, true);
         };
@@ -1754,7 +1725,6 @@
          * Add or remove start event
          * @param {Boolean} isAdd - remove if falsey
          */
-
         proto._bindStartEvent = function (elem, isAdd) {
             // munge isAdd, default to true
             isAdd = isAdd === undefined ? true : isAdd;
@@ -1769,9 +1739,8 @@
             }
 
             elem[bindMethod](startEvent, this);
-        }; // trigger handler methods for events
-
-
+        };
+        // trigger handler methods for events
         proto.handleEvent = function (event) {
             var method = 'on' + event.type;
 
@@ -1789,9 +1758,8 @@
                     return touch;
                 }
             }
-        }; // ----- start event ----- //
-
-
+        };
+        // ----- start event ----- //
         proto.onmousedown = function (event) {
             // dismiss clicks from right or middle buttons
             var button = event.button;
@@ -1810,13 +1778,12 @@
         proto.onpointerdown = function (event) {
             this._pointerDown(event, event);
         };
+
         /**
          * pointer start
          * @param {Event} event
          * @param {Event or Touch} pointer
          */
-
-
         proto._pointerDown = function (event, pointer) {
             // dismiss right click and other pointers
             // button = 0 is okay, 1-4 not
@@ -1825,7 +1792,6 @@
             }
 
             this.isPointerDown = true; // save pointer identifier to match up touch events
-
             this.pointerIdentifier = pointer.pointerId !== undefined ? // pointerId for pointer events, touch.indentifier for touch events
                 pointer.pointerId : pointer.identifier;
             this.pointerDown(event, pointer);
@@ -1835,9 +1801,9 @@
             this._bindPostStartEvents(event);
 
             this.emitEvent('pointerDown', [event, pointer]);
-        }; // hash of events to be bound after start event
+        };
 
-
+        // hash of events to be bound after start event
         var postStartEvents = {
             mousedown: ['mousemove', 'mouseup'],
             touchstart: ['touchmove', 'touchend', 'touchcancel'],
@@ -1849,9 +1815,7 @@
                 return;
             } // get proper events to match start event
 
-
             var events = postStartEvents[event.type]; // bind events to node
-
             events.forEach(function (eventName) {
                 window.addEventListener(eventName, this);
             }, this); // save these arguments
@@ -1870,9 +1834,8 @@
             }, this);
 
             delete this._boundPointerEvents;
-        }; // ----- move event ----- //
-
-
+        };
+        // ----- move event ----- //
         proto.onmousemove = function (event) {
             this._pointerMove(event, event);
         };
@@ -1896,7 +1859,6 @@
          * @param {Event or Touch} pointer
          * @private
          */
-
 
         proto._pointerMove = function (event, pointer) {
             this.pointerMove(event, pointer);
@@ -1931,8 +1893,6 @@
          * @param {Event or Touch} pointer
          * @private
          */
-
-
         proto._pointerUp = function (event, pointer) {
             this._pointerDone();
 
@@ -1945,12 +1905,9 @@
         }; // ----- pointer done ----- //
         // triggered on pointer up & pointer cancel
 
-
         proto._pointerDone = function () {
             this._pointerReset();
-
             this._unbindPostStartEvents();
-
             this.pointerDone();
         };
 
@@ -1981,20 +1938,18 @@
          * @param {Event or Touch} pointer
          * @private
          */
-
-
         proto._pointerCancel = function (event, pointer) {
             this._pointerDone();
 
             this.pointerCancel(event, pointer);
-        }; // public
+        };
 
-
+        // public
         proto.pointerCancel = function (event, pointer) {
             this.emitEvent('pointerCancel', [event, pointer]);
         }; // -----  ----- //
-        // utility function for getting x/y coords from event
 
+        // utility function for getting x/y coords from event
 
         Unipointer.getPointerPoint = function (pointer) {
             return {
@@ -2006,619 +1961,6 @@
 
         return Unipointer;
     })();
-
-    var Unidragger = (function () {
-
-        function Unidragger() { } // inherit Unipointer & EvEmitter
-        var proto = Unidragger.prototype = Object.create(Unipointer.prototype); // ----- bind start ----- //
-        proto.bindHandles = function () {
-            this._bindHandles(true);
-        };
-
-        proto.unbindHandles = function () {
-            this._bindHandles(false);
-        };
-        /**
-         * Add or remove start event
-         * @param {Boolean} isAdd
-         */
-
-        proto._bindHandles = function (isAdd) {
-            // munge isAdd, default to true
-            isAdd = isAdd === undefined ? true : isAdd; // bind each handle
-
-            var bindMethod = isAdd ? 'addEventListener' : 'removeEventListener';
-            var touchAction = isAdd ? this._touchActionValue : '';
-
-            for (var i = 0; i < this.handles.length; i++) {
-                var handle = this.handles[i];
-
-                this._bindStartEvent(handle, isAdd);
-                handle[bindMethod]('click', this); // touch-action: none to override browser touch gestures. metafizzy/flickity#540
-
-                if (window.PointerEvent) {
-                    handle.style.touchAction = touchAction;
-                }
-            }
-        }; // prototype so it can be overwriteable by Flickity
-
-
-        proto._touchActionValue = 'none'; // ----- start event ----- //
-
-        /**
-         * pointer start
-         * @param {Event} event
-         * @param {Event or Touch} pointer
-         */
-
-        proto.pointerDown = function (event, pointer) {
-            var isOkay = this.okayPointerDown(event);
-
-            if (!isOkay) {
-                return;
-            } // track start event position
-            // Safari 9 overrides pageX and pageY. These values needs to be copied. flickity#842
-
-            this.pointerDownPointer = {
-                pageX: pointer.pageX,
-                pageY: pointer.pageY
-            };
-            event.preventDefault();
-            this.pointerDownBlur(); // bind move and end events
-
-            this._bindPostStartEvents(event);
-
-            this.emitEvent('pointerDown', [event, pointer]);
-        }; // nodes that have text fields
-
-        var cursorNodes = {
-            TEXTAREA: true,
-            INPUT: true,
-            SELECT: true,
-            OPTION: true
-        }; // input types that do not have text fields
-
-        var clickTypes = {
-            radio: true,
-            checkbox: true,
-            button: true,
-            submit: true,
-            image: true,
-            file: true
-        }; // dismiss inputs with text fields. flickity#403, flickity#404
-
-        proto.okayPointerDown = function (event) {
-            var isCursorNode = cursorNodes[event.target.nodeName];
-            var isClickType = clickTypes[event.target.type];
-            var isOkay = !isCursorNode || isClickType;
-
-            if (!isOkay) {
-                this._pointerReset();
-            }
-
-            return isOkay;
-        }; // kludge to blur previously focused input
-
-
-        proto.pointerDownBlur = function () {
-            var focused = document.activeElement; // do not blur body for IE10, metafizzy/flickity#117
-
-            var canBlur = focused && focused.blur && focused != document.body;
-
-            if (canBlur) {
-                focused.blur();
-            }
-        }; // ----- move event ----- //
-
-        /**
-         * drag move
-         * @param {Event} event
-         * @param {Event or Touch} pointer
-         */
-
-
-        proto.pointerMove = function (event, pointer) {
-            var moveVector = this._dragPointerMove(event, pointer);
-
-            this.emitEvent('pointerMove', [event, pointer, moveVector]);
-
-            this._dragMove(event, pointer, moveVector);
-        }; // base pointer move logic
-
-
-        proto._dragPointerMove = function (event, pointer) {
-            var moveVector = {
-                x: pointer.pageX - this.pointerDownPointer.pageX,
-                y: pointer.pageY - this.pointerDownPointer.pageY
-            }; // start drag if pointer has moved far enough to start drag
-
-            if (!this.isDragging && this.hasDragStarted(moveVector)) {
-                this._dragStart(event, pointer);
-            }
-
-            return moveVector;
-        }; // condition if pointer has moved far enough to start drag
-
-
-        proto.hasDragStarted = function (moveVector) {
-            return Math.abs(moveVector.x) > 3 || Math.abs(moveVector.y) > 3;
-        }; // ----- end event ----- //
-
-        /**
-         * pointer up
-         * @param {Event} event
-         * @param {Event or Touch} pointer
-         */
-
-
-        proto.pointerUp = function (event, pointer) {
-            this.emitEvent('pointerUp', [event, pointer]);
-
-            this._dragPointerUp(event, pointer);
-        };
-
-        proto._dragPointerUp = function (event, pointer) {
-            if (this.isDragging) {
-                this._dragEnd(event, pointer);
-            } else {
-                // pointer didn't move enough for drag to start
-                this._staticClick(event, pointer);
-            }
-        }; // -------------------------- drag -------------------------- //
-        // dragStart
-
-
-        proto._dragStart = function (event, pointer) {
-            this.isDragging = true; // prevent clicks
-
-            this.isPreventingClicks = true;
-            this.dragStart(event, pointer);
-        };
-
-        proto.dragStart = function (event, pointer) {
-            this.emitEvent('dragStart', [event, pointer]);
-        }; // dragMove
-
-
-        proto._dragMove = function (event, pointer, moveVector) {
-            // do not drag if not dragging yet
-            if (!this.isDragging) {
-                return;
-            }
-
-            this.dragMove(event, pointer, moveVector);
-        };
-
-        proto.dragMove = function (event, pointer, moveVector) {
-            event.preventDefault();
-            this.emitEvent('dragMove', [event, pointer, moveVector]);
-        }; // dragEnd
-
-
-        proto._dragEnd = function (event, pointer) {
-            // set flags
-            this.isDragging = false; // re-enable clicking async
-
-            setTimeout(function () {
-                delete this.isPreventingClicks;
-            }.bind(this));
-            this.dragEnd(event, pointer);
-        };
-
-        proto.dragEnd = function (event, pointer) {
-            this.emitEvent('dragEnd', [event, pointer]);
-        }; // ----- onclick ----- //
-        // handle all clicks and prevent clicks when dragging
-
-
-        proto.onclick = function (event) {
-            if (this.isPreventingClicks) {
-                event.preventDefault();
-            }
-        }; // ----- staticClick ----- //
-        // triggered after pointer down & up with no/tiny movement
-
-
-        proto._staticClick = function (event, pointer) {
-            // ignore emulated mouse up clicks
-            if (this.isIgnoringMouseUp && event.type == 'mouseup') {
-                return;
-            }
-
-            this.staticClick(event, pointer); // set flag for emulated clicks 300ms after touchend
-
-            if (event.type != 'mouseup') {
-                this.isIgnoringMouseUp = true; // reset flag after 300ms
-
-                setTimeout(function () {
-                    delete this.isIgnoringMouseUp;
-                }.bind(this), 400);
-            }
-        };
-
-        proto.staticClick = function (event, pointer) {
-            this.emitEvent('staticClick', [event, pointer]);
-        }; // ----- utils ----- //
-
-
-        Unidragger.getPointerPoint = Unipointer.getPointerPoint; // -----  ----- //
-
-        return Unidragger;
-    })();
-
-    var drag = (function () {
-
-        utils.extend(Flickity.defaults, {
-            draggable: '>1',
-            dragThreshold: 3
-        }); // ----- create ----- //
-
-        Flickity.createMethods.push('_createDrag'); // -------------------------- drag prototype -------------------------- //
-
-        var proto = Flickity.prototype;
-        utils.extend(proto, Unidragger.prototype);
-        proto._touchActionValue = 'pan-y'; // --------------------------  -------------------------- //
-
-        var isTouch = ('createTouch' in document);
-        var isTouchmoveScrollCanceled = false;
-
-        proto._createDrag = function () {
-            this.on('activate', this.onActivateDrag);
-            this.on('uiChange', this._uiChangeDrag);
-            this.on('deactivate', this.onDeactivateDrag);
-            this.on('cellChange', this.updateDraggable); // TODO updateDraggable on resize? if groupCells & slides change
-            // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
-            // #457, RubaXa/Sortable#973
-
-            if (isTouch && !isTouchmoveScrollCanceled) {
-                window.addEventListener('touchmove', function () { });
-                isTouchmoveScrollCanceled = true;
-            }
-        };
-
-        proto.onActivateDrag = function () {
-            this.handles = [this.viewport];
-            this.bindHandles();
-            this.updateDraggable();
-        };
-
-        proto.onDeactivateDrag = function () {
-            this.unbindHandles();
-            this.element.classList.remove('is-draggable');
-        };
-
-        proto.updateDraggable = function () {
-            // disable dragging if less than 2 slides. #278
-            if (this.options.draggable == '>1') {
-                this.isDraggable = this.slides.length > 1;
-            } else {
-                this.isDraggable = this.options.draggable;
-            }
-
-            if (this.isDraggable) {
-                this.element.classList.add('is-draggable');
-            } else {
-                this.element.classList.remove('is-draggable');
-            }
-        }; // backwards compatibility
-
-
-        proto.bindDrag = function () {
-            this.options.draggable = true;
-            this.updateDraggable();
-        };
-
-        proto.unbindDrag = function () {
-            this.options.draggable = false;
-            this.updateDraggable();
-        };
-
-        proto._uiChangeDrag = function () {
-            delete this.isFreeScrolling;
-        }; // -------------------------- pointer events -------------------------- //
-
-
-        proto.pointerDown = function (event, pointer) {
-            if (!this.isDraggable) {
-                this._pointerDownDefault(event, pointer);
-
-                return;
-            }
-
-            var isOkay = this.okayPointerDown(event);
-
-            if (!isOkay) {
-                return;
-            }
-
-            this._pointerDownPreventDefault(event);
-
-            this.pointerDownFocus(event); // blur
-
-            if (document.activeElement != this.element) {
-                // do not blur if already focused
-                this.pointerDownBlur();
-            } // stop if it was moving
-
-
-            this.dragX = this.x;
-            this.viewport.classList.add('is-pointer-down'); // track scrolling
-
-            this.pointerDownScroll = getScrollPosition();
-            window.addEventListener('scroll', this);
-
-            this._pointerDownDefault(event, pointer);
-        };
-
-        // default pointerDown logic, used for staticClick
-
-
-        proto._pointerDownDefault = function (event, pointer) {
-            // track start event position
-            // Safari 9 overrides pageX and pageY. These values needs to be copied. #779
-            this.pointerDownPointer = {
-                pageX: pointer.pageX,
-                pageY: pointer.pageY
-            }; // bind move and end events
-
-            this._bindPostStartEvents(event);
-
-            this.dispatchEvent('pointerDown', event, [pointer]);
-        };
-
-        var focusNodes = {
-            INPUT: true,
-            TEXTAREA: true,
-            SELECT: true
-        };
-
-        proto.pointerDownFocus = function (event) {
-            var isFocusNode = focusNodes[event.target.nodeName];
-
-            if (!isFocusNode) {
-                this.focus();
-            }
-        };
-
-        proto._pointerDownPreventDefault = function (event) {
-            var isTouchStart = event.type == 'touchstart';
-            var isTouchPointer = event.pointerType == 'touch';
-            var isFocusNode = focusNodes[event.target.nodeName];
-
-            if (!isTouchStart && !isTouchPointer && !isFocusNode) {
-                event.preventDefault();
-            }
-        }; // ----- move ----- //
-
-
-        proto.hasDragStarted = function (moveVector) {
-            return Math.abs(moveVector.x) > this.options.dragThreshold;
-        }; // ----- up ----- //
-
-
-        proto.pointerUp = function (event, pointer) {
-            delete this.isTouchScrolling;
-            this.viewport.classList.remove('is-pointer-down');
-            this.dispatchEvent('pointerUp', event, [pointer]);
-
-            this._dragPointerUp(event, pointer);
-        };
-
-        proto.pointerDone = function () {
-            window.removeEventListener('scroll', this);
-            delete this.pointerDownScroll;
-        }; // -------------------------- dragging -------------------------- //
-
-
-        proto.dragStart = function (event, pointer) {
-            if (!this.isDraggable) {
-                return;
-            }
-
-            this.dragStartPosition = this.x;
-            this.startAnimation();
-            window.removeEventListener('scroll', this);
-            this.dispatchEvent('dragStart', event, [pointer]);
-        };
-
-        proto.pointerMove = function (event, pointer) {
-            var moveVector = this._dragPointerMove(event, pointer);
-
-            this.dispatchEvent('pointerMove', event, [pointer, moveVector]);
-
-            this._dragMove(event, pointer, moveVector);
-        };
-
-        proto.dragMove = function (event, pointer, moveVector) {
-            if (!this.isDraggable) {
-                return;
-            }
-
-            event.preventDefault();
-            this.previousDragX = this.dragX; // reverse if right-to-left
-
-            var direction = this.options.rightToLeft ? -1 : 1;
-
-            if (this.options.wrapAround) {
-                // wrap around move. #589
-                moveVector.x = moveVector.x % this.slideableWidth;
-            }
-
-            var dragX = this.dragStartPosition + moveVector.x * direction;
-
-            if (!this.options.wrapAround && this.slides.length) {
-                // slow drag
-                var originBound = Math.max(-this.slides[0].target, this.dragStartPosition);
-                dragX = dragX > originBound ? (dragX + originBound) * 0.5 : dragX;
-                var endBound = Math.min(-this.getLastSlide().target, this.dragStartPosition);
-                dragX = dragX < endBound ? (dragX + endBound) * 0.5 : dragX;
-            }
-
-            this.dragX = dragX;
-            this.dragMoveTime = new Date();
-            this.dispatchEvent('dragMove', event, [pointer, moveVector]);
-        };
-
-        proto.dragEnd = function (event, pointer) {
-            if (!this.isDraggable) {
-                return;
-            }
-
-            if (this.options.freeScroll) {
-                this.isFreeScrolling = true;
-            } // set selectedIndex based on where flick will end up
-
-
-            var index = this.dragEndRestingSelect();
-
-            if (this.options.freeScroll && !this.options.wrapAround) {
-                // if free-scroll & not wrap around
-                // do not free-scroll if going outside of bounding slides
-                // so bounding slides can attract slider, and keep it in bounds
-                var restingX = this.getRestingPosition();
-                this.isFreeScrolling = -restingX > this.slides[0].target && -restingX < this.getLastSlide().target;
-            } else if (!this.options.freeScroll && index == this.selectedIndex) {
-                // boost selection if selected index has not changed
-                index += this.dragEndBoostSelect();
-            }
-
-            delete this.previousDragX; // apply selection
-            // TODO refactor this, selecting here feels weird
-            // HACK, set flag so dragging stays in correct direction
-
-            this.isDragSelect = this.options.wrapAround;
-            this.select(index);
-            delete this.isDragSelect;
-            this.dispatchEvent('dragEnd', event, [pointer]);
-        };
-
-        proto.dragEndRestingSelect = function () {
-            var restingX = this.getRestingPosition(); // how far away from selected slide
-
-            var distance = Math.abs(this.getSlideDistance(-restingX, this.selectedIndex)); // get closet resting going up and going down
-
-            var positiveResting = this._getClosestResting(restingX, distance, 1);
-
-            var negativeResting = this._getClosestResting(restingX, distance, -1); // use closer resting for wrap-around
-
-
-            var index = positiveResting.distance < negativeResting.distance ? positiveResting.index : negativeResting.index;
-            return index;
-        };
-        /**
-         * given resting X and distance to selected cell
-         * get the distance and index of the closest cell
-         * @param {Number} restingX - estimated post-flick resting position
-         * @param {Number} distance - distance to selected cell
-         * @param {Integer} increment - +1 or -1, going up or down
-         * @returns {Object} - { distance: {Number}, index: {Integer} }
-         */
-
-
-        proto._getClosestResting = function (restingX, distance, increment) {
-            var index = this.selectedIndex;
-            var minDistance = Infinity;
-            var condition = this.options.contain && !this.options.wrapAround ? // if contain, keep going if distance is equal to minDistance
-                function (d, md) {
-                    return d <= md;
-                } : function (d, md) {
-                    return d < md;
-                };
-
-            while (condition(distance, minDistance)) {
-                // measure distance to next cell
-                index += increment;
-                minDistance = distance;
-                distance = this.getSlideDistance(-restingX, index);
-
-                if (distance === null) {
-                    break;
-                }
-
-                distance = Math.abs(distance);
-            }
-
-            return {
-                distance: minDistance,
-                // selected was previous index
-                index: index - increment
-            };
-        };
-        /**
-         * measure distance between x and a slide target
-         * @param {Number} x
-         * @param {Integer} index - slide index
-         */
-
-
-        proto.getSlideDistance = function (x, index) {
-            var len = this.slides.length; // wrap around if at least 2 slides
-
-            var isWrapAround = this.options.wrapAround && len > 1;
-            var slideIndex = isWrapAround ? utils.modulo(index, len) : index;
-            var slide = this.slides[slideIndex];
-
-            if (!slide) {
-                return null;
-            } // add distance for wrap-around slides
-
-
-            var wrap = isWrapAround ? this.slideableWidth * Math.floor(index / len) : 0;
-            return x - (slide.target + wrap);
-        };
-
-        proto.dragEndBoostSelect = function () {
-            // do not boost if no previousDragX or dragMoveTime
-            if (this.previousDragX === undefined || !this.dragMoveTime || // or if drag was held for 100 ms
-                new Date() - this.dragMoveTime > 100) {
-                return 0;
-            }
-
-            var distance = this.getSlideDistance(-this.dragX, this.selectedIndex);
-            var delta = this.previousDragX - this.dragX;
-
-            if (distance > 0 && delta > 0) {
-                // boost to next if moving towards the right, and positive velocity
-                return 1;
-            } else if (distance < 0 && delta < 0) {
-                // boost to previous if moving towards the left, and negative velocity
-                return -1;
-            }
-
-            return 0;
-        }; // ----- staticClick ----- //
-
-
-        proto.staticClick = function (event, pointer) {
-            // get clickedCell, if cell was clicked
-            var clickedCell = this.getParentCell(event.target);
-            var cellElem = clickedCell && clickedCell.element;
-            var cellIndex = clickedCell && this.cells.indexOf(clickedCell);
-            this.dispatchEvent('staticClick', event, [pointer, cellElem, cellIndex]);
-        }; // ----- scroll ----- //
-
-
-        proto.onscroll = function () {
-            var scroll = getScrollPosition();
-            var scrollMoveX = this.pointerDownScroll.x - scroll.x;
-            var scrollMoveY = this.pointerDownScroll.y - scroll.y; // cancel click/tap if scroll is too much
-
-            if (Math.abs(scrollMoveX) > 3 || Math.abs(scrollMoveY) > 3) {
-                this._pointerDone();
-            }
-        }; // ----- utils ----- //
-
-
-        function getScrollPosition() {
-            return {
-                x: window.pageXOffset,
-                y: window.pageYOffset
-            };
-        } // -----  ----- //
-
-
-        return Flickity;
-    });
 
     var prevNextButton = (function () {
 
@@ -2642,10 +1984,8 @@
             element.className += this.isPrevious ? ' previous' : ' next'; // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
 
             element.setAttribute('type', 'button'); // init as disabled
-
             this.disable();
             element.setAttribute('aria-label', this.isPrevious ? 'Previous' : 'Next'); // create arrow
-
             var svg = this.createSVG();
             element.appendChild(svg); // events
 
@@ -2772,7 +2112,6 @@
         return Flickity;
     })();
 
-
     // 图片懒加载
     window.lazySizes = function lazySizes() {
 
@@ -2810,8 +2149,6 @@
 
         var loadEvents = ['load', 'error', 'lazyincluded', '_lazyloaded'];
         var regClassCache = {};
-        var forEach = Array.prototype.forEach;
-
         var hasClass = function (ele, cls) {
             !regClassCache[cls] && (regClassCache[cls] = new RegExp('(\\s|^)' + cls + '(\\s|$)'));
             return regClassCache[cls].test(ele.getAttribute('class') || '') && regClassCache[cls];
@@ -3371,9 +2708,7 @@
         };
         return lazysizes;
     }();
-
     // 图片尺寸处理
-
     var lazySrcset = function () {
         var lazySizes = window.lazySizes
         var config, riasCfg;
@@ -3712,12 +3047,12 @@
             return _polyfill;
         }();
     };
+
     var globalInstall = function () {
         lazySrcset();
         window.removeEventListener('lazyunveilread', globalInstall, true);
     };
     window.addEventListener('lazyunveilread', globalInstall, true);
-    
 
     class FeaturedCollectionSection {
         constructor(element) {
@@ -3801,31 +3136,29 @@
             event.preventDefault()
             var productUrl = new URL("".concat(window.location.origin).concat(target.getAttribute('data-product-url')));
             // If we are on mobile or tablet, we redirect to product page directly
-
-            if (Responsive.matchesBreakpoint('phone') || Responsive.matchesBreakpoint('tablet')) {
+            if (utils.matchesBreakpoint('phone') || utils.matchesBreakpoint('tablet')) {
                 window.location.href = productUrl.href;
                 return false;
             }
 
-            var modal = document.getElementById(target.getAttribute('aria-controls'));
-            modal.classList.add('is-loading');
+           // var modal = document.getElementById(target.getAttribute('aria-controls'));
+            //modal.classList.add('loading');
             productUrl.searchParams.set('view', 'quick-view');
             fetch(productUrl.href, {
                 credentials: 'same-origin',
                 method: 'GET'
             }).then(function (response) {
                 response.text().then(function (content) {
-                    modal.querySelector('.modal__inner').innerHTML = content;
-                    modal.classList.remove('is-loading'); // Register a new section to power the JS
-
-                    var modalProductSection = new ProductSection(modal.querySelector('[data-section-type="product"]')); // We set a listener so we can cleanup on close
+                    // modal.querySelector('.modal__inner').innerHTML = content;
+                   // modal.classList.remove('loading'); // Register a new section to power the JS
+                    // var modalProductSection = new ProductSection(modal.querySelector('[data-section-type="product"]')); // We set a listener so we can cleanup on close
 
                     var doCleanUp = function doCleanUp() {
                         modalProductSection.onUnload();
-                        modal.removeEventListener('modal:closed', doCleanUp);
+                        //modal.removeEventListener('modal:closed', doCleanUp);
                     };
 
-                    modal.addEventListener('modal:closed', doCleanUp);
+                   // modal.addEventListener('modal:closed', doCleanUp);
                 });
             });
         }
@@ -3985,4 +3318,5 @@
 
     const sections = new SectionContainer()
     sections.register('featured-collection', FeaturedCollectionSection)
+
 }();

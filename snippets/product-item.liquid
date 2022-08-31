@@ -110,7 +110,7 @@
 
             <span class="price">
               <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
-              {{ product.price | money }}
+              {{ 'products.product.price.from_price_html' | t :price:price_min }}
             </span>
           {%- else -%}
             <span class="price">
@@ -283,16 +283,12 @@
           {%- if product.available -%}
             {%- if product.variants.size == 1 -%}
               <button type="submit" class="{{ quick_buy_classes }}" data-action="add-to-cart">
-                {%- if product.template_suffix == 'pre-order' -%}
-                Pre-order
-                {%- else -%}
-                Add to cart
-                {%- endif -%}
+                {%- if product.template_suffix == 'pre-order' -%}Pre order{%- else -%}Add to cart{%- endif -%}
               </button>
             {%- else -%}
             {%- comment -%}
             {%- endcomment -%}
-            <a href="{{ product.url }}" class="{{ quick_buy_classes }}">QUICK VIEW</a>
+            <a href="{{ product.url }}" class="{{ quick_buy_classes }}">CHOOSE OPTIONS</a>
             {%- endif -%}
           {%- else -%}
             <button class="{{ quick_buy_classes | replace: 'button--primary', 'button--disabled' }}" disabled>SOLD OUT</button>

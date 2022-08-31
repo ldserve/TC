@@ -25,7 +25,7 @@
 
 {% if settings.card_style == 'card' or card_collection.featured_image %} 
 <div class=" ">
-  <a {% if card_collection != blank %} href="{{ card_collection.url }}"{% endif %} class="full-unstyled-link collections-item_link"></a>
+  <a {% if card_collection != blank %} href="{{ card_collection.url }}"{% endif %} class="full-unstyled-link collections-item__link">
   <div class="card__information">
     <h3 class="card__heading">SHOP NOW</h3>
     <h3 class="card__heading collection_heading">
@@ -41,6 +41,7 @@
       </p>
     {%- endif -%}
   </div>
+</a>
 </div>
 {% endif %} 
 <div class="card-wrapper animate-arrow">
@@ -55,7 +56,13 @@
     <div class="card__inner {% if settings.card_style == 'standard' %}color-{{ settings.card_color_scheme }} gradient{% endif %}{% if card_collection.featured_image or settings.card_style == 'standard' %} ratio{% endif %} " style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;">
       {%- if card_collection.featured_image -%}
         <div class="card__media">
+          <a {% if card_collection != blank %} href="{{ card_collection.url }}"{% endif %} class="full-unstyled-link collections-item__link" style="height: 100%;">
           <div class="media media--transparent media--hover-effect">
+            {%- capture supported_sizes -%}{%- render 'image-size', sizes: '100,150,200,250,300', image: card_collection.featured_image -%}{%- endcapture -%}
+            {%- assign image_url = card_collection.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <img class="product-item__primary-image lazyload image--fade-in"  
+              data-src="{{ image_url }}" data-sizes="auto" data-widths="[{{ supported_sizes }}]" alt="{{ card_collection.featured_image.alt | escape }}">
+           {%- comment -%}
             <img
               srcset="{%- if card_collection.featured_image.width >= 165 -%}{{ card_collection.featured_image | image_url: width: 165 }} 165w,{%- endif -%}
                 {%- if card_collection.featured_image.width >= 330 -%}{{ card_collection.featured_image | image_url: width: 330 }} 330w,{%- endif -%}
@@ -76,7 +83,9 @@
               loading="lazy"
               class="motion-reduce"
             >
+          {%- endcomment -%}
           </div>
+        </a>
         </div>
       {%- endif -%}
       {%- if card_collection ==blank -%}

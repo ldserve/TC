@@ -3234,7 +3234,6 @@ details-disclosure>details {
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   z-index: 1;
-  /* This is needed to create a new stacking context to improve performance on iOS */
 }
 
 .product-list .flickity-viewport {
@@ -3242,7 +3241,7 @@ details-disclosure>details {
 }
 
 .product-item {
-  padding-right: 1rem;
+  flex-shrink: 0;
 }
 
 .product-banner {
@@ -3295,14 +3294,13 @@ details-disclosure>details {
   .product-list--scrollable .product-item {
     width: 50%;
   }
-
+  .product-item:nth-child(2n-1){
+    padding-right: 1rem;
+  }
   .product-flex>.product-banner>.image-banner-link {
     position: initial;
   }
 
-  .product-list--scrollable {
-    flex-wrap: wrap;
-  }
 
   .product-list--collage {
     border-width: 1px 0;
@@ -3345,7 +3343,6 @@ details-disclosure>details {
   .product-flex>.scroller {
     margin: 3rem 0;
   }
-
   /* This needs to be done instead of applying a border to the product-list to fix a z-index issue with the product labels */
   .product-list--collage::before {
     position: absolute;
@@ -3416,10 +3413,7 @@ details-disclosure>details {
     overflow: visible;
     border: none;
     background: transparent;
-  }
-
-  .product-list--scrollable .product-item {
-    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
   }
 
   .product-list--scrollable .product-item+.product-item {
@@ -3440,7 +3434,6 @@ details-disclosure>details {
 }
 
 @media screen and (min-width: 1000px) {
-
   /* This needs to be done instead of applying a border to the product-list to fix a z-index issue with the product labels */
   .product-list::before {
     position: absolute;
@@ -3670,7 +3663,6 @@ img.lazyload[data-sizes=auto] {
   animation-timing-function: cubic-bezier(0.43, 0.43, 0.25, 0.99);
 }
 
-
 img {
   max-width: 100%;
   height: auto;
@@ -3680,7 +3672,7 @@ img {
 
 .flickity-enabled {
   position: relative;
-  overflow: visible !important;
+  /* overflow: visible !important; */
 }
 
 .flickity-enabled:focus {
@@ -3781,7 +3773,11 @@ img {
 .money {
   text-decoration: inherit;
 }
-
+@media screen and (min-width:641px) {
+  .product-item{
+    padding-right: 1rem;
+  }
+}
 @media screen and (min-width: 1000px) {
   .product-item--vertical .product-item__action-list {
     margin: 15px -5px -5px -5px;
@@ -3802,13 +3798,12 @@ img {
   .product-item__image-wrapper--with-secondary:hover .product-item__primary-image {
     opacity: 0;
     visibility: hidden;
+    transition: opacity .2s ease-in-out,visibility .2s ease-in-out;
   }
 
   .product-item__image-wrapper--with-secondary:hover .product-item__secondary-image.lazyloaded {
     visibility: visible;
     opacity: 1;
-    transition: transform var(--duration-long) ease;
-    transform: scale(1.03);
   }
 }
 
@@ -3866,8 +3861,8 @@ img {
   left: -1px;
 }
 
-.flickity-enabled:hover .flickity-prev-next-button:not([disabled]) {
-  transform: scale(1);
+.flickity-enabled .flickity-prev-next-button:not([disabled]) {
+  /* transform: scale(1); */
   opacity: 1;
 }
 

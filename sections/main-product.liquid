@@ -261,8 +261,12 @@
                   {% render 'icon',icon:'caret' %}
                 </summary>
                 <div class="accordion__content rte" id="ProductAccordion-{{ block.id }}-{{ section.id }}">
-                  {{ block.settings.content }}
-                  {{ block.settings.page.content }}
+                  {%- if block.settings.info_mode -%}
+                  {{product.description }}
+                 {%- else -%}
+                 {{ block.settings.content }}
+                 {{ block.settings.page.content }}
+                 {%- endif -%}
                 </div>
               </details>
             </div>
@@ -343,7 +347,7 @@
                  
                   {%- for option in product.options_with_values -%}
                   {%- assign downcase_option = option.name | downcase -%}
-                  {%- capture option_name -%}{{ section.id }}-{{ product.id }}-{{ forloop.index }}{%- endcapture -%}
+                  {%- capture swatch_id -%}{{ section.id }}-{{ option.position }}{%- endcapture -%}
             
                   {%- assign option_selector_type = 'dropdown' -%}
                   {%- if block.settings.picker_type != 'button' and block.settings.picker_type != 'dropdown' and downcase_option=='color' -%}
@@ -364,7 +368,6 @@
                     {%- endif -%}
 
                   {%- else -%}
-
                     {%- if  downcase_option =='color' -%}
                     {%- if block.settings.picker_type == 'button' -%}
                       {%- assign option_selector_type = 'button' -%}
@@ -378,16 +381,17 @@
                   {%- when 'color' -%}
                   {%- comment -%}色块{%- endcomment -%}
                   <fieldset class="js product-form__input  color-swatch" data-selector-type="{{option.name}}">
-                    <legend class="form__label">{{ option.name }}</legend>
+                    <legend class="form__label">{{ option.name }}: <span class="product-form__selected-value">{{ option.selected_value }}</span></legend>
                     {%- for value in option.values -%}
-                      <input type="radio" id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                    {%- capture variant_swatch_id -%}{{ swatch_id}}-{{ forloop.index0 }}{%- endcapture -%}
+                      <input type="radio" id="{{variant_swatch_id}}"
                             name="{{ option.name }}"
                             value="{{ value | escape }}"
                             form="{{ product_form_id }}"
                             {% if option.selected_value == value %}checked{% endif %}
                             class="color-swatch__radio hidden"
                       >
-                      <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" class="color-swatch__item">
+                      <label for="{{ variant_swatch_id }}" class="color-swatch__item">
                         <span style="{% render 'color-config',color: value %}" class="color--radios">{{ value }}</span>
                       </label>
                     {%- endfor -%}
@@ -396,15 +400,16 @@
                   {%- when 'button' -%}
                   {%- comment -%}椭圆形按钮{%- endcomment -%}
                     <fieldset class="js product-form__input" data-selector-type="{{option.name}}">
-                      <legend class="form__label">{{ option.name }}</legend>
+                      <legend class="form__label">{{ option.name }}: <span class="product-form__selected-value">{{ option.selected_value }}</span></legend>
                       {%- for value in option.values -%}
-                        <input type="radio" id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                      {%- capture variant_swatch_id -%}{{swatch_id}}-{{ forloop.index0 }}{%- endcapture -%}
+                        <input type="radio" id="{{ variant_swatch_id }}"
                               name="{{ option.name }}"
                               value="{{ value | escape }}"
                               form="{{ product_form_id }}"
                               {% if option.selected_value == value %}checked{% endif %}
                         >
-                        <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+                        <label for="{{ variant_swatch_id}}">
                           {{ value }}
                         </label>
                       {%- endfor -%}
@@ -419,13 +424,12 @@
                         {%- capture option_name -%}option{{ option.position }}{%- endcapture -%}
           
                         {%- for value in option.values -%}
-                          {%- capture variant_swatch_id -%}{{ option_name }}-{{ forloop.index }}{%- endcapture -%}
-                          
+                          {%- capture variant_swatch_id -%}{{ swatch_id }}-{{ forloop.index0 }}{%- endcapture -%}
                           {%- for variant in product.variants -%}
                             {%- if variant[option_name] == value and variant.image -%}
                               <div class="variant-swatch ld-variant" >
-                                <input class="variant-swatch__radio product-form__single-selector" type="radio" name="{{ option_name }}" id="{{ variant_swatch_id }}" value="{{ value | escape }}"  data-option-position="{{ option.position }}" {% if option.selected_value == value %}checked{% endif %}>
-          
+                                <input class="variant-swatch__radio product-form__single-selector" type="radio" name="{{ option.name }}" form="{{ product_form_id }}"
+                                id="{{ variant_swatch_id }}" value="{{ value | escape }}"  {% if option.selected_value == value %}checked{% endif %}>
                                 <label class="variant-swatch__item" for="{{ variant_swatch_id }}" title="{{ value | escape }}">
                                   <div class="aspect-ratio" style="padding-bottom: {{ 100.0 | divided_by: variant.image.aspect_ratio }}%">
                                     <img src="{{ variant.image | img_url: '80x' }}" alt="{{ variant.image.alt | escape }}">
@@ -1085,6 +1089,13 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.main-product.blocks.collapsible_tab.settings.content.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "info_mode",
+          "default": false,
+          "info": "不勾选则读取当前输入内容",
+          "label": "使用产品描述"
         },
         {
           "type": "page",

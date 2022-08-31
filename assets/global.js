@@ -751,13 +751,14 @@ class VariantSelects extends HTMLElement {
     this.addEventListener('change', this.onVariantChange);
   }
 
-  onVariantChange() {
+  onVariantChange(e) {
     this.updateOptions();
     this.updateMasterId();
     this.toggleAddButton(true, '', false);
     this.updatePickupAvailability();
     this.removeErrorMessage();
     this.updateImg()
+    this.updateVariantValue(e)
     if (!this.currentVariant) {
       this.toggleAddButton(true, '', true);
       this.setUnavailable();
@@ -799,7 +800,14 @@ class VariantSelects extends HTMLElement {
     if (!this.currentVariant || this.dataset.updateUrl === 'false') return;
     window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
   }
-
+  updateVariantValue(ev) {
+    let target = ev.target || false
+    if (!target && target.nodeName !== "INPUT") return;
+    const fieldset = target.closest('fieldset')
+    const valueInfo = fieldset.querySelector('.product-form__selected-value')
+    if (!valueInfo) return;
+    valueInfo.innerHTML = target.value
+  }
   updateShareUrl() {
     const shareButton = document.getElementById(`Share-${this.dataset.section}`);
     if (!shareButton || !shareButton.updateUrl) return;
