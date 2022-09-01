@@ -79,7 +79,7 @@
           </div>
         </div>
       {%- endif -%}
-      {%- comment -%}
+      {%- if card_collection ==blank -%}
       <div class="card__content hidden">
         <div class="card__information">
           <h3 class="card__heading">
@@ -99,7 +99,7 @@
           {%- endif -%}
         </div>   
       </div>
-      {%- endcomment -%}
+      {%- endif -%}
 
     </div>
   </div>

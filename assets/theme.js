@@ -2772,8 +2772,9 @@
         return Flickity;
     })();
 
-    // 懒加载处理
-    window.lazySizes = function () {
+
+    // 图片懒加载
+    window.lazySizes = function lazySizes() {
 
         var lazysizes, lazySizesCfg;
         var lazySizesDefaults = {
@@ -2807,7 +2808,6 @@
         var requestAnimationFrame = window.requestAnimationFrame || setTimeout;
         var requestIdleCallback = window.requestIdleCallback;
 
-        var regPicture = /^picture$/i;
         var loadEvents = ['load', 'error', 'lazyincluded', '_lazyloaded'];
         var regClassCache = {};
         var forEach = Array.prototype.forEach;
@@ -2875,25 +2875,24 @@
             return width;
         };
 
+        // 任务队列
         var rAF = function () {
             var running, waiting;
             var firstFns = [];
             var secondFns = [];
             var fns = firstFns;
-
-            var run = function run() {
+            var run = function () {
                 var runFns = fns;
                 fns = firstFns.length ? secondFns : firstFns;
                 running = true;
                 waiting = false;
-
                 while (runFns.length) {
                     runFns.shift()();
                 }
                 running = false;
             };
 
-            var rafBatch = function rafBatch(fn, queue) {
+            var rafBatch = function (fn, queue) {
                 if (running && !queue) {
                     fn.apply(this, arguments);
                 } else {
@@ -2921,6 +2920,7 @@
             };
         };
 
+        //节流
         var throttle = function (fn) {
             var running;
             var lastTime = 0;
@@ -2934,13 +2934,9 @@
             };
 
             var idleCallback = requestIdleCallback && rICTimeout > 49 ? function () {
-                requestIdleCallback(run, {
-                    timeout: rICTimeout
-                });
+                requestIdleCallback(run, { timeout: rICTimeout });
+                rICTimeout !== lazySizesCfg.ricTimeout && (rICTimeout = lazySizesCfg.ricTimeout);
 
-                if (rICTimeout !== lazySizesCfg.ricTimeout) {
-                    rICTimeout = lazySizesCfg.ricTimeout;
-                }
             } : rAFIt(function () { setTimeout(run); }, true);
 
             return function (isPriority) {
@@ -2949,7 +2945,6 @@
                 if (running) return;
                 running = true;
                 delay = gDelay - (Date.now() - lastTime);
-
                 if (delay < 0) delay = 0;
                 if (isPriority || delay < 9) {
                     idleCallback();
@@ -2958,7 +2953,7 @@
                 }
             };
         };
-
+        // 防抖
         var debounce = function (func) {
             var timeout, timestamp;
             var wait = 99;
@@ -2968,7 +2963,7 @@
                 func();
             };
 
-            var later = function later() {
+            var later = function () {
                 var last = Date.now() - timestamp;
 
                 if (last < wait) {
@@ -2987,28 +2982,19 @@
         var autoSizer = function () {
             var autosizesElems;
             var sizeElement = rAFIt(function (elem, parent, event, width) {
-                var sources, i, len;
+                var i, len;
                 elem._lazysizesWidth = width;
                 width += 'px';
                 elem.setAttribute('sizes', width);
-
-                if (regPicture.test(parent.nodeName || '')) {
-                    sources = parent.getElementsByTagName('source');
-
-                    for (i = 0, len = sources.length; i < len; i++) {
-                        sources[i].setAttribute('sizes', width);
-                    }
-                }
 
                 if (!event.detail.dataAttr) {
                     updatePolyfill(elem, event.detail);
                 }
             });
 
-            var getSizeElement = function getSizeElement(elem, dataAttr, width) {
+            var getSizeElement = function (elem, dataAttr, width) {
                 var event;
                 var parent = elem.parentNode;
-
                 if (parent) {
                     width = getWidth(elem, parent, width);
                     event = triggerEvent(elem, 'lazybeforesizes', {
@@ -3018,7 +3004,6 @@
 
                     if (!event.defaultPrevented) {
                         width = event.detail.width;
-
                         if (width && width !== elem._lazysizesWidth) {
                             sizeElement(elem, parent, event, width);
                         }
@@ -3026,14 +3011,10 @@
                 }
             };
 
-            var updateElementsSizes = function updateElementsSizes() {
-                var i;
-                var len = autosizesElems.length;
-
+            var updateElementsSizes = function () {
+                var i, len = autosizesElems.length;
                 if (len) {
-                    i = 0;
-
-                    for (; i < len; i++) {
+                    for (i = 0; i < len; i++) {
                         getSizeElement(autosizesElems[i]);
                     }
                 }
@@ -3190,20 +3171,8 @@
                 }
             };
 
-            var handleSources = function (source) {
-                var customMedia;
-                var sourceSrcset = source.getAttribute(lazySizesCfg.srcsetAttr);
-                if (customMedia = lazySizesCfg.customMedia[source.getAttribute('data-media') || source.getAttribute('media')]) {
-                    source.setAttribute('media', customMedia);
-                }
-
-                if (sourceSrcset) {
-                    source.setAttribute('srcset', sourceSrcset);
-                }
-            };
-
             var lazyUnveil = rAFIt(function (elem, detail, isAuto, sizes, isImg) {
-                var src, srcset, parent, isPicture, event, firesLoad;
+                var src, srcset, parent, event, firesLoad;
 
                 if (!(event = triggerEvent(elem, 'lazybeforeunveil', detail)).defaultPrevented) {
                     if (sizes) {
@@ -3216,13 +3185,9 @@
 
                     srcset = elem.getAttribute(lazySizesCfg.srcsetAttr);
                     src = elem.getAttribute(lazySizesCfg.srcAttr);
+                    isImg && (parent = elem.parentNode);
 
-                    if (isImg) {
-                        parent = elem.parentNode;
-                        isPicture = parent && regPicture.test(parent.nodeName || '');
-                    }
-
-                    firesLoad = detail.firesLoad || 'src' in elem && (srcset || src || isPicture);
+                    firesLoad = detail.firesLoad || 'src' in elem && (srcset || src);
                     event = {
                         target: elem
                     };
@@ -3233,13 +3198,10 @@
                         addRemoveLoadEvents(elem, rafSwitchLoadingClass, true);
                     }
 
-                    if (isPicture) {
-                        forEach.call(parent.getElementsByTagName('source'), handleSources);
-                    }
 
                     if (srcset) {
                         elem.setAttribute('srcset', srcset);
-                    } else if (src && !isPicture) {
+                    } else if (src) {
                         if (regIframe.test(elem.nodeName)) {
                             changeIframeSrc(elem, src);
                         } else {
@@ -3247,7 +3209,7 @@
                         }
                     }
 
-                    if (isImg && (srcset || isPicture)) {
+                    if (isImg && (srcset)) {
                         updatePolyfill(elem, {
                             src: src
                         });
@@ -3261,7 +3223,7 @@
                     var isLoaded = elem.complete && elem.naturalWidth > 1;
 
                     if (!firesLoad || isLoaded) {
-                        if (isLoaded) addClass(elem, 'ls-is-cached');
+                        isLoaded && addClass(elem, 'ls-is-cached');
 
                         switchLoadingClass(event);
                         elem._lazyCache = true;
@@ -3353,17 +3315,12 @@
                             subtree: true,
                             attributes: true
                         });
-                    } else {
-                        docElem.addEventListener('DOMNodeInserted', throttledCheckElements, true);
-                        docElem.addEventListener('DOMAttrModified', throttledCheckElements, true);
-                        setInterval(throttledCheckElements, 999);
                     }
 
                     addEventListener('hashchange', throttledCheckElements, true); //, 'fullscreenchange'
                     ['focus', 'mouseover', 'click', 'load', 'transitionend', 'animationend'].forEach(function (name) {
                         document.addEventListener(name, throttledCheckElements, true);
                     });
-
                     if (/d$|^c/.test(document.readyState)) {
                         onload();
                     } else {
@@ -3385,7 +3342,7 @@
             };
         }();
 
-        var init = function init() {
+        var init = function () {
             if (!init.i && document.getElementsByClassName) {
                 init.i = true;
                 autoSizer._();
@@ -3416,17 +3373,9 @@
     }();
 
     // 图片尺寸处理
-    var loadLazy = (function (window, factory) {
-        var globalInstall = function () {
-            factory(window.lazySizes);
-            console.log('event', arguments)
-            window.removeEventListener('lazyunveilread', globalInstall, true);
-        };
 
-        factory = factory.bind(null, window, window.document);
-        window.addEventListener('lazyunveilread', globalInstall, true);
-
-    })(window, function (window, document, lazySizes) {
+    var lazySrcset = function () {
+        var lazySizes = window.lazySizes
         var config, riasCfg;
         var lazySizesCfg = lazySizes.cfg;
         var replaceTypes = {
@@ -3434,7 +3383,6 @@
             number: 1
         };
         var regNumber = /^\-*\+*\d+\.*\d*$/;
-        var regPicture = /^picture$/i;
         var regWidth = /\s*\{\s*width\s*\}\s*/i;
         var regHeight = /\s*\{\s*height\s*\}\s*/i;
         var regPlaceholder = /\s*\{\s*([a-z0-9]+)\s*\}\s*/ig;
@@ -3447,13 +3395,12 @@
 
         (function () {
             var prop;
-            var noop = function noop() { };
             var riasDefaults = {
                 prefix: '',
                 postfix: '',
                 srcAttr: 'data-src',
                 absUrl: false,
-                modifyOptions: noop,
+                modifyOptions: function noop() { },
                 widthmap: {},
                 ratio: false,
                 traditionalRatio: false,
@@ -3475,7 +3422,6 @@
                 (function (widths) {
                     var width;
                     var i = 0;
-
                     while (!width || width < 3000) {
                         i += 5;
                         if (i > 30) {
@@ -3495,24 +3441,18 @@
         })();
 
         function getElementOptions(elem, src) {
-            var attr, parent, setOption, options;
+            var attr, setOption, options;
             var elemStyles = window.getComputedStyle(elem);
-            parent = elem.parentNode;
-            options = {
-                isPicture: !!(parent && regPicture.test(parent.nodeName || ''))
-            };
+            options = {};
 
-            setOption = function setOption(attr, run) {
+            setOption = function (attr, run) {
                 var attrVal = elem.getAttribute('data-' + attr);
                 if (!attrVal) {
                     // no data- attr, get value from the CSS
                     var styles = elemStyles.getPropertyValue('--ls-' + attr); // at least Safari 9 returns null rather than
                     // an empty string for getPropertyValue causing
-                    if (styles) {
-                        attrVal = styles.trim();
-                    }
+                    styles && (attrVal = styles.trim());
                 }
-
                 if (attrVal) {
                     if (attrVal == 'true') {
                         attrVal = true;
@@ -3551,7 +3491,7 @@
         function replaceUrlProps(url, options) {
             var candidates = [];
 
-            var replaceFn = function replaceFn(full, match) {
+            var replaceFn = function (full, match) {
                 return replaceTypes[_typeof(options[match])] ? options[match] : full;
             };
 
@@ -3582,10 +3522,7 @@
             var elemH = 0;
             var sizeElement = elem;
 
-            if (!src) {
-                return;
-            }
-
+            if (!src) { return; }
             if (opts.ratio === 'container') {
                 // calculate image or parent ratio
                 elemW = sizeElement.scrollWidth;
@@ -3603,7 +3540,6 @@
             }
 
             src = replaceUrlProps(src, opts);
-            src.isPicture = opts.isPicture;
 
             if (buggySizes && elem.nodeName.toUpperCase() == 'IMG') {
                 elem.removeAttribute(config.srcsetAttr);
@@ -3619,22 +3555,22 @@
 
         function createAttrObject(elem, src) {
             var opts = getElementOptions(elem, src);
-            riasCfg.modifyOptions.call(elem, {
-                target: elem,
-                details: opts,
-                detail: opts
-            });
-            lazySizes.fire(elem, 'lazyriasmodifyoptions', opts);
+            /*   riasCfg.modifyOptions.call(elem, {
+                  target: elem,
+                  details: opts,
+                  detail: opts
+              }); */
+            // lazySizes.fire(elem, 'lazyriasmodifyoptions', opts);
             return opts;
         }
 
         function getSrc(elem) {
-            return elem.getAttribute(elem.getAttribute('data-srcattr') || riasCfg.srcAttr) || elem.getAttribute(config.srcsetAttr) || elem.getAttribute(config.srcAttr) || elem.getAttribute('data-pfsrcset') || '';
+            return elem.getAttribute(riasCfg.srcAttr) || elem.getAttribute(config.srcsetAttr) || elem.getAttribute(config.srcAttr) || '';
         }
 
         addEventListener('lazybeforesizes', function (e) {
             if (e.detail.instance != lazySizes) return;
-            var elem, src, elemOpts, parent, sources, i, len, sourceSrc, sizes, detail, hasPlaceholder, modified, emptyList;
+            var elem, src, elemOpts, sizes, detail, hasPlaceholder, modified, emptyList;
             elem = e.target;
             if (!e.detail.dataAttr || e.defaultPrevented || riasCfg.disabled || !((sizes = elem.getAttribute(config.sizesAttr) || elem.getAttribute('sizes')) && regAllowedSizes.test(sizes))) {
                 return;
@@ -3644,24 +3580,12 @@
             elemOpts = createAttrObject(elem, src);
             hasPlaceholder = regWidth.test(elemOpts.prefix) || regWidth.test(elemOpts.postfix);
 
-            if (elemOpts.isPicture && (parent = elem.parentNode)) {
-                sources = parent.getElementsByTagName('source');
-
-                for (i = 0, len = sources.length; i < len; i++) {
-                    if (hasPlaceholder || regWidth.test(sourceSrc = getSrc(sources[i]))) {
-                        setSrc(sourceSrc, elemOpts, sources[i]);
-                        modified = true;
-                    }
-                }
-            }
-
             if (hasPlaceholder || regWidth.test(src)) {
                 setSrc(src, elemOpts, elem);
                 modified = true;
             } else if (modified) {
                 emptyList = [];
                 emptyList.srcset = [];
-                emptyList.isPicture = true;
                 Object.defineProperty(elem, '_lazyrias', {
                     value: emptyList,
                     writable: true
@@ -3685,11 +3609,11 @@
 
         // partial polyfill
         var polyfill = function () {
-            var ascendingSort = function ascendingSort(a, b) {
+            var ascendingSort = function (a, b) {
                 return a.w - b.w;
             };
 
-            var reduceCandidate = function reduceCandidate(srces) {
+            var reduceCandidate = function (srces) {
                 var lowerCandidate, bonusFactor;
                 var len = srces.length;
                 var candidate = srces[len - 1];
@@ -3719,7 +3643,7 @@
                 return candidate;
             };
 
-            var getWSet = function getWSet(elem, testPicture) {
+            var getWSet = function (elem, testPicture) {
                 var src;
 
                 if (!elem._lazyrias && lazySizes.pWS && (src = lazySizes.pWS(elem.getAttribute(config.srcsetAttr || ''))).length) {
@@ -3727,34 +3651,20 @@
                         value: src,
                         writable: true
                     });
-
-                    if (testPicture && elem.parentNode) {
-                        src.isPicture = elem.parentNode.nodeName.toUpperCase() == 'PICTURE';
-                    }
                 }
 
                 return elem._lazyrias;
             };
 
-            var getX = function getX(elem) {
+            var getX = function (elem) {
                 var dpr = window.devicePixelRatio || 1;
                 var optimum = lazySizes.getX && lazySizes.getX(elem);
                 return Math.min(optimum || dpr, 2.4, dpr);
             };
 
-            var getCandidate = function getCandidate(elem, width) {
-                var sources, i, len, media, srces, src;
+            var getCandidate = function (elem, width) {
+                var srces, src;
                 srces = elem._lazyrias;
-
-                if (srces.isPicture && window.matchMedia) {
-                    for (i = 0, sources = elem.parentNode.getElementsByTagName('source'), len = sources.length; i < len; i++) {
-                        if (getWSet(sources[i]) && !sources[i].getAttribute('type') && (!(media = sources[i].getAttribute('media')) || (matchMedia(media) || {}).matches)) {
-                            srces = sources[i]._lazyrias;
-                            break;
-                        }
-                    }
-                }
-
                 if (!srces.w || srces.w < width) {
                     srces.w = width;
                     srces.d = getX(elem);
@@ -3796,13 +3706,18 @@
             if (!supportPicture) {
                 addEventListener('lazybeforesizes', _polyfill);
             } else {
-                _polyfill = function _polyfill() { };
+                _polyfill = function () { };
             }
 
             return _polyfill;
         }();
-    });
-
+    };
+    var globalInstall = function () {
+        lazySrcset();
+        window.removeEventListener('lazyunveilread', globalInstall, true);
+    };
+    window.addEventListener('lazyunveilread', globalInstall, true);
+    
 
     class FeaturedCollectionSection {
         constructor(element) {

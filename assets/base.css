@@ -1086,7 +1086,7 @@ summary::-webkit-details-marker {
 
 @media screen and (max-width: 989px) {
 
-/*   .grid--1-col-tablet-down .grid__item {
+  /*   .grid--1-col-tablet-down .grid__item {
     width: 100%;
     max-width: 100%;
   } */
@@ -2354,7 +2354,7 @@ input[type='checkbox'] {
   }
 
   .header--top-center .header__icons>.header__icon--cart {
-    display: none ;
+    display: none;
   }
 
   .header__heading,
@@ -3245,9 +3245,10 @@ details-disclosure>details {
   padding-right: 1rem;
 }
 
-.product-banner{
+.product-banner {
   background-color: #0000;
 }
+
 .product-list--scrollable {
   flex-wrap: nowrap;
 }
@@ -3278,7 +3279,8 @@ details-disclosure>details {
 .product-list__column {
   width: 100%;
 }
-.product-list--scrollable{
+
+.product-list--scrollable {
   padding: 0 1rem;
 }
 
@@ -3293,12 +3295,15 @@ details-disclosure>details {
   .product-list--scrollable .product-item {
     width: 50%;
   }
-  .product-flex>.product-banner>.image-banner-link{
+
+  .product-flex>.product-banner>.image-banner-link {
     position: initial;
   }
-  .product-list--scrollable{
+
+  .product-list--scrollable {
     flex-wrap: wrap;
   }
+
   .product-list--collage {
     border-width: 1px 0;
   }
@@ -3331,13 +3336,16 @@ details-disclosure>details {
     border-radius: 3px;
     border: none;
   }
+
   .product-list--scrollable::after {
     content: "flickity";
     display: none;
   }
-  .product-flex>.scroller{
+
+  .product-flex>.scroller {
     margin: 3rem 0;
   }
+
   /* This needs to be done instead of applying a border to the product-list to fix a z-index issue with the product labels */
   .product-list--collage::before {
     position: absolute;
@@ -3615,11 +3623,8 @@ img.lazyload[data-sizes=auto] {
   opacity: 1;
 }
 
-
-
 .image--fade-in {
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
 }
 
 .lazyload__loader {
@@ -3712,12 +3717,15 @@ img {
   .\31\/3--phone {
     width: 33.333333%;
   }
+
   .\31\/4--phone {
     width: 25%;
   }
+
   .\31\/5--phone {
     width: 20%;
   }
+
   .\31\/6--phone {
     width: 16.666667%;
   }
@@ -3782,6 +3790,25 @@ img {
   .product-item--vertical .product-item__action-button {
     flex: 1 0 auto;
     margin: 5px !important;
+  }
+}
+
+.product-item__secondary-image {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media screen and (any-hover: hover) {
+  .product-item__image-wrapper--with-secondary:hover .product-item__primary-image {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .product-item__image-wrapper--with-secondary:hover .product-item__secondary-image.lazyloaded {
+    visibility: visible;
+    opacity: 1;
+    transition: transform var(--duration-long) ease;
+    transform: scale(1.03);
   }
 }
 
@@ -3866,7 +3893,7 @@ img {
   margin-top: 0;
 }
 
-img{
+img {
   width: 100%;
   height: 100%;
 }

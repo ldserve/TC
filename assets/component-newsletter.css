@@ -62,6 +62,9 @@
     font-size: 1.4rem;
   }
 
+  .mobile-heading{
+    font-size: 2rem;
+  }
   .newsletter__wrapper {
     padding-left: 0;
     padding-right: 0;
