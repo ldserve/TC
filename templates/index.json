@@ -101,30 +101,32 @@
     "collage": {
       "type": "collage",
       "blocks": {
-        "collection-0": {
-          "type": "collection",
+        "3ef69563-214b-4df8-a1e5-c0b0cf3daef8": {
+          "type": "image",
           "settings": {
-            "collection": "frontpage"
+            "image_padding": false,
+            "image_link": ""
           }
         },
-        "product": {
-          "type": "product",
+        "9aa16b01-cff4-4ad4-beac-f5d9f6e34be0": {
+          "type": "image",
           "settings": {
-            "product": "sp220511fs1s",
-            "second_image": true
+            "image_padding": false,
+            "image_link": ""
           }
         },
-        "collection-1": {
-          "type": "collection",
+        "5c4e7d6a-5ce8-459f-a876-65e3e934838e": {
+          "type": "image",
           "settings": {
-            "collection": "frontpage"
+            "image_padding": false,
+            "image_link": ""
           }
         }
       },
       "block_order": [
-        "collection-0",
-        "product",
-        "collection-1"
+        "3ef69563-214b-4df8-a1e5-c0b0cf3daef8",
+        "9aa16b01-cff4-4ad4-beac-f5d9f6e34be0",
+        "5c4e7d6a-5ce8-459f-a876-65e3e934838e"
       ],
       "settings": {
         "heading": "Multimedia collage",
