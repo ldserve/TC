@@ -12,17 +12,18 @@
         utils.modulo = function (num, div) {
             return (num % div + div) % div;
         };
+
         utils.makeArray = function (obj) {
             var arraySlice = Array.prototype.slice; // turn element or nodeList into an array
             if (Array.isArray(obj)) {
                 // use object if already an array
                 return obj;
-            } // return empty array if undefined or null. #6
-
+            }
+            // return empty array if undefined or null. #6
             if (obj === null || obj === undefined) {
                 return [];
             }
-            var isArrayLike = _typeof(obj) == 'object' && typeof obj.length == 'number';
+            var isArrayLike = typeof obj == 'object' && typeof obj.length == 'number';
 
             if (isArrayLike) {
                 // convert nodeList to array
@@ -170,7 +171,7 @@
                 return 'desk';
             }
         }
-        utils.matchesBreakpoint= function (breakpoint) {
+        utils.matchesBreakpoint = function (breakpoint) {
             switch (breakpoint) {
                 case 'phone':
                     return window.matchMedia('screen and (max-width: 640px)').matches;
@@ -287,7 +288,7 @@
                     elem = document.querySelector(elem);
                 }
                 // do not proceed on non-objects
-                if (!elem || _typeof(elem) != 'object' || !elem.nodeType) {
+                if (!elem || typeof elem != 'object' || !elem.nodeType) {
                     return;
                 }
 
@@ -2827,7 +2828,7 @@
             var candidates = [];
 
             var replaceFn = function (full, match) {
-                return replaceTypes[_typeof(options[match])] ? options[match] : full;
+                return replaceTypes[typeof options[match]] ? options[match] : full;
             };
 
             candidates.srcset = [];
@@ -3141,24 +3142,27 @@
                 return false;
             }
 
-           // var modal = document.getElementById(target.getAttribute('aria-controls'));
-            //modal.classList.add('loading');
+            var modal = document.getElementById(target.getAttribute('aria-controls'));
+            // target.classList.add('loading');
+            modal.classList.add('is-loading');
             productUrl.searchParams.set('view', 'quick-view');
             fetch(productUrl.href, {
                 credentials: 'same-origin',
                 method: 'GET'
             }).then(function (response) {
                 response.text().then(function (content) {
-                    // modal.querySelector('.modal__inner').innerHTML = content;
-                   // modal.classList.remove('loading'); // Register a new section to power the JS
-                    // var modalProductSection = new ProductSection(modal.querySelector('[data-section-type="product"]')); // We set a listener so we can cleanup on close
+                    const responseHTML = new DOMParser().parseFromString(content, 'text/html');
+                    const productElement = responseHTML.querySelector('section[id^="MainProduct-"]');
+                    modal.querySelector('.modal__inner').innerHTML = productElement.innerHTML;
+                    modal.querySelectorAll('script').forEach(oldScriptTag => {
+                        const newScriptTag = document.createElement('script');
+                        Array.from(oldScriptTag.attributes).forEach(attribute => {
+                            newScriptTag.setAttribute(attribute.name, attribute.value)
+                        });
+                        newScriptTag.appendChild(document.createTextNode(oldScriptTag.innerHTML));
+                        oldScriptTag.parentNode.replaceChild(newScriptTag, oldScriptTag);
+                    });
 
-                    var doCleanUp = function doCleanUp() {
-                        modalProductSection.onUnload();
-                        //modal.removeEventListener('modal:closed', doCleanUp);
-                    };
-
-                   // modal.addEventListener('modal:closed', doCleanUp);
                 });
             });
         }

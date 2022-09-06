@@ -5,11 +5,14 @@
 }
 {%- endcapture -%}
 <style>
+   #shopify-section-{{section.id}}{
+    width:100%;
+    overflow-x: hidden;
+   }
   @media screen and (min-width:648px) {
     #shopify-section-{{section.id}}{
       padding-top:{{section.settings.padding_top}}px;
       padding-bottom:{{section.settings.padding_bottom}}px;
-      width:100vw;
     }
   }
   .collection-all_link{
@@ -30,6 +33,7 @@
     color: #FFF;
   }
 </style>
+{%- if section.settings.show_quick_buy -%} <link rel="stylesheet" href="{{'quick-add.css'| asset_url}}">{%- endif -%}
 <section class="section" data-section-id="{{ section.id }}" data-section-type="featured-collection" data-section-settings='{{ section_settings }}'>
   {%- assign collection = section.settings.collection -%}
 

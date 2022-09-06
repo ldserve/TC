@@ -129,7 +129,10 @@ quick-add-modal .product:not(.featured-product) .product__view-details {
 
 quick-add-modal .quick-add-hidden,
 quick-add-modal .product__modal-opener:not(.product__modal-opener--image),
-quick-add-modal .product__media-item:not(:first-child) {
+quick-add-modal .product__media-item:not(:first-child) ,
+.modal .quick-add-hidden,
+.modal .product__modal-opener:not(.product__modal-opener--image),
+.modal .product__media-item:not(:first-child) {
   display: none !important;
 }
 

@@ -302,7 +302,9 @@
 
           <button type="button" class="{{ quick_view_classes }}" data-action="open-modal" 
           data-secondary-action="open-quick-view" aria-controls="modal-quick-view-{{ section.id }}" 
-          data-product-url="{{ product.url }}">QUICK VIEW</button>
+          data-product-url="{{ product.url }}">QUICK VIEW<div class="loading-overlay__spinner hidden">
+          {%- comment -%}  {%- render 'icon',icon:'loading',class:"spinner quick_btn" -%}{%- endcomment -%}
+          </div></button>
         {%- endform -%}
       {%- endif -%}
     {%- endif -%}

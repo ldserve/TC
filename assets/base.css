@@ -1461,7 +1461,7 @@ button.shopify-payment-button__button--unbranded {
   transform: translate(-50%, -50%);
   position: absolute;
   height: 100%;
-  display: flex;
+  display: flex !important;
   align-items: center;
 }
 
@@ -3375,10 +3375,17 @@ details-disclosure>details {
     display: flex;
     flex-wrap: nowrap;
     position: relative;
+    background-color: #d4d4d4;
+  }
+  .product-flex .flickity-viewport{
+    background-color: #FFF;
   }
 
   .product-flex .product-banner {
     width: 30%;
+  }
+  .product-item__info-inner{
+    padding: 0 1rem;
   }
 
   .product-flex>.scroller {
