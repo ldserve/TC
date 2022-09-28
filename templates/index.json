@@ -261,8 +261,8 @@
         "description": "",
         "show_description": false,
         "description_style": "body",
-        "collection": "",
-        "products_to_show": 4,
+        "collection": "all-product",
+        "products_to_show": 8,
         "columns_desktop": 4,
         "model_type": "none",
         "full_width": false,
@@ -284,10 +284,11 @@
     "16617683899db10659": {
       "type": "collection-product-series",
       "settings": {
-        "collection": "",
+        "collection": "all-product",
         "title": "Featured collection",
         "products_count": 12,
         "layout": "vertical",
+        "image_url": "shopify:\/\/shop_images\/14.jpg",
         "image_link": "",
         "stack_products": false,
         "show_quick_buy": false,
