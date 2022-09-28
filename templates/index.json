@@ -88,7 +88,7 @@
         "1661768204b4890ccf-2"
       ],
       "settings": {
-        "title": "Collections",
+        "title": "SHOP BY CATEGORY",
         "heading_size": "h1",
         "image_ratio": "square",
         "columns_desktop": 3,
@@ -285,7 +285,7 @@
       "type": "collection-product-series",
       "settings": {
         "collection": "all-product",
-        "title": "Featured collection",
+        "title": "",
         "products_count": 12,
         "layout": "vertical",
         "image_url": "shopify:\/\/shop_images\/14.jpg",
