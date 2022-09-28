@@ -39,7 +39,7 @@
       "settings": {
         "image": "shopify:\/\/shop_images\/02.jpg",
         "image_link_1": "",
-        "image_overlay_opacity": 40,
+        "image_overlay_opacity": 0,
         "image_height": "medium",
         "adapt_height_first_image": false,
         "desktop_content_position": "bottom-center",
@@ -207,6 +207,7 @@
       "blocks": {
         "165934285774d60548-0": {
           "type": "heading",
+          "disabled": true,
           "settings": {
             "heading": "Image banner",
             "heading_size": "h0"
@@ -214,6 +215,7 @@
         },
         "165934285774d60548-1": {
           "type": "text",
+          "disabled": true,
           "settings": {
             "text": "Give customers details about the banner image(s) or content on the template.",
             "text_style": "body"
@@ -222,7 +224,7 @@
         "165934285774d60548-2": {
           "type": "buttons",
           "settings": {
-            "button_label_1": "Button label",
+            "button_label_1": "",
             "button_link_1": "{{ shop.brand.favicon_url }}",
             "button_style_secondary_1": true,
             "button_label_2": "",
@@ -237,8 +239,9 @@
         "165934285774d60548-2"
       ],
       "settings": {
+        "image": "shopify:\/\/shop_images\/10.jpg",
         "image_link_1": "",
-        "image_overlay_opacity": 40,
+        "image_overlay_opacity": 0,
         "image_height": "medium",
         "adapt_height_first_image": false,
         "desktop_content_position": "middle-center",
