@@ -5,6 +5,7 @@
       "blocks": {
         "heading": {
           "type": "heading",
+          "disabled": true,
           "settings": {
             "heading": "NEW FOR SUMMER",
             "heading_size": "h1"
@@ -105,6 +106,7 @@
         "3ef69563-214b-4df8-a1e5-c0b0cf3daef8": {
           "type": "image",
           "settings": {
+            "image": "shopify:\/\/shop_images\/04.jpg",
             "image_padding": false,
             "image_link": ""
           }
@@ -112,6 +114,7 @@
         "9aa16b01-cff4-4ad4-beac-f5d9f6e34be0": {
           "type": "image",
           "settings": {
+            "image": "shopify:\/\/shop_images\/05.jpg",
             "image_padding": false,
             "image_link": ""
           }
@@ -119,6 +122,7 @@
         "5c4e7d6a-5ce8-459f-a876-65e3e934838e": {
           "type": "image",
           "settings": {
+            "image": "shopify:\/\/shop_images\/06.jpg",
             "image_padding": false,
             "image_link": ""
           }
@@ -130,7 +134,7 @@
         "5c4e7d6a-5ce8-459f-a876-65e3e934838e"
       ],
       "settings": {
-        "heading": "Multimedia collage",
+        "heading": "",
         "heading_size": "h2",
         "desktop_layout": "top",
         "mobile_layout": "collage",
