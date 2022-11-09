@@ -2307,6 +2307,7 @@ input[type='checkbox'] {
   padding: 0.75rem;
   text-decoration: none;
   word-break: break-word;
+  text-transform: uppercase;
 }
 
 .header__heading-link:hover .h2 {
