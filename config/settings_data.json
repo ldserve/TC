@@ -147,10 +147,18 @@
               "heading": "COMPANY INFO",
               "menu": "footer"
             }
+          },
+          "a4091dc1-a9d9-4fa9-aee4-6ab32692ed44": {
+            "type": "link_list",
+            "settings": {
+              "heading": "HELP CENTER",
+              "menu": "help-center"
+            }
           }
         },
         "block_order": [
-          "aeabd7c0-5189-48f7-b497-a5061c79a43d"
+          "aeabd7c0-5189-48f7-b497-a5061c79a43d",
+          "a4091dc1-a9d9-4fa9-aee4-6ab32692ed44"
         ],
         "settings": {
           "color_scheme": "accent-1",
