@@ -55,6 +55,7 @@
             "heading": "Materials",
             "icon": "leather",
             "content": "",
+            "info_mode": false,
             "page": ""
           }
         },
@@ -64,6 +65,7 @@
             "heading": "Shipping & Returns",
             "icon": "truck",
             "content": "",
+            "info_mode": false,
             "page": ""
           }
         },
@@ -73,6 +75,7 @@
             "heading": "Dimensions",
             "icon": "ruler",
             "content": "",
+            "info_mode": false,
             "page": ""
           }
         },
@@ -82,6 +85,7 @@
             "heading": "Care Instructions",
             "icon": "heart",
             "content": "",
+            "info_mode": false,
             "page": ""
           }
         },
@@ -120,6 +124,7 @@
     },
     "image-with-text": {
       "type": "image-with-text",
+      "disabled": true,
       "blocks": {
         "image-with-text-0": {
           "type": "heading",
