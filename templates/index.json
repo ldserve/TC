@@ -1,7 +1,72 @@
 {
   "sections": {
+    "d51d9ed4-aed1-45fb-a476-4631acf327a1": {
+      "type": "linkImg",
+      "blocks": {
+        "3b446310-06b8-449a-800b-563c72483d89": {
+          "type": "link",
+          "settings": {
+            "heading": "",
+            "link": "https:\/\/tacticalclubs.com\/collections\/new-in",
+            "left": 0,
+            "top": 0,
+            "width": 10,
+            "height": 10
+          }
+        }
+      },
+      "block_order": [
+        "3b446310-06b8-449a-800b-563c72483d89"
+      ],
+      "settings": {
+        "linkImg_title": "",
+        "linkImg_content": "",
+        "hidDesk": false,
+        "sensorsName": "new",
+        "hidWeb": true,
+        "line": false,
+        "image": "shopify:\/\/shop_images\/tc__02_c6eaffac-9bf9-4a80-9a9e-29a394c6e8e1.jpg",
+        "tpadding": 0,
+        "rpadding": 0,
+        "bpadding": 0,
+        "lpadding": 0
+      }
+    },
+    "833fc568-a29b-4246-beb5-87f3ae169a77": {
+      "type": "linkImg",
+      "blocks": {
+        "35b3fd68-5dbb-42da-9185-e489105fc1d4": {
+          "type": "link",
+          "settings": {
+            "heading": "",
+            "link": "https:\/\/tacticalclubs.com\/collections\/new-in",
+            "left": 0,
+            "top": 0,
+            "width": 10,
+            "height": 10
+          }
+        }
+      },
+      "block_order": [
+        "35b3fd68-5dbb-42da-9185-e489105fc1d4"
+      ],
+      "settings": {
+        "linkImg_title": "",
+        "linkImg_content": "",
+        "hidDesk": true,
+        "sensorsName": "new",
+        "hidWeb": false,
+        "line": false,
+        "image": "shopify:\/\/shop_images\/tc__02_e827c2f2-beb5-4cc4-940d-831faccf6b69.jpg",
+        "tpadding": 0,
+        "rpadding": 0,
+        "bpadding": 0,
+        "lpadding": 0
+      }
+    },
     "image_banner": {
       "type": "image-banner",
+      "disabled": true,
       "blocks": {
         "heading": {
           "type": "heading",
@@ -37,7 +102,7 @@
         "button"
       ],
       "settings": {
-        "image": "shopify:\/\/shop_images\/02.jpg",
+        "image": "shopify:\/\/shop_images\/tc__02_c6eaffac-9bf9-4a80-9a9e-29a394c6e8e1.jpg",
         "mobile_image": "shopify:\/\/shop_images\/02_e416044b-060a-4fa5-b979-63004aab2c17.jpg",
         "image_link_1": "",
         "image_overlay_opacity": 0,
@@ -58,7 +123,7 @@
         "1661768204b4890ccf-0": {
           "type": "featured_collection",
           "settings": {
-            "collection": "frontpage",
+            "collection": "new-in",
             "button_label": "Button label",
             "button_link": "",
             "button_style_secondary": false
@@ -67,7 +132,7 @@
         "1661768204b4890ccf-1": {
           "type": "featured_collection",
           "settings": {
-            "collection": "frontpage",
+            "collection": "hoodies",
             "button_label": "Button label",
             "button_link": "",
             "button_style_secondary": false
@@ -76,9 +141,36 @@
         "1661768204b4890ccf-2": {
           "type": "featured_collection",
           "settings": {
-            "collection": "frontpage",
+            "collection": "sweaters",
             "button_label": "Button label",
             "button_link": "shopify:\/\/collections\/frontpage",
+            "button_style_secondary": false
+          }
+        },
+        "cf5ae93a-841f-48ea-bd2e-96f78d0eb01d": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "jackets",
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "5d387726-5025-447e-8ed3-a66bfb02c5a0": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bottoms",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "360582e2-774b-46a5-a2c8-a47e54b7fb21": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "polo-shirts",
+            "button_label": "Button label",
+            "button_link": "",
             "button_style_secondary": false
           }
         }
@@ -86,7 +178,10 @@
       "block_order": [
         "1661768204b4890ccf-0",
         "1661768204b4890ccf-1",
-        "1661768204b4890ccf-2"
+        "1661768204b4890ccf-2",
+        "cf5ae93a-841f-48ea-bd2e-96f78d0eb01d",
+        "5d387726-5025-447e-8ed3-a66bfb02c5a0",
+        "360582e2-774b-46a5-a2c8-a47e54b7fb21"
       ],
       "settings": {
         "title": "SHOP BY CATEGORY",
@@ -94,15 +189,128 @@
         "image_ratio": "square",
         "columns_desktop": 3,
         "color_scheme": "background-1",
-        "show_view_all": false,
+        "show_view_all": true,
         "columns_mobile": "1",
-        "swipe_on_mobile": false,
+        "swipe_on_mobile": true,
         "padding_top": 36,
         "padding_bottom": 0
       }
     },
+    "d8abe158-3883-4772-92c8-926f7e083638": {
+      "type": "linkImg",
+      "blocks": {
+        "373006d9-0dfe-4be2-8976-f632619ae84a": {
+          "type": "link",
+          "settings": {
+            "heading": "bestseller",
+            "link": "https:\/\/tacticalclubs.com\/collections\/best-sellers",
+            "left": 0,
+            "top": 0,
+            "width": 100,
+            "height": 49
+          }
+        },
+        "5aaa197e-7830-44bf-82d7-9a914c96388e": {
+          "type": "link",
+          "settings": {
+            "heading": "workshirts",
+            "link": "https:\/\/tacticalclubs.com\/collections\/work-shirts",
+            "left": 0,
+            "top": 50,
+            "width": 49,
+            "height": 50
+          }
+        },
+        "974ef597-9f89-40ba-8935-90dbd1ed992a": {
+          "type": "link",
+          "settings": {
+            "heading": "outerwear",
+            "link": "https:\/\/tacticalclubs.com\/collections\/jackets",
+            "left": 55,
+            "top": 52,
+            "width": 40,
+            "height": 42
+          }
+        }
+      },
+      "block_order": [
+        "373006d9-0dfe-4be2-8976-f632619ae84a",
+        "5aaa197e-7830-44bf-82d7-9a914c96388e",
+        "974ef597-9f89-40ba-8935-90dbd1ed992a"
+      ],
+      "settings": {
+        "linkImg_title": "",
+        "linkImg_content": "",
+        "hidDesk": false,
+        "sensorsName": "",
+        "hidWeb": true,
+        "line": false,
+        "image": "shopify:\/\/shop_images\/tc__04.jpg",
+        "tpadding": 0,
+        "rpadding": 0,
+        "bpadding": 0,
+        "lpadding": 0
+      }
+    },
+    "6c6d962a-f0bd-404f-acf0-ba04847f4b72": {
+      "type": "linkImg",
+      "blocks": {
+        "7b5ec4ad-39ee-4ad5-9393-80f74599a6bc": {
+          "type": "link",
+          "settings": {
+            "heading": "bestseller",
+            "link": "",
+            "left": 0,
+            "top": 0,
+            "width": 100,
+            "height": 50
+          }
+        },
+        "a7ba5a2c-df86-44f2-af93-56bd7666c6db": {
+          "type": "link",
+          "settings": {
+            "heading": "workshirts",
+            "link": "",
+            "left": 0,
+            "top": 53,
+            "width": 45,
+            "height": 47
+          }
+        },
+        "839a6da2-3541-427c-a303-811eea3a4b12": {
+          "type": "link",
+          "settings": {
+            "heading": "outerwear",
+            "link": "",
+            "left": 55,
+            "top": 55,
+            "width": 44,
+            "height": 52
+          }
+        }
+      },
+      "block_order": [
+        "7b5ec4ad-39ee-4ad5-9393-80f74599a6bc",
+        "a7ba5a2c-df86-44f2-af93-56bd7666c6db",
+        "839a6da2-3541-427c-a303-811eea3a4b12"
+      ],
+      "settings": {
+        "linkImg_title": "",
+        "linkImg_content": "",
+        "hidDesk": true,
+        "sensorsName": "",
+        "hidWeb": false,
+        "line": false,
+        "image": "shopify:\/\/shop_images\/tc__04_776d6004-6748-41f8-a98f-621165ed2ac3.jpg",
+        "tpadding": 0,
+        "rpadding": 0,
+        "bpadding": 0,
+        "lpadding": 0
+      }
+    },
     "collage": {
       "type": "collage",
+      "disabled": true,
       "blocks": {
         "3ef69563-214b-4df8-a1e5-c0b0cf3daef8": {
           "type": "image",
@@ -153,9 +361,9 @@
         "show_description": false,
         "description_style": "body",
         "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "model_type": "variant",
+        "products_to_show": 5,
+        "columns_desktop": 5,
+        "model_type": "none",
         "full_width": false,
         "show_view_all": true,
         "view_all_style": "solid",
@@ -165,15 +373,80 @@
         "show_secondary_image": true,
         "show_vendor": false,
         "show_rating": true,
-        "enable_quick_add": false,
+        "enable_quick_add": true,
         "columns_mobile": "2",
         "swipe_on_mobile": false,
         "padding_top": 0,
         "padding_bottom": 36
       }
     },
+    "14f79a32-5adf-4254-8933-d46d9f94851e": {
+      "type": "linkImg",
+      "blocks": {
+        "4abc1ce0-d470-4f0e-9cd9-ee044b7ce521": {
+          "type": "link",
+          "settings": {
+            "heading": "seeatshirt",
+            "link": "",
+            "left": 0,
+            "top": 0,
+            "width": 100,
+            "height": 100
+          }
+        }
+      },
+      "block_order": [
+        "4abc1ce0-d470-4f0e-9cd9-ee044b7ce521"
+      ],
+      "settings": {
+        "linkImg_title": "",
+        "linkImg_content": "",
+        "hidDesk": false,
+        "sensorsName": "seeatshirt",
+        "hidWeb": true,
+        "line": false,
+        "image": "shopify:\/\/shop_images\/tc__06.jpg",
+        "tpadding": 0,
+        "rpadding": 0,
+        "bpadding": 0,
+        "lpadding": 0
+      }
+    },
+    "8af8b6fd-1098-4226-a870-0f3e417bde56": {
+      "type": "linkImg",
+      "blocks": {
+        "a8d99d8a-59ab-4568-82a5-9a057d2925bb": {
+          "type": "link",
+          "settings": {
+            "heading": "seeatshirt",
+            "link": "https:\/\/tacticalclubs.com\/collections\/sweatshirts",
+            "left": 0,
+            "top": 0,
+            "width": 100,
+            "height": 100
+          }
+        }
+      },
+      "block_order": [
+        "a8d99d8a-59ab-4568-82a5-9a057d2925bb"
+      ],
+      "settings": {
+        "linkImg_title": "",
+        "linkImg_content": "",
+        "hidDesk": true,
+        "sensorsName": "",
+        "hidWeb": false,
+        "line": false,
+        "image": "shopify:\/\/shop_images\/tc__06_a662b9ea-3b6c-49ac-9e66-2a47cf22d045.jpg",
+        "tpadding": 0,
+        "rpadding": 0,
+        "bpadding": 0,
+        "lpadding": 0
+      }
+    },
     "16593428576233f191": {
       "type": "image-banner",
+      "disabled": true,
       "blocks": {
         "165934285774d60548-0": {
           "type": "heading",
@@ -209,8 +482,8 @@
         "165934285774d60548-2"
       ],
       "settings": {
-        "image": "shopify:\/\/shop_images\/10.jpg",
-        "mobile_image": "shopify:\/\/shop_images\/10_d80f050a-8837-446b-b7d6-446925f93fa4.jpg",
+        "image": "shopify:\/\/shop_images\/tc__06.jpg",
+        "mobile_image": "shopify:\/\/shop_images\/tc__06_3c79db41-a03e-461a-8ccb-82156ad1e8fb.jpg",
         "image_link_1": "",
         "image_overlay_opacity": 0,
         "image_height": "medium",
@@ -233,9 +506,9 @@
         "show_description": false,
         "description_style": "body",
         "collection": "all-product",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "model_type": "variant",
+        "products_to_show": 5,
+        "columns_desktop": 5,
+        "model_type": "none",
         "full_width": false,
         "show_view_all": true,
         "view_all_style": "solid",
@@ -245,7 +518,7 @@
         "show_secondary_image": true,
         "show_vendor": false,
         "show_rating": true,
-        "enable_quick_add": false,
+        "enable_quick_add": true,
         "columns_mobile": "2",
         "swipe_on_mobile": false,
         "padding_top": 36,
@@ -255,12 +528,12 @@
     "16617683899db10659": {
       "type": "collection-product-series",
       "settings": {
-        "collection": "all-product",
+        "collection": "flash-sale",
         "title": "",
-        "products_count": 12,
+        "products_count": 6,
         "layout": "vertical",
-        "image_url": "shopify:\/\/shop_images\/14.jpg",
-        "image_link": "",
+        "image_url": "shopify:\/\/shop_images\/tc__08.jpg",
+        "image_link": "https:\/\/tacticalclubs.com\/collections\/flash-sale",
         "stack_products": false,
         "show_quick_buy": false,
         "link_title": "View all",
@@ -272,16 +545,17 @@
     },
     "1661768409b6d96754": {
       "type": "featured-collection",
+      "disabled": true,
       "settings": {
         "title": "",
         "heading_size": "h1",
         "description": "",
         "show_description": false,
         "description_style": "body",
-        "collection": "all-product",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "model_type": "variant",
+        "collection": "flash-sale",
+        "products_to_show": 6,
+        "columns_desktop": 5,
+        "model_type": "none",
         "full_width": false,
         "show_view_all": true,
         "view_all_style": "solid",
@@ -334,10 +608,16 @@
     }
   },
   "order": [
+    "d51d9ed4-aed1-45fb-a476-4631acf327a1",
+    "833fc568-a29b-4246-beb5-87f3ae169a77",
     "image_banner",
     "16617682042ecea232",
+    "d8abe158-3883-4772-92c8-926f7e083638",
+    "6c6d962a-f0bd-404f-acf0-ba04847f4b72",
     "collage",
     "featured_collection",
+    "14f79a32-5adf-4254-8933-d46d9f94851e",
+    "8af8b6fd-1098-4226-a870-0f3e417bde56",
     "16593428576233f191",
     "1661768334b122da87",
     "16617683899db10659",
