@@ -3900,3 +3900,21 @@ img {
   width: 100%;
   height: 100%;
 }
+
+@media screen and (max-width: 999px) {
+  .hidden-pocket {
+    display: none !important;
+  }
+
+}
+@media screen and (min-width: 1000px) {
+    .hidden-lap-and-up {
+      display: none !important;
+    }
+   }
+
+@media screen and (min-width: 1000px) and (max-width: 1279px) {
+  .hidden-lap {
+    display: none !important;
+  }
+}
