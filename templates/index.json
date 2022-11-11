@@ -6,12 +6,12 @@
         "3b446310-06b8-449a-800b-563c72483d89": {
           "type": "link",
           "settings": {
-            "heading": "",
+            "heading": "newin",
             "link": "https:\/\/tacticalclubs.com\/collections\/new-in",
             "left": 0,
             "top": 0,
-            "width": 10,
-            "height": 10
+            "width": 100,
+            "height": 100
           }
         }
       },
@@ -38,12 +38,12 @@
         "35b3fd68-5dbb-42da-9185-e489105fc1d4": {
           "type": "link",
           "settings": {
-            "heading": "",
+            "heading": "newin",
             "link": "https:\/\/tacticalclubs.com\/collections\/new-in",
             "left": 0,
             "top": 0,
-            "width": 10,
-            "height": 10
+            "width": 100,
+            "height": 100
           }
         }
       },
