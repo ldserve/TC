@@ -2,6 +2,7 @@
   "sections": {
     "d51d9ed4-aed1-45fb-a476-4631acf327a1": {
       "type": "linkImg",
+      "disabled": true,
       "blocks": {
         "3b446310-06b8-449a-800b-563c72483d89": {
           "type": "link",
@@ -34,6 +35,7 @@
     },
     "833fc568-a29b-4246-beb5-87f3ae169a77": {
       "type": "linkImg",
+      "disabled": true,
       "blocks": {
         "35b3fd68-5dbb-42da-9185-e489105fc1d4": {
           "type": "link",
@@ -62,6 +64,118 @@
         "rpadding": 0,
         "bpadding": 0,
         "lpadding": 0
+      }
+    },
+    "13e452f1-e68c-4540-a058-f86fec542e7b": {
+      "type": "slideshow",
+      "blocks": {
+        "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/tc_f3608d7c-9e89-4900-a99a-a81cb8832e64.jpg",
+            "heading": "",
+            "heading_size": "h1",
+            "subheading": "",
+            "button_label": "",
+            "link": "shopify:\/\/collections\/best-sellers",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": false,
+            "text_alignment": "center",
+            "image_overlay_opacity": 0,
+            "color_scheme": "background-1",
+            "text_alignment_mobile": "center"
+          }
+        },
+        "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-0": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/tc__02_c6eaffac-9bf9-4a80-9a9e-29a394c6e8e1.jpg",
+            "heading": "",
+            "heading_size": "h1",
+            "subheading": "",
+            "button_label": "",
+            "link": "https:\/\/tacticalclubs.com\/collections\/new-in",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": false,
+            "text_alignment": "center",
+            "image_overlay_opacity": 0,
+            "color_scheme": "background-1",
+            "text_alignment_mobile": "center"
+          }
+        }
+      },
+      "block_order": [
+        "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-1",
+        "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-0"
+      ],
+      "settings": {
+        "layout": "full_bleed",
+        "hidden_phone": true,
+        "hidden_desktop": false,
+        "slide_height": "adapt_image",
+        "slider_visual": "dots",
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "show_text_below": true,
+        "accessibility_info": ""
+      }
+    },
+    "c192c5f2-744d-4771-94a8-597993efafa6": {
+      "type": "slideshow",
+      "blocks": {
+        "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/tc_banner.jpg",
+            "heading": "",
+            "heading_size": "h1",
+            "subheading": "",
+            "button_label": "",
+            "link": "shopify:\/\/collections\/best-sellers",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": false,
+            "text_alignment": "center",
+            "image_overlay_opacity": 0,
+            "color_scheme": "background-1",
+            "text_alignment_mobile": "center"
+          }
+        },
+        "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-0": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/tc__02.jpg",
+            "heading": "",
+            "heading_size": "h1",
+            "subheading": "",
+            "button_label": "",
+            "link": "shopify:\/\/collections\/new-in",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": false,
+            "text_alignment": "center",
+            "image_overlay_opacity": 0,
+            "color_scheme": "background-1",
+            "text_alignment_mobile": "center"
+          }
+        }
+      },
+      "block_order": [
+        "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-1",
+        "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-0"
+      ],
+      "settings": {
+        "layout": "full_bleed",
+        "hidden_phone": false,
+        "hidden_desktop": true,
+        "slide_height": "adapt_image",
+        "slider_visual": "counter",
+        "auto_rotate": true,
+        "change_slides_speed": 3,
+        "show_text_below": false,
+        "accessibility_info": ""
       }
     },
     "image_banner": {
@@ -610,6 +724,8 @@
   "order": [
     "d51d9ed4-aed1-45fb-a476-4631acf327a1",
     "833fc568-a29b-4246-beb5-87f3ae169a77",
+    "13e452f1-e68c-4540-a058-f86fec542e7b",
+    "c192c5f2-744d-4771-94a8-597993efafa6",
     "image_banner",
     "16617682042ecea232",
     "d8abe158-3883-4772-92c8-926f7e083638",
