@@ -26,7 +26,7 @@
   {%- endstyle -%}
 {%- endif -%}
 
-<slideshow-component class="slider-mobile-gutter{% if section.settings.layout == 'grid' %} page-width{% endif %}{% if section.settings.show_text_below %} mobile-text-below{% endif %}" role="region" aria-roledescription="{{ 'sections.slideshow.carousel' | t }}" aria-label="{{ section.settings.accessibility_info | escape }}">
+<slideshow-component class="slider-mobile-gutter{% if section.settings.layout == 'grid' %} page-width{% endif %}{% if section.settings.show_text_below %} mobile-text-below{% endif %} {% if section.settings.hidden_phone %}hidden-phone{% endif %} {% if section.settings.hidden_desktop %}hidden-desktop{% endif %}" role="region" aria-roledescription="{{ 'sections.slideshow.carousel' | t }}" aria-label="{{ section.settings.accessibility_info | escape }}">
   {%- if section.settings.auto_rotate and section.blocks.size > 1 -%}
     <div class="slideshow__controls slideshow__controls--top slider-buttons no-js-hidden{% if section.settings.show_text_below %} slideshow__controls--border-radius-mobile{% endif %}">
       <button type="button" class="slider-button slider-button--prev" name="previous" aria-label="{{ 'sections.slideshow.previous_slideshow' | t }}" aria-controls="Slider-{{ section.id }}">{% render 'icon',icon:'caret' %}</button>
@@ -201,6 +201,16 @@
       ],
       "default": "full_bleed",
       "label": "t:sections.slideshow.settings.layout.label"
+    },{
+    "type":"checkbox",
+    "id":"hidden_phone",
+    "label":"隐藏移动端",
+    "default":false
+    },{
+    "type":"checkbox",
+    "id":"hidden_desktop",
+    "label":"隐藏pc端",
+    "default":false
     },
     {
       "type": "select",

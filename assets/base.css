@@ -3918,3 +3918,8 @@ img {
     display: none !important;
   }
 }
+@media screen and (min-width: 641px){
+.hidden-desktop{
+  display: none !important;
+}
+}
