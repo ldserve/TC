@@ -72,12 +72,12 @@
         "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-1": {
           "type": "slide",
           "settings": {
-            "image": "shopify:\/\/shop_images\/tc_addc08a5-6843-4e9e-946a-06a9fa5a1829.jpg",
+            "image": "shopify:\/\/shop_images\/TC_pc_banner.jpg",
             "heading": "",
             "heading_size": "h1",
             "subheading": "",
             "button_label": "",
-            "link": "shopify:\/\/collections\/best-sellers",
+            "link": "https:\/\/tacticalclubs.com\/collections\/black-friday?page=1",
             "button_style_secondary": false,
             "box_align": "middle-center",
             "show_text_box": false,
@@ -128,12 +128,12 @@
         "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-1": {
           "type": "slide",
           "settings": {
-            "image": "shopify:\/\/shop_images\/tc_502bda92-54ec-47b2-b964-aa251e6be3cb.jpg",
+            "image": "shopify:\/\/shop_images\/tc_banner_bca5db06-7286-41d7-815d-5fd11654b3df.jpg",
             "heading": "",
             "heading_size": "h1",
             "subheading": "",
             "button_label": "",
-            "link": "shopify:\/\/collections\/best-sellers",
+            "link": "https:\/\/tacticalclubs.com\/collections\/black-friday?page=1",
             "button_style_secondary": false,
             "box_align": "middle-center",
             "show_text_box": false,
