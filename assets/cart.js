@@ -61,12 +61,12 @@ class CartItems extends HTMLElement {
 
     const body = JSON.stringify({
       line,
-      quantity,
-      sections: this.getSectionsToRender().map((section) => section.section),
-      sections_url: window.location.pathname
+      quantity
+      // sections: this.getSectionsToRender().map((section) => section.section),
+      // sections_url: window.location.pathname
     });
 
-    fetch(`${routes.cart_change_url}`, {...fetchConfig(), ...{ body }})
+    fetch('/cart/change.js', {...fetchConfig(), ...{ body }})
       .then((response) => {
         return response.text();
       })
