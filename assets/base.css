@@ -3900,12 +3900,26 @@ img {
   width: 100%;
   height: 100%;
 }
-
+.activity-ui-text {
+  position: absolute;
+  top: 0;
+  text-align: right;
+  right: 0;
+  padding: 0 1rem;
+  background: linear-gradient(to right,#c2e049,#29a8ff);
+  color: #FFF;
+  font-size: 13px;
+}
+.activity-tag-ui{
+  z-index: 9;
+}
 @media screen and (max-width: 999px) {
   .hidden-pocket {
     display: none !important;
   }
-
+  .activity-ui-text {
+    font-size: 12px;
+  }
 }
 @media screen and (min-width: 1000px) {
     .hidden-lap-and-up {

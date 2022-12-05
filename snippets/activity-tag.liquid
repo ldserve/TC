@@ -1,0 +1,29 @@
+{%- comment -%}
+
+---class_name: string
+---show_img_tag: boolean
+---show_transparent_tag: boolean
+
+{%- endcomment -%}
+
+{%- assign custom = false -%}
+
+{%- for tag in product.tags -%}
+	{%- if tag contains 'CustomPromotion' -%}
+		{%- assign custom = true -%}
+		{%- assign text = tag | split: '-' -%}
+		{%- assign custom_tag = text[1] | strip -%}
+		{%- break -%}
+	{%- endif -%}
+{%- endfor -%}
+
+{%- comment -%}自定义活动标签{%- endcomment -%}
+{%- if custom -%}
+		{%- comment -%}------------展示标签 指定 TAG 颜色--------------{%- endcomment -%}
+		<div class="activity-tag-ui activity-tag-ui-right  activity-ui-fade-in {{class_name}}"
+			style="opacity: 1;" >
+			<div class="activity-ui-text">
+				<div class="activity-ui-text_msg">{{custom_tag}}</div>
+			</div>
+		</div>
+{%- endif -%}
