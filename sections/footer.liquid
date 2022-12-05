@@ -378,14 +378,15 @@
     </div>
   </div>
 </footer>
- 
-<div class="mobile-nav">
-  <a class="mobile-nav__shop mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"home" -%}<span>Shop</span></a>
-  <a class="mobile-nav__category mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"hamburger" -%}<span>Category</span></a>
-  <a class="mobile-nav__hot mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"hot" -%}<span>Hot</span></a>
-  <a class="mobile-nav__cart mobile-nav-item" href="{{routes.cart_url}}">{%- render 'icon',icon:"cart-package" -%}<span>Cart</span></a>
-  <a class="mobile-nav__me mobile-nav-item" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">{%- render 'icon',icon:"account" -%}<span>Me</span></a>
-</div>
+ {%- comment -%}
+ <div class="mobile-nav">
+   <a class="mobile-nav__shop mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"home" -%}<span>Shop</span></a>
+   <a class="mobile-nav__category mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"hamburger" -%}<span>Category</span></a>
+   <a class="mobile-nav__hot mobile-nav-item" href="{{routes.root_url}}">{%- render 'icon',icon:"hot" -%}<span>Hot</span></a>
+   <a class="mobile-nav__cart mobile-nav-item" href="{{routes.cart_url}}">{%- render 'icon',icon:"cart-package" -%}<span>Cart</span></a>
+   <a class="mobile-nav__me mobile-nav-item" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">{%- render 'icon',icon:"account" -%}<span>Me</span></a>
+ </div>
+ {%- endcomment -%}
 {% javascript %}
   class LocalizationForm extends HTMLElement {
     constructor() {

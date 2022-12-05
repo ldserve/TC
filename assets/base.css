@@ -3911,7 +3911,7 @@ img {
   font-size: 13px;
 }
 .activity-tag-ui{
-  z-index: 9;
+  z-index: 2;
 }
 @media screen and (max-width: 999px) {
   .hidden-pocket {
