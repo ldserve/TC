@@ -67,17 +67,16 @@ class CartItems extends HTMLElement {
     });
 
     fetch('/cart/change', {...fetchConfig(), ...{ body }})
-      .then((response) => {
-        return response.text();
-      })
+      .then((response) =>response.json())
       .then((state) => {
-        const parsedState = JSON.parse(state);
+        console.log('state',state)
+        const parsedState =state
         this.classList.toggle('is-empty', parsedState.item_count === 0);
         const cartDrawerWrapper = document.querySelector('cart-drawer');
         const cartFooter = document.getElementById('main-cart-footer');
 
-        if (cartFooter) cartFooter.classList.toggle('is-empty', parsedState.item_count === 0);
-        if (cartDrawerWrapper) cartDrawerWrapper.classList.toggle('is-empty', parsedState.item_count === 0);
+        cartFooter&& cartFooter.classList.toggle('is-empty', parsedState.item_count === 0);
+        cartDrawerWrapper&& cartDrawerWrapper.classList.toggle('is-empty', parsedState.item_count === 0);
 
         this.getSectionsToRender().forEach((section => {
           const elementToReplace =

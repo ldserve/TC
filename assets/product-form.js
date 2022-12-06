@@ -27,18 +27,17 @@ if (!customElements.get('product-form')) {
 
       const formData = new FormData(this.form);
       if (this.cart) {
-        formData.append('sections', this.cart.getSectionsToRender().map((section) => section.id));
-        formData.append('sections_url', window.location.pathname);
+        // formData.append('sections', this.cart.getSectionsToRender().map((section) => section.id));
+        // formData.append('sections_url', window.location.pathname);
         this.cart.setActiveElement(document.activeElement);
       }
       config.body = formData;
 
-      fetch(`${routes.cart_add_url}`, config)
+      fetch('/cart/add.js', config)
         .then((response) => response.json())
         .then((response) => {
           if (response.status) {
             this.handleErrorMessage(response.description);
-
             const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
             if (!soldOutMessage) return;
             this.submitButton.setAttribute('aria-disabled', true);
