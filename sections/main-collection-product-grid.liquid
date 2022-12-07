@@ -101,11 +101,47 @@
             <ul id="product-grid" data-id="{{ section.id }}" class="
               grid product-grid grid--{{ section.settings.columns_mobile }}-col-tablet-down
               grid--{{ section.settings.columns_desktop }}-col-desktop">
+              
+                {%- comment -%} ------------------ 产品顶置排序 -------------- {%- endcomment -%}
+                {%- if collection.sort_by and collection.sort_by != empty -%}
+                {%- assign sort_by_list = collection.sort_by | split: "," -%}
+
+                {% for item in sort_by_list %}
+                  {%- if all_products[item]!= empty and all_products[item].handle!= empty -%}
+                  <li id="Slide-{{ section.id }}-{{ forloop.index }}" class="grid__item{% if show_mobile_slider or show_desktop_slider %} slider__slide{% endif %}">
+                    {% render 'card-product',
+                      card_product: all_products[item],
+                      media_aspect_ratio: section.settings.image_ratio,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      show_quick_add: section.settings.enable_quick_add,
+                      section_id: section.id,
+                      variant_type:section.settings.model_type
+                    %}
+                  </li>
+                  {%- endif -%}
+                {%-endfor-%}
+              {%-endif-%}
+
               {%- for product in collection.products -%}
                 {% assign lazy_load = false %}
                 {%- if forloop.index > 2 -%}
                   {%- assign lazy_load = true -%}
                 {%- endif -%}
+                
+                {%- comment -%}--------------------------过滤顶置产品-----------------------------{%- endcomment -%}
+                {%- assign render_item = true -%}
+                {%- for str_item in sort_by_list -%}
+                {%- assign product_handle = product.handle | downcase  -%}
+                {%- assign down_str_item = str_item | strip | downcase -%}
+                {%- if product_handle == down_str_item -%}
+                {%- assign render_item = false -%}
+                {% break %}
+                {%- endif -%}
+                {%- endfor -%}
+
+                {%- if render_item -%}
                 <li class="grid__item">
                   {% render 'card-product',
                     card_product: product,
@@ -119,6 +155,7 @@
                     variant_type:section.settings.model_type
                   %}
                 </li>
+                {%- endif -%}
               {%- endfor -%}
             </ul>
     
