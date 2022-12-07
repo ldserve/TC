@@ -616,10 +616,10 @@
       "settings": {
         "title": "",
         "heading_size": "h1",
-        "description": "<p><\/p>",
+        "description": "",
         "show_description": false,
         "description_style": "body",
-        "collection": "all-product",
+        "collection": "hoodies",
         "products_to_show": 5,
         "columns_desktop": 5,
         "model_type": "none",
