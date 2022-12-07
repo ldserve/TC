@@ -255,7 +255,7 @@
         "1661768204b4890ccf-2": {
           "type": "featured_collection",
           "settings": {
-            "collection": "sweaters",
+            "collection": "tee",
             "button_label": "Button label",
             "button_link": "shopify:\/\/collections\/frontpage",
             "button_style_secondary": false
@@ -471,7 +471,7 @@
       "settings": {
         "title": "",
         "heading_size": "h2",
-        "description": "",
+        "description": "<p><\/p>",
         "show_description": false,
         "description_style": "body",
         "collection": "all",
@@ -616,7 +616,7 @@
       "settings": {
         "title": "",
         "heading_size": "h1",
-        "description": "",
+        "description": "<p><\/p>",
         "show_description": false,
         "description_style": "body",
         "collection": "all-product",
@@ -663,7 +663,7 @@
       "settings": {
         "title": "",
         "heading_size": "h1",
-        "description": "",
+        "description": "<p><\/p>",
         "show_description": false,
         "description_style": "body",
         "collection": "flash-sale",
