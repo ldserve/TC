@@ -89,6 +89,7 @@
         },
         "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-1": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify:\/\/shop_images\/banner.jpg",
             "heading": "",
@@ -107,6 +108,7 @@
         },
         "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-0": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify:\/\/shop_images\/tc__02_c6eaffac-9bf9-4a80-9a9e-29a394c6e8e1.jpg",
             "heading": "",
@@ -144,8 +146,27 @@
     "c192c5f2-744d-4771-94a8-597993efafa6": {
       "type": "slideshow",
       "blocks": {
+        "cfb6497b-ca46-4b7d-ab79-5db69f7b050e": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/tc_cfc895d4-faea-4043-a4bd-81184a0555b0.jpg",
+            "heading": "",
+            "heading_size": "h1",
+            "subheading": "",
+            "button_label": "",
+            "link": "",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "image_overlay_opacity": 0,
+            "color_scheme": "background-1",
+            "text_alignment_mobile": "center"
+          }
+        },
         "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-1": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify:\/\/shop_images\/1.jpg",
             "heading": "",
@@ -164,6 +185,7 @@
         },
         "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-0": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify:\/\/shop_images\/tc__02.jpg",
             "heading": "",
@@ -182,6 +204,7 @@
         }
       },
       "block_order": [
+        "cfb6497b-ca46-4b7d-ab79-5db69f7b050e",
         "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-1",
         "template--16356377755866__c192c5f2-744d-4771-94a8-597993efafa6-166860500136656ac1-0"
       ],
