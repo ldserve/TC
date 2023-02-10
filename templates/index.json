@@ -69,6 +69,24 @@
     "13e452f1-e68c-4540-a058-f86fec542e7b": {
       "type": "slideshow",
       "blocks": {
+        "e53e6d01-7c16-43ea-a721-26921086e426": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/tc_c2e3ecb5-dec3-4392-9352-47788b21635f.jpg",
+            "heading": "",
+            "heading_size": "h1",
+            "subheading": "",
+            "button_label": "",
+            "link": "shopify:\/\/collections\/polo-shirts",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": false,
+            "text_alignment": "center",
+            "image_overlay_opacity": 0,
+            "color_scheme": "background-1",
+            "text_alignment_mobile": "center"
+          }
+        },
         "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-1": {
           "type": "slide",
           "settings": {
@@ -107,6 +125,7 @@
         }
       },
       "block_order": [
+        "e53e6d01-7c16-43ea-a721-26921086e426",
         "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-1",
         "template--16356377755866__13e452f1-e68c-4540-a058-f86fec542e7b-166860500136656ac1-0"
       ],
