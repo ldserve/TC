@@ -206,7 +206,15 @@
     },
     "content_for_index": [
 
-    ]
+    ],
+    "blocks": {
+      "8171265131012698934": {
+        "type": "shopify:\/\/apps\/quantity-breaks-order-limity\/blocks\/orichi-discount\/3f38eaa3-2a3f-4e55-bcc9-df5d3f75e351",
+        "disabled": false,
+        "settings": {
+        }
+      }
+    }
   },
   "presets": {
     "Default": {
