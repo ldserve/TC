@@ -59,9 +59,10 @@
       document.documentElement.classList.add('shopify-design-mode');
     }
     </script>
-  </head>
+    {% if template == 'cart' %}{% include "revy-bundle-script" %}{% endif %}
 
-  <body class="gradient">
+  </head>
+<body class="gradient">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ "accessibility.skip_to_text" | t }}
     </a>
@@ -117,5 +118,6 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
   {% render 'appikon-discounts' %}
+  {% include 'revy-bundle-script' %}
 </body>
 </html>
