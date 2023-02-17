@@ -101,7 +101,7 @@
                       </div>
                     {%- else -%}
                       <div class="product-option">
-                        <span data-item-key='{{ item.key }}' class='revy-original-item-price'>{{ item.original_price | money }}</span>
+                        <span data-item-key='{{ item.key }}' class='revy-original-item-price'><div class="qb-price-item" data-id="{{ item.key }}">{{ item.original_price | money }}</div></span>
                       </div>
                     {%- endif -%}
 
@@ -164,7 +164,7 @@
                           </dt>
                           <dd>
                             <s class="cart-item__old-price price price--end">
-                              <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'>{{ item.original_line_price | money }}</span></span></span></span>
+                              <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><div class="qb-total-line-item" data-id="{{ item.key }}">{{ item.original_line_price | money }}</div></span></span></span></span>
                             </s>
                           </dd>
                           <dt class="visually-hidden">
@@ -176,7 +176,7 @@
                         </dl>
                       {%- else -%}
                         <span class="price price--end">
-                          <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'>{{ item.original_line_price | money }}</span></span></span></span>
+                          <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><div class="qb-total-line-item" data-id="{{ item.key }}">{{ item.original_line_price | money }}</div></span></span></span></span>
                         </span>
                       {%- endif -%}
 
@@ -254,7 +254,7 @@
                           </dt>
                           <dd>
                             <s class="cart-item__old-price price price--end">
-                              <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'>{{ item.original_line_price | money }}</span></span></span></span>
+                              <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><div class="qb-total-line-item" data-id="{{ item.key }}">{{ item.original_line_price | money }}</div></span></span></span></span>
                             </s>
                           </dd>
                           <dt class="visually-hidden">
@@ -266,7 +266,7 @@
                         </dl>
                       {%- else -%}
                         <span class="price price--end">
-                          <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'>{{ item.original_line_price | money }}</span></span></span></span>
+                          <span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><span data-item-key='{{ item.key }}' class='revy-final-item-price'><div class="qb-total-line-item" data-id="{{ item.key }}">{{ item.original_line_price | money }}</div></span></span></span></span>
                         </span>
                       {%- endif -%}
 
