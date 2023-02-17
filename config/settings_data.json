@@ -208,10 +208,38 @@
 
     ],
     "blocks": {
-      "8171265131012698934": {
-        "type": "shopify:\/\/apps\/quantity-breaks-order-limity\/blocks\/orichi-discount\/3f38eaa3-2a3f-4e55-bcc9-df5d3f75e351",
+      "11825749942329260384": {
+        "type": "shopify:\/\/apps\/fueled-google-analytics-ga4\/blocks\/fueled-embed\/b7733e10-32a6-41fd-a62d-3195dc211aa9",
         "disabled": false,
         "settings": {
+          "track": true
+        }
+      },
+      "15796953133730294439": {
+        "type": "shopify:\/\/apps\/loyalty-program-reviews-3\/blocks\/block.embed.socialshopwave-helper\/b3d2efbe-110a-4e27-84a8-1f2ed63996a4",
+        "disabled": false,
+        "settings": {
+        }
+      },
+      "9263087761680917675": {
+        "type": "shopify:\/\/apps\/quantity-volume-discounts\/blocks\/capital-quantity-break\/0a050420-f9ad-4328-a82c-1349ab1bfa85",
+        "disabled": false,
+        "settings": {
+          "table_widget_header_1": "Buy Min. Quantity",
+          "table_widget_header_2": "Get Discounts",
+          "table_items_first": "+",
+          "table_items": "on each item",
+          "bulk_saving": "You have saved <strong>{discount}<\/strong> when buying in bulk",
+          "per_saving": "You have unlocked <strong>{discount}<\/strong> OFF",
+          "upsell_saving": "Add <strong>{quantity}<\/strong> more item to get <strong>{discount}<\/strong> off",
+          "discount_logic": "product_level",
+          "border_color": "#000000",
+          "header_bg_color": "#000000",
+          "header_color": "#fff",
+          "notice_color": "#000",
+          "price_color": "#000",
+          "cart_top_notice": "#000",
+          "cart_top_notice_color": "#fff"
         }
       }
     }
