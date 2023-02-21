@@ -1,0 +1,55 @@
+{% assign wds_temp_price = wds_discount | split:'|' %}{% case price_variable %}
+ 	{% when 'wds_v_price'%}{{ wds_temp_price[0] }}
+ 	{% when 'wds_v_compare_at_price'%}{{ wds_temp_price[1] }}
+ 	{% when 'wds_price'%}{{ wds_temp_price[2] }}
+ 	{% when 'wds_compare_at_price'%}{{ wds_temp_price[3] }}
+ 	{% when 'wds_compare_at_price_min'%}{{ wds_temp_price[4] }}
+ 	{% when 'wds_compare_at_price_max'%}{{ wds_temp_price[5]}}
+ 	{% when 'wds_price_min'%}{{ wds_temp_price[6] }}
+ 	{% when 'wds_price_max'%}{{ wds_temp_price[7] }}
+ 	{% when 'wds_apply_discount'%}{{- wds_temp_price[8] -}}
+ 	{% when 'wds_apply_tag'%}{{- wds_temp_price[9] -}}
+    {% when 'wds_discount_group_key'%}{{- wds_temp_price[10] -}}
+{% endcase %}{% comment %}
+
+{% capture wds_discount %}{%render 'wds_discount_calculation' with  wds_product:product, mode:'product', method:'render' %}{% endcapture %}
+
+{%- capture wds_discount_group_key -%}{%- render 'wds_render_discount' , wds_discount:wds_discount, price_variable:'wds_discount_group_key' -%}{%- endcapture -%}
+
+{%- capture wds_price -%}{%- render 'wds_render_discount' , wds_discount:wds_discount, price_variable:'wds_price' -%}{%- endcapture -%}
+{% assign  wds_price = wds_price | minus: 0 %}
+
+
+{%- capture wds_compare_at_price  -%}{%- render 'wds_render_discount', wds_discount:wds_discount, price_variable:'wds_compare_at_price' -%}{%- endcapture -%}
+
+{% if wds_compare_at_price != blank %}
+	{% assign  wds_compare_at_price = wds_compare_at_price | minus: 0 %}
+{% else %}
+{% assign  wds_compare_at_price = nil %}
+{% endif %}
+
+
+{%- capture wds_compare_at_price_min  -%}{%- render 'wds_render_discount' , wds_discount:wds_discount, price_variable:'wds_compare_at_price_min' -%}{%- endcapture -%}
+{% assign  wds_compare_at_price_min = wds_compare_at_price_min | minus: 0 %}
+
+{%- capture wds_compare_at_price_max  -%}{%- render 'wds_render_discount', wds_discount:wds_discount, price_variable:'wds_compare_at_price_max' -%}{%- endcapture -%}
+{% assign  wds_compare_at_price_max = wds_compare_at_price_max | minus: 0 %}
+
+{%- capture wds_price_min -%}{%- render 'wds_render_discount' , wds_discount:wds_discount, price_variable:'wds_price_min' -%}{%- endcapture -%}
+{% assign  wds_price_min = wds_price_min | minus: 0 %}
+
+{%- capture wds_price_max -%}{%- render 'wds_render_discount' , wds_discount:wds_discount, price_variable:'wds_price_max' -%}{%- endcapture -%}
+{% assign  wds_price_max = wds_price_max | minus: 0 %}
+
+{%- capture wds_v_price -%}{%- render 'wds_render_discount' , wds_discount:wds_discount, price_variable:'wds_v_price' -%}{%- endcapture -%}
+{% assign  wds_v_price = wds_v_price | minus: 0 %}
+
+{%- capture wds_v_compare_at_price -%}{%- render 'wds_render_discount' , wds_discount:wds_discount, price_variable:'wds_v_compare_at_price' -%}{%- endcapture -%}
+{% if wds_v_compare_at_price != blank %}
+	{% assign  wds_v_compare_at_price = wds_v_compare_at_price | minus: 0 %}
+{% else %}
+    {% assign  wds_v_compare_at_price = nil %}
+{% endif %}
+
+
+{% endcomment %}

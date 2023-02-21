@@ -1,0 +1,89 @@
+{% layout none %}
+{% assign wds_compare_total_price = 0 %}
+{% assign wds_discounted_total_price = 0 %}
+{% assign customer_tags = customer.tags | downcase %}
+
+{%- liquid
+	assign wdsLoginTag = 'wdsLogin' 
+    assign wdsNonLoginTag = 'wdsNonLogin' 
+	assign wds_custom_customer_tag = wdsNonLoginTag | downcase
+    if customer 
+    	assign wds_custom_customer_tag = wdsLoginTag | downcase
+    endif
+%}
+
+{% assign wds_customer = false %}
+{% capture wds_cart_object %}
+{
+{% if customer %}
+"isLoginCustomer":true,
+{% else %}
+"isLoginCustomer":false,
+{% endif %}
+
+"settings":{{shop.metafields.wds.settings.value | json}},
+"cart":{{cart | json}},
+"permanent_domain":{{shop.permanent_domain | json}},
+"customer":{
+      "email":{{ customer.email | json}},
+      "id": {{customer.id | json}},
+      "tags": {{ customer.tags | json }},
+      "default_address": {{customer.default_address | json}},
+	   "addresses" :{{customer.addresses | json }}
+},
+"wds_items" :[
+     
+	{% for item in cart.items %}  
+	
+	{% include 'wds_discount_calculation' with wds_product:item.product, wds_variant:item.variant, mode:'variant' %}
+    {% include 'wds_tiered_price' with item %}
+	{% assign temp_wds_apply_tag = wds_apply_tag | downcase %}
+ 	{% if customer_tags contains temp_wds_apply_tag or temp_wds_apply_tag == wds_custom_customer_tag  and wds_apply_discount != 1 %}
+		{% assign wds_customer = true %}
+	{% endif %}  
+   	{% if wds_v_price > item.final_price %}   
+    	{% assign wds_v_price = item.final_price %}
+    {% endif %}
+
+    {% if wds_v_price > item.discounted_price %}   
+    	{% assign wds_v_price = item.discounted_price %}
+    {% endif %}
+	
+	{% assign wds_v_compare_at_price =  item.original_price %}
+      
+	{% assign wds_line_price = wds_v_price | minus: 0 | times: item.quantity %}     
+	{% assign wds_discounted_total_price = wds_discounted_total_price | plus: wds_line_price  %}
+    {% if wds_v_price < wds_v_compare_at_price %}
+    	{% assign wds_line_price = wds_v_compare_at_price | minus: 0 | times: item.quantity %}
+	  	{% assign wds_compare_total_price = wds_compare_total_price | plus: wds_line_price  %}
+    {% else %}
+		{% assign wds_line_price = wds_v_price | minus: 0 | times: item.quantity %}
+	  	{% assign wds_compare_total_price = wds_compare_total_price | plus: wds_line_price  %}
+
+	{% endif %}
+    { 	
+		"discount":{{wds_apply_discount | json}},
+		"tag":{{wds_apply_tag | json}},
+		"cart_item":{{item |json }},
+		"collections":{{item.product.collections | json}},
+		"inventory_quantity":"{{ item.variant.inventory_quantity }}",
+		"inventory_management":"{{item.variant.inventory_management}}",
+		"inventory_policy": "{{item.variant.inventory_policy}}",
+        "wds_v_compare_at_price": {% if item.variant.compare_at_price == blank %} {{item.variant.price}} {% else %} {{wds_v_compare_at_price}} {% endif %} ,
+        "wds_v_price": {{wds_v_price}},
+        "tiered_price_msg":{{ wds_extra_tiered_discount_msg | json }}
+     }
+	 {% unless forloop.last%},{%endunless%}
+     
+{% endfor %} 
+],
+"wds_compare_total_price":{{wds_compare_total_price}} ,
+"wds_discounted_total_price":{{wds_discounted_total_price}},
+"wds_compare_total_price_money":{{wds_compare_total_price | money | json}} ,
+"wds_discounted_total_price_money":{{wds_discounted_total_price | money | json}},
+"wds_cart_total_money":{{cart.total_price | money | json}} ,
+"wds_cart_total":{{cart.total_price }},
+"wds_customer" : {{wds_customer }}
+}
+{% endcapture %}
+{{ wds_cart_object | strip_newlines }}

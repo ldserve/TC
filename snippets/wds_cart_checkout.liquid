@@ -1,0 +1,572 @@
+{% if shop.metafields.wds.settings.value.is_enable == 1 %}
+  <script>
+  window.wds_view_cart = function wds_view_cart(e){
+  e.disabled = true;
+  window.top.location.href = '/apps/wholesale/save/cart';
+  };
+    window.wds_save_cart = function wds_save_cart(e) {
+      let CartUrl = '/cart.js';
+
+      e.disabled = true;
+      let xhrGetCurrntCart = new XMLHttpRequest();
+      xhrGetCurrntCart.responseType = 'json';
+      xhrGetCurrntCart.open('GET', CartUrl);
+      xhrGetCurrntCart.send();
+      xhrGetCurrntCart.onload = function() {
+        if (xhrGetCurrntCart.status != 200) {
+          alert('Please try again something went wrong.');
+          e.disabled = false;
+        } else {
+          let wdsSaveCart = {};
+          wdsSaveCart.cart = xhrGetCurrntCart.response;{%  if customer %}wdsSaveCart.customer_id = {{customer.id}}
+          {% else %}wdsSaveCart.customer_id = null
+          {% endif %}wdsSaveCart.permanent_domain = {{ shop.permanent_domain | json }}
+
+          let apiURL = wds_request_url + 'store-front/save-cart/'
+          let xhrSaveCart = new XMLHttpRequest();
+          xhrSaveCart.responseType = 'json';
+          xhrSaveCart.open('POST', apiURL);
+          xhrSaveCart.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+          xhrSaveCart.send(JSON.stringify(wdsSaveCart));
+          xhrSaveCart.onload = function() {
+            if (xhrSaveCart.status != 200) {
+              alert('Please try again something went wrong.');
+              e.disabled = false;
+            } else {
+              if (xhrSaveCart.response.error == false) {
+                window.top.location.href = '/apps/wholesale/save/cart'
+              }
+            };
+            xhrSaveCart.onerror = function() {
+              alert('Please try again something went wrong.');
+              e.disabled = false;
+            };
+
+
+          }
+        };
+        xhrGetCurrntCart.onerror = function() {
+          alert('Please try again something went wrong.');
+          e.disabled = false;
+        };
+
+      }
+    }
+  </script>
+
+  {% liquid
+    assign wdsLoginTag = 'wdsLogin'
+    assign wdsNonLoginTag = 'wdsNonLogin'
+    assign customer_tags = customer.tags | downcase
+    assign wds_custom_customer_tag = wdsNonLoginTag | downcase
+    if customer
+      assign wds_custom_customer_tag = wdsLoginTag | downcase
+    endif
+    assign is_wds_customer = false
+    assign customer_tags = customer.tags | downcase
+    for wds_discount_value in shop.metafields.wds.wds_enable_groups.value
+      assign wds_discount_value_tag = wds_discount_value.tag | downcase
+
+      if customer_tags contains wds_discount_value_tag or wds_custom_customer_tag == wds_discount_value_tag
+        assign is_wds_customer = true
+      endif
+    endfor
+  -%}
+
+  {% liquid
+    assign wdsLoginTag = 'wdsLogin'
+    assign wdsNonLoginTag = 'wdsNonLogin'
+    assign customer_tags = customer.tags | downcase
+    assign wds_custom_customer_tag = wdsNonLoginTag | downcase
+    if customer
+      assign wds_custom_customer_tag = wdsLoginTag | downcase
+    endif
+    assign is_wds_customer = false
+    assign customer_tags = customer.tags | downcase
+    for wds_discount_value in shop.metafields.wds.wds_enable_groups.value
+      assign wds_discount_value_tag = wds_discount_value.tag | downcase
+
+      if customer_tags contains wds_discount_value_tag or wds_custom_customer_tag == wds_discount_value_tag
+        assign is_wds_customer = true
+      endif
+    endfor
+  -%}
+
+  {% if is_wds_customer == true %}
+    {% if template == 'cart' %}
+      <div id="wds-cart-page-modal" class="wds-cart-page-modal">
+        <div class="wds-cart-page-modal-content">
+          <div class="wds-cart-page-modal-header">
+            <span class="wds-close">&times;</span>
+          </div>
+          <div class="wds-cart-page-modal-body"></div>
+          <div class="wds-empty-div">
+            <span></span>
+          </div>
+          <div class="wds-cart-page-modal-footer">
+            <div class="wds-cart-modal-price-container">
+              <span class="wds-subt-total">
+                {{ shop.metafields.wds.translations.value.subtotal_text | default: 'Subtotal : ' -}}
+              </span>
+              <del>
+                <span class="wds_compare_total_price_money"></span>
+              </del>
+              <span class="wds_discounted_total_price_money"></span>
+              <span class="wds_compare_total_price_non_discount_money"></span>
+            </div>
+            <div class="wds-empty-div">
+              <span></span>
+            </div>
+            <div class="wds-button-container">
+          {% if shop.metafields.wds.saveCartTranslations.value.is_enable_save_cart == 1 %}
+           <button type="button" id="wds_save_cart" onclick= "window.wds_save_cart(this)" class="btn button" name="wds_save_cart">
+               {{ shop.metafields.wds.saveCartTranslations.value.btn_save_cart | default:"Save Cart" }}
+          </button>
+
+             <button type="button" id="wds_view_cart" onclick="window.wds_view_cart(this)" class="btn button" name="wds_view_cart">
+                 {{ shop.metafields.wds.saveCartTranslations.value.btn_view_cart | default:"View Save Cart" }}
+             </button>
+            {% endif %}
+            <button class="wds_wholesale_section_cart btn button">
+              {{ shop.metafields.wds.translations.value.view_wholesale_section | default: 'View Wholesale Section' }}
+            </button>
+            <button class="wds_update_cart btn button">
+              {{ shop.metafields.wds.translations.value.refresh_cart | default: 'Update Wholesale cart' }}
+            </button>
+            {% assign customer_tags = customer.tags | downcase %}
+
+            {% if customer and customer_tags contains 'wds-net-terms' and shop.metafields.wds.net_terms.value.is_enabled == 1 and cart != empty %}
+              <button class="wds_net_terms_btn wds_modal_net_terms_btn btn button">
+                {{ shop.metafields.wds.net_terms.value.btn_label | default: 'Net Terms Checkout' }}
+              </button>
+            {% endif %}
+
+            <button class="wds_checkout_btn wds_modal_checkout_btn btn button">
+              {{ shop.metafields.wds.translations.value.checkout_btn | default: 'Checkout' }}
+            </button>
+          </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <script>
+            var wds_request_url = "";
+            if (window.wds_proxcy_change == "" || typeof(window.wds_proxcy_change) == "undefined") {
+              wds_request_url = "https://" + window.location.host + "/apps/wholesale/api/";
+            } else {
+              wds_request_url = "https://" + window.location.host + window.wds_proxcy_change + '/api/';
+            }
+            (function(window, document) {
+              "use strict";
+              function wds_JQ(onload) {
+                if (typeof jQuery === 'undefined' || (parseInt(jQuery.fn.jquery) === 1 && parseFloat(jQuery.fn.jquery.replace(/^1\./, '')) < 10) || typeof jQuery.ajax === 'undefined') {
+                  var head = document.getElementsByTagName('head')[0];
+                  var script = document.createElement('script');
+                  script.src = ('https:' == document.location.protocol? 'https://': 'http://') + 'code.jquery.com/jquery-3.6.0.min.js';
+                  script.type = 'text/javascript';
+                  script.onload = script.onreadystatechange = function() {
+                    if (script.readyState) {
+                      if (script.readyState === 'complete' || script.readyState === 'loaded') {
+                        script.onreadystatechange = null;
+                        onload(jQuery.noConflict(true));
+                      }
+                    } else {
+                      onload(jQuery.noConflict(true));
+                    }
+                  };
+                  head.appendChild(script);
+                } else {
+                  onload(jQuery);
+                }
+              }
+
+              wds_JQ(function(wds_jq) {
+
+                window.wds_jq = wds_jq;
+
+                wds_jq('body').on('click', ".wds_checkout_btn,#dvPaypal, #dvAmazon, input[name='checkout'], button[name='checkout'], [href$='checkout'], input[name='goto_pp'], button[name='goto_pp'], input[name='goto_gc'], button[name='goto_gc'], .additional-checkout-button, .google-wallet-button-holder, .amazon-payments-pay-button", function(event) {
+                  event.preventDefault();
+                  wds_jq(this).attr('disabled', 'disabled');
+                  wds_get_cart();
+                });
+                function wds_checkout(wds_check_cart_object) {
+                  wds_check_cart_object.permanent_domain = {{ shop.permanent_domain | json }}
+                  let apiURL = wds_request_url + 'store-front/checkout/draft/'
+                  let xhr = new XMLHttpRequest();
+                  xhr.responseType = 'json';
+                  xhr.open('POST', apiURL);
+                  xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                  xhr.send(JSON.stringify(wds_check_cart_object));
+                  xhr.onload = function() {
+                    if (xhr.status != 200) {
+                      window.top.location.href = '/checkout'
+                    } else {
+                      if (xhr.response.is_error == false) {
+                        window.top.location.href = xhr.response.checkoutUrl
+                      } else {
+                        window.top.location.href = '/checkout'
+                      }
+                    }
+                  };
+                  xhr.onerror = function() {
+                    console.log('error');
+                  };
+                }
+
+                window.wds_check_cart_object = [];
+
+                function wds_check_cart(wds_cart_object) {
+
+
+                  if (wds_cart_object.wds_customer == false) {
+                    return false;
+                  }
+
+                  wds_cart_object.cart.items = wds_cart_object.wds_items;
+                  wds_cart_object.wds_items = [];
+
+                  if (wds_cart_object.isLoginCustomer) {
+                    if (wds_cart_object.customer.tags == null) {
+                      wds_cart_object.customer.tags = [];
+                    }
+                    wds_cart_object.customer.tags.push('wdsLogin');
+                  } else {
+                    if (wds_cart_object.customer.tags == null) {
+                      wds_cart_object.customer.tags = [];
+                    }
+                    wds_cart_object.customer.tags.push('wdsNonLogin');
+                  }
+
+                  let apiURL = wds_request_url + 'store-front/discount-calculations'
+                  let xhr = new XMLHttpRequest();
+                  xhr.responseType = 'json';
+                  xhr.open('POST', apiURL);
+                  xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                  xhr.send(JSON.stringify(wds_cart_object));
+                  xhr.onload = function() {
+                    if (xhr.status != 200) {
+                      console.log('error');
+                    } else {
+                      window.wds_check_cart_object = xhr.response;
+
+
+                      if (xhr.response.is_min_requirements_satisfied == false) {
+                        window.top.location.href = '/checkout'
+                      } else {
+                        wds_checkout(xhr.response)
+                      }
+
+                    }
+                  };
+
+                  xhr.onerror = function() {
+                    console.log('error');
+                  };
+
+                }
+
+                function wds_get_cart() {
+
+
+                  let url = '/cart/?view=wds_cart';
+
+                  let xhr = new XMLHttpRequest();
+                  xhr.responseType = 'json';
+                  xhr.open('GET', url);
+
+                  xhr.send();
+                  xhr.onload = function() {
+                    if (xhr.status != 200) {
+                      window.top.location.href = '/checkout'
+                    } else {
+                      window.wds_cart_object = xhr.response;
+                      if (xhr.response.wds_customer == false) {
+                        window.top.location.href = '/checkout'
+                      } else {
+                        wds_check_cart(xhr.response);
+                      }
+
+                    }
+                  };
+
+                  xhr.onerror = function() {
+                    window.top.location.href = '/checkout'
+                  };
+
+                }
+
+
+
+                function cart_page_validation() {
+
+                  {% if template == 'cart' %}
+
+                    let url = '/cart/?view=wds_cart';
+
+                    let xhr = new XMLHttpRequest();
+                    xhr.responseType = 'json';
+                    xhr.open('GET', url);
+                    xhr.send();
+                    xhr.onload = function() {
+                      if (xhr.status != 200) {} else {
+                        window.wds_cart_object = xhr.response;
+                        if (xhr.response.wds_customer == true) {
+                          let response = xhr.response;
+
+                          response.cart.items = xhr.response.wds_items;
+                          response.wds_items = [];
+
+
+                          if (response.isLoginCustomer) {
+                            if (response.customer.tags == null) {
+                              response.customer.tags = [];
+                            }
+                            response.customer.tags.push('wdsLogin');
+                          } else {
+                            if (response.customer.tags == null) {
+                              response.customer.tags = [];
+                            }
+                            response.customer.tags.push('wdsNonLogin');
+                          }
+
+                          let apiURL = wds_request_url + 'store-front/discount-calculations'
+                          let xhrCheckCart = new XMLHttpRequest();
+                          xhrCheckCart.responseType = 'json';
+                          xhrCheckCart.open('POST', apiURL);
+                          xhrCheckCart.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                          xhrCheckCart.send(JSON.stringify(response));
+                          xhrCheckCart.onload = function() {
+                            if (xhrCheckCart.status != 200) {
+                              console.log('error');
+                            } else {
+                              window.wds_check_cart_object = xhr.response;
+                              window.wds_jq('.wds_compare_total_price_money').html('');
+                              window.wds_jq('.wds_discounted_total_price_money').html('');
+                              window.wds_jq('.wds-cart-page-modal-body').html('');
+
+                              if (xhrCheckCart.response.is_min_requirements_satisfied == false) {
+
+                                window.wds_jq('.wds-cart-page-modal-body').html('<div>' + xhrCheckCart.response.minimums_note + '</div>');
+                                window.wds_jq('.wds_compare_total_price_non_discount_money').html(response.wds_cart_total_money);
+
+
+                                window.wds_jq('.wds_compare_total_price_money').html('');
+                                window.wds_jq('.wds_discounted_total_price_money').html('');
+
+
+
+                                var wds_modal = document.getElementById("wds-cart-page-modal");
+
+                                wds_modal.style.display = "block";
+                              } else {
+
+                                if (xhrCheckCart.response.minimums_note != '') {
+                                  window.wds_jq('.wds-cart-page-modal-body').html('<div>' + xhrCheckCart.response.minimums_note + '</div>');
+                                }
+
+                                window.wds_jq('.wds_compare_total_price_money').html('');
+                                window.wds_jq('.wds_discounted_total_price_money').html('');
+
+                                window.wds_jq('.wds_compare_total_price_non_discount_money').html('');
+
+                                if (response.wds_compare_total_price_money != response.wds_discounted_total_price_money) {
+
+                                  window.wds_jq('.wds_compare_total_price_money').html(response.wds_compare_total_price_money);
+                                  window.wds_jq('.wds_discounted_total_price_money').html(response.wds_discounted_total_price_money);
+
+                                  if (window.hasOwnProperty('wds_show_compare_at_price') && window.wds_show_compare_at_price == false) {
+                                    window.wds_jq('.wds_discounted_total_price_money').html('');
+                                  }
+                                } else {
+                                  window.wds_jq('.wds_compare_total_price_non_discount_money').html(response.wds_cart_total_money);
+                                }
+
+                                var wds_modal = document.getElementById("wds-cart-page-modal");
+                                wds_modal.style.display = "block";
+                              }
+
+                            }
+                          };
+
+                          xhrCheckCart.onerror = function() {
+                            console.log('error');
+                          };
+                        }
+
+                      }
+                    };
+
+                    xhr.onerror = function() {};{% endif %}
+
+                }
+                {% if template == 'cart' %}cart_page_validation();
+
+
+
+      // Get the modal
+                  var wds_modal = document.getElementById("wds-cart-page-modal");
+                  var wds_modal_close_span = document.getElementsByClassName("wds-close")[0];
+                  var wds_update_cart = document.getElementsByClassName("wds_update_cart")[0];
+
+                  wds_update_cart.onclick = function() {
+                    cart_page_validation();
+                  }
+
+                  var wds_wholesale_section_cart = document.getElementsByClassName("wds_wholesale_section_cart")[0];
+
+                  wds_wholesale_section_cart.onclick = function() {
+                    window.top.location.href = '/apps/wholesale/'
+                  }
+
+                   {% if customer and  customer_tags contains 'wds-net-terms'  and  shop.metafields.wds.net_terms.value.is_enabled == 1 and cart !=  empty %}
+                  var wds_net_terms_section_cart = document.getElementsByClassName("wds_net_terms_btn")[0];
+
+                  wds_net_terms_section_cart.onclick = function() {
+                    window.top.location.href = '/apps/wholesale/net-terms'
+                  }
+
+                {% endif %}
+                  wds_modal_close_span.onclick = function() {
+                    wds_modal.style.display = "none";
+                  }
+                {% endif %}
+
+              });
+
+            }(window, document));
+    </script>
+
+    {% if template == 'cart' %}
+      <style>
+        .wds-cart-page-modal {
+          display: none;
+          position: fixed;
+          z-index: 999999;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: auto;
+          overflow: auto;
+          background-color: rgb(0, 0, 0);
+          background-color: rgba(0, 0, 0, 0.4);
+          -webkit-animation-name: fadeIn;
+          -webkit-animation-duration: 0.4s;
+          animation-name: fadeIn;
+          animation-duration: 0.4s
+        }
+        .wds-empty-div {
+          clear: both !important;
+        }
+
+        /* Modal Content */
+        .wds-cart-page-modal-content {
+          position: fixed;
+          bottom: 0;
+          background-color: #fefefe;
+          width: 100%;
+          -webkit-animation-name: slideIn;
+          -webkit-animation-duration: 0.4s;
+          animation-name: slideIn;
+          animation-duration: 0.4s
+        }
+
+        /* The Close Button */
+        .wds-close {
+          color: black;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+          display: none;
+        }
+
+        .wds-close:hover,
+        .wds-close:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .wds-cart-page-modal-header {
+          padding: 2px 16px;
+          background-color: black;
+          color: white;
+        }
+
+        .wds-cart-page-modal-body {
+          color: #d10505;
+          padding: 2px 16px;
+          float: right;
+        }
+
+        .wds-cart-page-modal-footer {
+          padding: 2px 16px;
+          float: right
+        }
+
+        .wds_modal_checkout_btn {
+          margin-top: 2px;
+
+        }
+        .wds_modal_net_terms_btn {
+          margin-top: 2px;
+
+        }
+        .wds-cart-modal-price-container {
+          font-size: larger;
+          margin-bottom: 3px;
+          float: right;
+        }
+
+        .wds_compare_total_price_money {
+          margin-right: 10px;
+        }
+
+        /* Add Animation */
+        @-webkit-keyframes slideIn {
+          from {
+            bottom: -300px;
+            opacity: 0
+          }
+
+          to {
+            bottom: 0;
+            opacity: 1
+          }
+        }
+
+        @keyframes slideIn {
+          from {
+            bottom: -300px;
+            opacity: 0
+          }
+
+          to {
+            bottom: 0;
+            opacity: 1
+          }
+        }
+
+        @-webkit-keyframes fadeIn {
+          from {
+            opacity: 0
+          }
+
+          to {
+            opacity: 1
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0
+          }
+
+          to {
+            opacity: 1
+          }
+        }
+      </style>
+    {% endif %}
+  {% endif %}
+{% endif %}

@@ -1,0 +1,28 @@
+{% layout none %}
+{% assign customer_tags = customer.tags | downcase  %}
+{% assign product_limit = 2000 %}
+{% paginate collections by product_limit  %}
+{% capture collect %}
+{
+"collections":[
+{% for collection in collections %}
+{
+"id":{{collection.id}},
+"handle":{{collection.handle | json}},
+"title":{{collection.title | json}}
+}
+{% unless forloop.last %},{% endunless %}
+{% endfor %}
+],
+"settings":{{shop.metafields.wds.settings.value | json}},
+"translations":{{shop.metafields.wds.translations.value | json}}
+,"net_btn_label":{{ shop.metafields.wds.net_terms.value.btn_label  | json}}
+{% if customer and  customer_tags contains 'wds-net-terms'  and  shop.metafields.wds.net_terms.value.is_enabled == 1 %}
+,"net_terms":true
+{%else%}
+,"net_terms":false
+{%endif%}
+}
+{% endcapture %}
+{% endpaginate %}
+{{ collect | strip_newlines }}

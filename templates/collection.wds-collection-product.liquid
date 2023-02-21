@@ -1,0 +1,24 @@
+{% layout none %}
+{% assign current_count = 0 %}
+{% assign product_limit = 18 %}
+
+{% paginate collection.products by product_limit  %}
+{% assign products_count = collection.products_count %}
+
+{% capture products %}
+{
+	"products_count" : "{{products_count}}",
+	"current_page": "{{paginate.current_page}}",
+	"pages": "{{paginate.pages}}",
+	"money_format": {{shop.money_format | json}},
+    "products":
+        [
+            {% for product in collection.products %}
+				{% render 'wds_discount_calculation' with wds_product:product, mode:'json' , mode='render'%}
+                {% unless forloop.last %},{% endunless %}               
+            {% endfor %}
+        ]
+}
+{% endcapture %}
+{% endpaginate %}
+{{- products | strip_newlines -}}

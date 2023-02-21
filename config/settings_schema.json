@@ -20,7 +20,8 @@
         "default": "#FFFFFF",
         "label": "t:settings_schema.colors.settings.colors_solid_button_labels.label",
         "info": "t:settings_schema.colors.settings.colors_solid_button_labels.info"
-      },{
+      },
+      {
         "type": "color",
         "id": "product_on_sale_color",
         "default": "#d80808",
@@ -1210,6 +1211,368 @@
         "id": "cart_drawer_collection",
         "label": "t:settings_schema.cart.settings.cart_drawer.collection.label",
         "info": "t:settings_schema.cart.settings.cart_drawer.collection.info"
+      }
+    ]
+  },
+  {
+    "name": {
+      "en": "Mamuta Smarty App"
+    },
+    "settings": [
+      {
+        "type": "header",
+        "content": {
+          "en": "Product page"
+        }
+      },
+      {
+        "type": "radio",
+        "id": "mamuta_product_box_position",
+        "label": "Campaigns info position",
+        "options": [
+          {
+            "value": "before",
+            "label": "Before 'Add to Cart' button"
+          },
+          {
+            "value": "after",
+            "label": "After 'Add to Cart' button"
+          },
+          {
+            "value": "none",
+            "label": "DO NOT Display"
+          }
+        ],
+        "default": "after"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_product_box_width",
+        "label": "Campaigns info relative width",
+        "default": 75,
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_product_box_margin_top",
+        "label": "Campaigns info top margin",
+        "default": 8,
+        "min": -20,
+        "max": 80,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_product_box_margin_left",
+        "label": "Campaigns info left margin",
+        "default": 8,
+        "min": -20,
+        "max": 80,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "radio",
+        "id": "mamuta_product_description_align",
+        "label": "Campaign description alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "justify",
+            "label": "Justify"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_product_header_color",
+        "label": {
+          "en": "Header color"
+        },
+        "default": "#dc5e19"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_product_header_inherit",
+        "label": "Use theme header color",
+        "default": true,
+        "info": "Header color settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_product_header_background_color",
+        "label": {
+          "en": "Header background color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_product_header_backgound_inherit",
+        "label": "Use theme header background color",
+        "default": true,
+        "info": "Header background settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_product_text_color",
+        "label": {
+          "en": "Text color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_first_line_text_color",
+        "label": {
+          "en": "First Line Text color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_product_text_inherit",
+        "label": "Use theme text color",
+        "default": true,
+        "info": "Text color settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_product_background_color",
+        "label": {
+          "en": "Background color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_product_backgound_inherit",
+        "label": "Use theme background color",
+        "default": true,
+        "info": "Text background settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_first_line_background_color",
+        "label": {
+          "en": "First Line background color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_first_line_background_inherit",
+        "label": "Use theme background color",
+        "default": true,
+        "info": "First line background settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_product_border_color",
+        "label": {
+          "en": "Border color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_product_border_disable",
+        "label": "Disable horizontal borders",
+        "default": false,
+        "info": "Horizontal lines will not be displayed"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_product_side_border_disable",
+        "label": "Disable vertical borders",
+        "default": false,
+        "info": "Left\/Right vertical lines will not be displayed"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_product_font_inherit",
+        "label": "Use theme font settings",
+        "default": false,
+        "info": "All font settings will be ignored"
+      },
+      {
+        "type": "font_picker",
+        "id": "mamuta_product_text_font",
+        "label": "Font",
+        "default": "chivo_n4"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_plussign_invisible",
+        "label": "Do not display '+' sign",
+        "default": false,
+        "info": "'+' sign in the tiers will be hid"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_product_text_size",
+        "label": "Tiers text size",
+        "default": 15,
+        "min": 9,
+        "max": 36,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_product_text_weight",
+        "label": "Tiers text weight",
+        "default": 400,
+        "min": 200,
+        "max": 700,
+        "step": 100
+      },
+      {
+        "type": "range",
+        "id": "mamuta_product_header_size",
+        "label": "Table header text size",
+        "default": 12,
+        "min": 9,
+        "max": 48,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_product_header_weight",
+        "label": "Table header text weight",
+        "default": 400,
+        "min": 200,
+        "max": 700,
+        "step": 100
+      },
+      {
+        "type": "header",
+        "content": {
+          "en": "Shopping cart"
+        }
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_cart_success_invisible",
+        "label": "Success message is not visible",
+        "default": false,
+        "info": "Success message will be hidden"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_cart_upsell_invisible",
+        "label": "Upsell message is not visible",
+        "default": false,
+        "info": "Upsell message will be hidden"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_cart_success_color",
+        "label": {
+          "en": "Success message color"
+        },
+        "default": "#dc5e19"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_cart_success_inherit",
+        "label": "Use theme text color",
+        "default": true,
+        "info": "Success message color settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_cart_success_background_color",
+        "label": {
+          "en": "Success message background color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_cart_success_backgound_inherit",
+        "label": "Use theme background color",
+        "default": true,
+        "info": "Success message background settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_cart_upsell_color",
+        "label": {
+          "en": "Upsell message color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_cart_upsell_inherit",
+        "label": "Use theme text color",
+        "default": true,
+        "info": "Upsell message color settings will be ignored"
+      },
+      {
+        "type": "color",
+        "id": "mamuta_cart_upsell_background_color",
+        "label": {
+          "en": "Upsell message background color"
+        },
+        "default": "#3d4246"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_cart_upsell_backgound_inherit",
+        "label": "Use theme background color",
+        "default": true,
+        "info": "Upsell message background settings will be ignored"
+      },
+      {
+        "type": "checkbox",
+        "id": "mamuta_cart_font_inherit",
+        "label": "Use theme font settings",
+        "default": true,
+        "info": "All font settings will be ignored"
+      },
+      {
+        "type": "font_picker",
+        "id": "mamuta_cart_text_font",
+        "label": "Font",
+        "default": "work_sans_n6"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_cart_text_size",
+        "label": "Messages text size",
+        "default": 10,
+        "min": 5,
+        "max": 36,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "mamuta_cart_text_weight",
+        "label": "Messages text weight",
+        "default": 400,
+        "min": 200,
+        "max": 700,
+        "step": 100
       }
     ]
   }

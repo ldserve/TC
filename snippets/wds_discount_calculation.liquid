@@ -1,0 +1,369 @@
+{%- liquid
+    assign wds_apply_discount = 0 
+    assign wds_apply_tag = blank 
+    assign wds_discount_group_key = blank
+    assign wdsLoginTag = 'wdsLogin' 
+    assign wdsNonLoginTag = 'wdsNonLogin' 
+    assign customer_tags = customer.tags | downcase 
+  	
+    assign wds_custom_customer_tag = wdsNonLoginTag | downcase
+    if customer 
+    	assign wds_custom_customer_tag = wdsLoginTag | downcase
+    endif
+   
+   if shop.metafields.wds.settings.value.is_enable == 1  	
+
+        for wds_discount_value in shop.metafields.wds.wds_enable_groups.value 
+        
+            assign wds_temp_tag = wds_discount_value.tag 
+            assign wds_temp_discount = wds_discount_value.discount | plus: 0 
+			assign wds_discount_value_tag = wds_discount_value.tag | downcase 
+
+           if customer_tags contains wds_discount_value_tag  or wds_custom_customer_tag == wds_discount_value_tag 
+
+                case wds_discount_value.type 
+                   	when 'C'                       
+                        for C in wds_product.collections 
+                            assign discount_group = shop.metafields.wds[wds_discount_value.key].value 
+                            if discount_group.meta contains C.id 
+                                if wds_temp_discount >= wds_apply_discount 
+                                    assign wds_discount_group_key = wds_discount_value.key
+                                    assign wds_apply_discount = wds_temp_discount 
+                                    assign wds_apply_tag = wds_temp_tag 
+                                endif 
+                            endif 
+                        endfor 
+                   
+                    when 'P' 
+                        assign discount_group = shop.metafields.wds[wds_discount_value.key].value 
+                        if discount_group.meta contains wds_product.id 
+                            if wds_temp_discount >= wds_apply_discount 
+                               assign wds_discount_group_key = wds_discount_value.key
+                                assign wds_apply_discount = wds_temp_discount 
+                                assign wds_apply_tag = wds_temp_tag 
+                            endif 
+                        endif 
+                        
+                    when "EP"                   
+                        assign discount_group = shop.metafields.wds[wds_discount_value.key].value 
+                        unless discount_group.meta contains wds_product.id 
+                          
+                            if wds_temp_discount >= wds_apply_discount 
+                                assign wds_discount_group_key = wds_discount_value.key
+                                assign wds_apply_discount = wds_temp_discount 
+                                assign wds_apply_tag = wds_temp_tag 
+                            endif 
+                        endunless 
+
+
+                    when "EC"        
+                        assign collection_check = "true"           
+                        for C in wds_product.collections 
+                            assign discount_group = shop.metafields.wds[wds_discount_value.key].value 
+                            if discount_group.meta contains C.id 
+                                assign collection_check = "false"  
+                            endif 
+                        endfor 
+                        if collection_check == "true"
+                                if wds_temp_discount >= wds_apply_discount 
+                                    assign wds_discount_group_key = wds_discount_value.key
+                                    assign wds_apply_discount = wds_temp_discount 
+                                    assign wds_apply_tag = wds_temp_tag 
+                                endif 
+                        endif 
+                        
+                        
+                     when "PT"        
+                                 
+                        assign wds_orignal_product_tags = wds_product.tags | downcase          
+                        assign discount_group = shop.metafields.wds[wds_discount_value.key].value 
+                        assign wds_product_tag = discount_group.meta | downcase 
+                         if wds_orignal_product_tags contains wds_product_tag
+                            if wds_temp_discount >= wds_apply_discount 
+                                assign wds_discount_group_key = wds_discount_value.key
+                                assign wds_apply_discount = wds_temp_discount 
+                                assign wds_apply_tag = wds_temp_tag 
+                            endif 
+                        endif
+                      
+                    else 
+                       
+                       if wds_temp_discount >= wds_apply_discount 
+                           assign wds_discount_group_key = wds_discount_value.key
+                           assign wds_apply_discount = wds_temp_discount 
+                           assign wds_apply_tag = wds_temp_tag 
+                       endif 
+               endcase 
+           endif 
+       endfor
+          
+   endif 
+-%}
+ 
+{% assign wds_discount_value_tag = wds_apply_tag | downcase %}
+
+{% if customer_tags contains wds_discount_value_tag or wds_custom_customer_tag == wds_discount_value_tag %}
+  
+   {% assign wds_apply_discount = wds_apply_discount | divided_by: 100.0 %}
+{% endif %}
+{% assign wds_apply_discount = 1 | minus: wds_apply_discount %}
+
+{% if mode == 'json' or mode == 'all' %}
+
+{%- liquid
+
+    assign wds_compare_at_price = wds_product.compare_at_price 
+    assign wds_compare_at_price_min = wds_product.compare_at_price_min 
+    assign wds_compare_at_price_max = wds_product.compare_at_price_max 
+    assign wds_price_min = wds_product.price_min 
+    assign wds_price_max = wds_product.price_max 
+    assign wds_price = wds_product.price 
+
+-%}
+
+   {%- capture wds_variants_json -%}
+   [
+       {%- assign wds_price_min = wds_product.price_max -%}
+       {%- for variant in wds_product.variants -%}
+           {%- assign v_price = variant.price -%}    
+           {%- if v_price < wds_price_min -%}
+               {%- assign wds_price_min = v_price -%}
+           {%- endif -%}
+           {%- assign wds_v_compare_at_price = variant.compare_at_price -%}
+           {%- if shop.metafields.wds.settings.value.is_discount_on_sale_price  == 1 -%}
+               {%- assign wds_v_compare_at_price = variant.price -%}
+           {%- endif -%}
+           {%- if wds_v_compare_at_price == blank or wds_v_compare_at_price == 0  -%}
+               {%- assign wds_v_compare_at_price = variant.price -%}
+           {%- endif -%}
+           {%- assign wds_v_price = wds_v_compare_at_price | times: wds_apply_discount -%}
+
+           {%- if wds_apply_discount == 1 -%}
+               {%- assign wds_v_compare_at_price = variant.compare_at_price -%}     
+               {%- assign wds_v_price = variant.price -%}
+           {%- endif -%}
+           {%- if wds_v_price > variant.price  -%}
+               {%- assign wds_v_price = variant.price -%}
+           {%- endif -%}
+           ,{"id":{{- variant.id | json -}},"public_title":{{variant.public_title |json}},"name":{{variant.name|json}},"title":{{- variant.title | json -}},"option1":{{- variant.option1 | json -}},"option2":{{- variant.option2 | json -}},"option3":{{- variant.option3 | json -}},"sku":{{- variant.sku | json -}},"requires_shipping":{{- variant.requires_shipping | json -}},"taxable":{{- variant.taxable | json -}},"featured_image":{%- if variant.featured_image.src == blank -%}{{- variant.featured_image | json -}}{%- else -%}{"src": {{- variant.featured_image.src | json -}}, "id": {{- variant.featured_image.id | json -}} }{%- endif -%},"available":{{- variant.available | json -}},"options":{{- variant.options | json -}},"price":{{- wds_v_price | floor | json -}},"weight":{{- variant.weight | json -}},"compare_at_price":{{- wds_v_compare_at_price | json -}},"inventory_quantity":{{- variant.inventory_quantity | json -}},"inventory_management":{{- variant.inventory_management | json -}},"inventory_policy":{{- variant.inventory_policy | json -}},"barcode":{{- variant.barcode | json -}}}
+       {%- endfor -%}
+   ]
+   {%- endcapture wds_variants_json -%}
+   {%- assign wds_variants_json = wds_variants_json | remove_first: "," -%}
+   {%- assign wds_price = wds_product.price -%}
+   {%- assign wds_compare_at_price = wds_product.compare_at_price -%}
+   {%- assign wds_price_max = wds_product.price_max -%}
+   {%- assign wds_compare_at_price_max = wds_product.compare_at_price_max -%}
+   {%- assign wds_compare_at_price_min = wds_product.compare_at_price_min -%}
+
+{%- liquid
+
+   if wds_apply_discount < 1  
+       if wds_compare_at_price == blank  or wds_compare_at_price == 0 or wds_compare_at_price < wds_price_min or shop.metafields.wds.settings.value.is_discount_on_sale_price  == 1 
+           assign wds_compare_at_price = wds_product.price 
+       endif 
+
+       if wds_compare_at_price_max == blank or wds_compare_at_price_max == 0 
+           assign wds_compare_at_price_max = wds_price_max 
+       endif 
+
+       if wds_compare_at_price_min == blank or wds_compare_at_price_min == 0 or wds_compare_at_price_min < wds_price_min 
+           assign wds_compare_at_price_min = wds_product.price 
+       endif 
+       
+       assign wds_price = wds_compare_at_price | times: wds_apply_discount 
+       if wds_price > wds_product.price 
+           assign wds_price = wds_product.price 
+       endif  
+          
+       assign wds_price_min = wds_compare_at_price_min | times: wds_apply_discount 
+       if wds_price_min > wds_product.price_min 
+           assign wds_price_min = wds_product.price_min 
+       endif  
+   
+       if shop.metafields.wds.settings.value.is_discount_on_sale_price == 1  
+           assign wds_price_min = wds_product.price_min | times: wds_apply_discount 
+       endif  
+          
+       if shop.metafields.wds.settings.value.is_discount_on_sale_price == 1 
+           assign wds_compare_at_price_min = wds_product.price_min 
+       endif  
+          
+       assign wds_price_max = wds_compare_at_price_max | times: wds_apply_discount 
+       if wds_price_max > wds_product.price_max 
+           assign wds_price_max = wds_product.price_max 
+       endif 	
+
+   endif 
+-%}
+  {%  capture wds_tiered_product_discount_json %}{% render 'wds_tiered_price_product' with wds_discount_group_key:wds_discount_group_key, wds_tiered_product:wds_product %}{% endcapture %}
+   {%- capture wds_product_json -%}{"id":{{- wds_product.id | json -}},"title":{{- wds_product.title | json -}},"handle":{{- wds_product.handle | json -}},"description":{{- wds_product.description | json -}},"published_at":"{{- wds_product.published_at | date: "%FT%T%:z" -}}","created_at":"{{- wds_product.created_at | date: "%FT%T%:z" -}}","vendor":{{- wds_product.vendor | json -}},"type":{{- wds_product.type | json -}},"tags":{{- wds_product.tags | json -}},"price":{{- wds_price | floor | json -}},"price_min":{{- wds_price_min | json -}},"price_max":{{- wds_price_max | json -}},"available":{{- wds_product.available | json -}},"price_varies":{{- wds_product.price_varies | json -}},"compare_at_price": {{- wds_compare_at_price | json -}},"compare_at_price_min": {{- wds_compare_at_price_min | json -}},"compare_at_price_max": {{- wds_compare_at_price_max | json -}},"compare_at_price_varies":{{- wds_product.compare_at_price_varies | json -}},"variants":{{- wds_variants_json -}},"images": {{- wds_product.images | json -}},"featured_image":{{- wds_product.featured_image | json -}},"options_with_values":{{- wds_product.options_with_values |json -}},"options":{{- wds_product.options | json -}},"media":{{- wds_product.media | json -}},"tiered_price":{{- wds_tiered_product_discount_json |json -}},"content":{{- wds_product.content | json -}}}{%- endcapture wds_product_json -%}
+   {% if method == 'variant' %}
+       {{- wds_variants_json -}}
+   {% else %}
+       {{-wds_product_json-}}
+   {% endif %}
+   
+{% endif %}
+
+{% if mode == 'product' or mode == 'all'  %}
+{%- liquid
+
+    assign wds_compare_at_price = wds_product.compare_at_price 
+    assign wds_compare_at_price_min = wds_product.compare_at_price_min 
+    assign wds_compare_at_price_max = wds_product.compare_at_price_max 
+    assign wds_price_min = wds_product.price_min 
+    assign wds_price_max = wds_product.price_max 
+    assign wds_price = wds_product.price 
+    
+    if wds_variant
+        assign wds_v_price = wds_variant.price 
+       assign wds_v_compare_at_price = wds_variant.compare_at_price 
+       
+    if wds_v_compare_at_price == blank or wds_v_compare_at_price == 0  or shop.metafields.wds.settings.value.is_discount_on_sale_price  == 1  
+         assign wds_v_compare_at_price = wds_variant.price  
+    endif 
+    
+    else
+         assign wds_v_price = wds_product.selected_or_first_available_variant.price 
+        assign wds_v_compare_at_price = wds_product.selected_or_first_available_variant.compare_at_price 
+       
+    if wds_v_compare_at_price == blank or wds_v_compare_at_price == 0  or shop.metafields.wds.settings.value.is_discount_on_sale_price  == 1  
+         assign wds_v_compare_at_price = wds_product.selected_or_first_available_variant.price  
+    endif 
+    
+    endif
+
+   
+-%}
+{% if shop.metafields.wds.settings.value.is_enable == 1  %}
+{%- liquid 
+
+        if wds_apply_discount < 1 
+
+            assign wds_price_min = wds_product.price_max 
+
+            if wds_compare_at_price == blank  or wds_compare_at_price == 0 or wds_compare_at_price < wds_price_min or shop.metafields.wds.settings.value.is_discount_on_sale_price  == 1 
+                assign wds_compare_at_price = wds_product.price 
+            endif 
+
+            if wds_compare_at_price_max == blank or wds_compare_at_price_max == 0 
+                    assign wds_compare_at_price_max = wds_price_max 
+            endif 
+
+            if wds_compare_at_price_min == blank or wds_compare_at_price_min == 0 or wds_compare_at_price_min < wds_price_min 
+                assign wds_compare_at_price_min = wds_product.price 
+            endif 
+
+            assign wds_price = wds_compare_at_price | times: wds_apply_discount 
+            if wds_price > wds_product.price 
+                assign wds_price = wds_product.price 
+            endif 
+
+            assign wds_price_min = wds_compare_at_price_min | times: wds_apply_discount 
+            if wds_price_min > wds_product.price_min 
+                assign wds_price_min = wds_product.price_min 
+            endif 
+
+            if shop.metafields.wds.settings.value.is_discount_on_sale_price == 1  
+                assign wds_price_min = wds_product.price_min | times: wds_apply_discount 
+            endif 
+
+            if shop.metafields.wds.settings.value.is_discount_on_sale_price == 1 
+                assign wds_compare_at_price_min = wds_product.price_min 
+            endif 
+
+            assign wds_price_max = wds_compare_at_price_max | times: wds_apply_discount 
+            if wds_price_max > wds_product.price_max 
+                assign wds_price_max = wds_product.price_max 
+            endif 			
+
+        endif 
+
+        assign wds_price = wds_price | floor 
+
+        if wds_price > wds_product.price 
+            assign wds_price = wds_product.price 
+        endif 
+
+        assign wds_compare_at_price = wds_compare_at_price | floor 
+        assign wds_compare_at_price_min = wds_compare_at_price_min | floor 
+        assign wds_compare_at_price_max = wds_compare_at_price_max | floor 
+        assign wds_price_min = wds_price_min | floor 
+        assign wds_price_max = wds_price_max | floor 
+
+        assign wds_v_price = wds_v_compare_at_price | times: wds_apply_discount 
+
+
+
+        if wds_v_price > wds_product.selected_or_first_available_variant.price  
+              assign wds_v_price = wds_product.selected_or_first_available_variant.price 
+        endif 
+
+        assign wds_v_price = wds_v_price | floor 
+-%}
+
+       {% if method == 'render' %}
+            {{- wds_v_price | append: "|" | append:wds_v_compare_at_price | append: "|" |append:wds_price | append:"|" | append: wds_compare_at_price  | append: "|" | append: wds_compare_at_price_min | append: "|" | append: wds_compare_at_price_max | append: "|" | append: wds_price_min | append: "|" | append: wds_price_max | append: "|" | append: wds_apply_discount | append: "|" | append: wds_apply_tag -}}
+       {% endif %}
+       
+   {% else %}
+
+{%- liquid
+
+        assign wds_compare_at_price = wds_product.compare_at_price 
+        assign wds_compare_at_price_min = wds_product.compare_at_price_min 
+        assign wds_compare_at_price_max = wds_product.compare_at_price_max 
+        assign wds_price_min = wds_product.price_min 
+        assign wds_price_max = wds_product.price_max 
+        assign wds_price = wds_product.price 
+
+       
+
+        assign wds_v_price = wds_product.selected_or_first_available_variant.price 
+        assign wds_v_compare_at_price = wds_product.selected_or_first_available_variant.compare_at_price 
+
+-%}
+       {% if method == 'render' %}
+           {{- wds_v_price | append: "|" | append:wds_v_compare_at_price | append: "|" |append:wds_price | append:"|" | append: wds_compare_at_price  | append: "|" | append: wds_compare_at_price_min | append: "|" | append: wds_compare_at_price_max | append: "|" | append: wds_price_min | append: "|" | append: wds_price_max | append: "|" | append: wds_apply_discount | append: "|" | append: wds_apply_tag -}}
+       {% endif %}
+
+   {% endif %}
+
+{% endif %}
+
+
+{% if mode == 'variant' %}
+
+{% if shop.metafields.wds.settings.value.is_enable == 1  %}
+{%- liquid
+
+        assign wds_v_compare_at_price = wds_variant.compare_at_price 
+        if wds_v_compare_at_price == blank or wds_v_compare_at_price == 0  or shop.metafields.wds.settings.value.is_discount_on_sale_price  == 1  
+              assign wds_v_compare_at_price = wds_variant.price 
+        endif 
+
+        assign  wds_apply_discount = wds_apply_discount | minus: 0 
+
+        assign wds_v_price = wds_v_compare_at_price | times: wds_apply_discount 
+        if wds_v_price > wds_variant.price  
+              assign wds_v_price = wds_variant.price 
+        endif 
+
+        assign wds_v_price = wds_v_price | floor   
+-%}
+
+   {% else %}
+{%- liquid
+
+        assign wds_v_compare_at_price = wds_variant.compare_at_price
+        assign wds_v_price = wds_variant.price 
+-%}        
+
+   {% endif %}
+
+   {% if method == 'render' %}
+       {{- wds_v_price | append:"|" | append:wds_v_compare_at_price -}}
+   {% endif %}
+
+{% endif %}

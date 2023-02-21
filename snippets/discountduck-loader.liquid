@@ -1,0 +1,8 @@
+<!-- DiscountDuck code, safe to remove if you uninstalled the app -->
+      {% if content_for_header contains 'dd.redcod.ch' %}
+    <script type="text/javascript">
+      window.ddLiquidProduct = {{product | json}}
+      window.ddLiquidCart = {{cart | json}}
+    </script>
+    <script type="text/javascript" async="" src="https://dd.redcod.ch/public_scripts/Gy1WgJPLWUyL3d218q3VU48DkFK3iMVu3veQpESC3ijdjiz8Ni2T8wUxPcs0UMnP4CmRXZnPk6g2gMBUqk6SUvC5nierbz1AkoTkAqzN6KXYW29YsL2qySVXHCrPRrXx/"></script>
+    {% endif %}
