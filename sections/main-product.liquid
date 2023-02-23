@@ -558,9 +558,9 @@
                           </svg>
                         </div>
                     </button>
-                    {%- if block.settings.show_dynamic_checkout -%}
+                  {% comment %}  {%- if block.settings.show_dynamic_checkout -%}
                       {{ form | payment_button }}
-                    {%- endif -%}
+                    {%- endif -%} {% endcomment %}
                   </div>
                 {%- endform -%}
               </product-form>
