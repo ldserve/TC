@@ -32,7 +32,7 @@
     <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
             <!-- DiscountDuck code, safe to remove if you uninstalled the app -->
-  {% include 'discountduck-loader' %}
+  {% comment %}{% include 'discountduck-loader' %}{% endcomment %}
   <!-- DiscountDuck code, safe to remove if you uninstalled the app -->
 {{ content_for_header }}
 
