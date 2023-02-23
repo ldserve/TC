@@ -222,5 +222,5 @@ cart-items {
   }
 }
 .product-option {
-    align-items: flex-start;
+    align-items: flex-start !important;
 }
