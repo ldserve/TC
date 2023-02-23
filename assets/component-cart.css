@@ -221,3 +221,6 @@ cart-items {
     gap: 1rem;
   }
 }
+.product-option {
+    align-items: flex-start;
+}
