@@ -34,8 +34,10 @@
             <!-- DiscountDuck code, safe to remove if you uninstalled the app -->
   {% comment %}{% include 'discountduck-loader' %}{% endcomment %}
   <!-- DiscountDuck code, safe to remove if you uninstalled the app -->
+  {% capture h_headdd %}
 {{ content_for_header }}
-
+    {% endcapture %}
+{{ h_headdd | remove: 'https://api.revy.io/bundle.js' }}
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
@@ -67,7 +69,8 @@
       {% include "revy-bundle-script" %}
       {% endcomment %}
       {% endif %}
-{% comment %}
+
+
 <script id="docapp-volume-speedup">
 (() => { if (!document.documentElement.innerHTML.includes('\\/shop' + '\\/js' + '\\/shopdocs-volume-discounts.min.js') || window.shopdocsVolumeDiscountsAppLoaded) return; let script = document.createElement('script'); script.src = "https://d2e5xyzdl0rkli.cloudfront.net/shop/js/shopdocs-volume-discounts.min.js?shop=tacticalclubs.myshopify.com"; document.getElementById('docapp-volume-speedup').after(script); })();
 </script>
@@ -78,7 +81,7 @@
 
 <script>(() => {const installerKey = 'docapp-discount-auto-install'; const urlParams = new URLSearchParams(window.location.search); if (urlParams.get(installerKey)) {window.sessionStorage.setItem(installerKey, JSON.stringify({integrationId: urlParams.get('docapp-integration-id'), divClass: urlParams.get('docapp-install-class'), check: urlParams.get('docapp-check')}));}})();</script>
 
-<script>(() => {const previewKey = 'docapp-discount-test'; const urlParams = new URLSearchParams(window.location.search); if (urlParams.get(previewKey)) {window.sessionStorage.setItem(previewKey, JSON.stringify({active: true, integrationId: urlParams.get('docapp-discount-inst-test')}));}})();</script>{% endcomment %}
+<script>(() => {const previewKey = 'docapp-discount-test'; const urlParams = new URLSearchParams(window.location.search); if (urlParams.get(previewKey)) {window.sessionStorage.setItem(previewKey, JSON.stringify({active: true, integrationId: urlParams.get('docapp-discount-inst-test')}));}})();</script>
 
 {{ 'mamuta-smarty-core.css' | asset_url | stylesheet_tag }}{{ 'mamuta-smarty.css' | asset_url | stylesheet_tag }}
 {% if content_for_header contains 'aiodstag' %}
