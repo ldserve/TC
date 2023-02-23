@@ -76,7 +76,10 @@
 <script>(() => {const installerKey = 'docapp-discount-auto-install'; const urlParams = new URLSearchParams(window.location.search); if (urlParams.get(installerKey)) {window.sessionStorage.setItem(installerKey, JSON.stringify({integrationId: urlParams.get('docapp-integration-id'), divClass: urlParams.get('docapp-install-class'), check: urlParams.get('docapp-check')}));}})();</script>
 
 <script>(() => {const previewKey = 'docapp-discount-test'; const urlParams = new URLSearchParams(window.location.search); if (urlParams.get(previewKey)) {window.sessionStorage.setItem(previewKey, JSON.stringify({active: true, integrationId: urlParams.get('docapp-discount-inst-test')}));}})();</script>
-{{ 'mamuta-smarty-core.css' | asset_url | stylesheet_tag }}{{ 'mamuta-smarty.css' | asset_url | stylesheet_tag }}</head>
+{{ 'mamuta-smarty-core.css' | asset_url | stylesheet_tag }}{{ 'mamuta-smarty.css' | asset_url | stylesheet_tag }}{% if content_for_header contains 'aiodstag' %}
+{% include 'cscode_discount' %}
+{% endif %}
+</head>
 <body class="gradient">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ "accessibility.skip_to_text" | t }}
