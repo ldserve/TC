@@ -37,7 +37,7 @@
   {% capture h_headdd %}
 {{ content_for_header }}
     {% endcapture %}
-{{ h_headdd | remove: 'https://api.revy.io/bundle.js?shop=tacticalclubs.myshopify.com' }}
+{{ h_headdd | remove: 'https:\/\/api.revy.io\/bundle.js' }}
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
