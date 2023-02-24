@@ -146,16 +146,11 @@ var ignore_csapp_cart_reload = true;
     {%- if settings.predictive_search_enabled -%}
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
- {% comment %} {% render 'appikon-discounts' %}
-  {% include 'revy-bundle-script' %}
-{% render 'quantity-breaks-now', customer: customer, template: template, product: product, cart: cart %}
-        
-{% render 'special-offers' %}
+ 
 
-  {% include 'revy-discounts-script' %}{% endcomment %}
 
-{% comment %}{% include 'tierprice-storefront' %}<!-- wds start -->{% endcomment %}
-              {% include 'wds_cart_checkout' %}
-               <!-- wds end -->
+
+
+              
   </body>
 </html>
